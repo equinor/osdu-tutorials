@@ -4,10 +4,13 @@ from flask_session import Session
 import msal
 import app_config
 
+from api import create_osdu_api
+
 
 app = Flask(__name__)
 app.config.from_object(app_config)
 Session(app)
+create_osdu_api(app)
 
 # This section is needed for url_for("foo", _external=True) to automatically
 # generate http scheme when this sample is running on localhost,
@@ -41,6 +44,8 @@ def authorized():
         if "error" in result:
             return render_template("auth_error.html", result=result)
         session["user"] = result.get("id_token_claims")
+        session["access_token"] = result.get("access_token")
+        session["refresh_token"] = result.get("refresh_token")
         _save_cache(cache)
     except ValueError:  # Usually caused by CSRF
         pass  # Simply ignore them
@@ -53,7 +58,6 @@ def logout():
     return redirect(  # Also logout from your tenant's web session
         app_config.AUTHORITY + "/oauth2/v2.0/logout" +
         "?post_logout_redirect_uri=" + url_for("index", _external=True))
-
 
 @app.route("/graphcall")
 def graphcall():
@@ -105,5 +109,5 @@ app.jinja_env.globals.update(_build_auth_code_flow=_build_auth_code_flow)  # Use
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=5000, reload=True)
+    app.run(host="localhost", port=5000, debug=True)
 
