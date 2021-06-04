@@ -1,4 +1,5 @@
 import requests
+import logging
 from flask import Flask, render_template, session, request, redirect, url_for
 from flask_session import Session
 import msal
@@ -8,9 +9,11 @@ from api import create_osdu_api
 
 
 app = Flask(__name__)
+logging.basicConfig(level=logging.DEBUG)
 app.config.from_object(app_config)
 Session(app)
 create_osdu_api(app)
+
 
 # This section is needed for url_for("foo", _external=True) to automatically
 # generate http scheme when this sample is running on localhost,
@@ -62,6 +65,7 @@ def logout():
 @app.route("/graphcall")
 def graphcall():
     token = _get_token_from_cache(app_config.SCOPE)
+    print("token", token)
     if not token:
         return redirect(url_for("login"))
     graph_data = requests.get(  # Use token to call downstream service

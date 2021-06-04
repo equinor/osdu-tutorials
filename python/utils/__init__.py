@@ -1,16 +1,34 @@
 """Module provides convenience wrappers for OSDU Search API calls."""
 import logging
 import requests
+import json
 
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from werkzeug.exceptions import HTTPException, BadRequest
 from flask import request, session
 
-from app_config import OSDU_API_SEARCH_URL
+from app_config import OSDU_API_SEARCH_URL, OSDU_DATA_PARTITION
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_QUERY_LIMIT = 99    # Limit the number of results to 99 if not explicitly set
+
+
+def create_authorization_headers() -> Optional[Dict[str, str]]:
+    """Create headers for any OSDU API requests (helper method).
+
+    This method extracts authorization tokens and adds platform specific prefix
+    for create authorization headers for each platform and return these headers.
+    """
+    # access_token is used as "Authorization" header
+    access_token = session.get("access_token")
+    authorization = f"Bearer {access_token}"
+
+    headers = {
+        "data-partition-id": OSDU_DATA_PARTITION,
+        "Authorization": authorization,
+    }
+    return headers
 
 
 def call_search_api(request: request, search_query: Dict[str, Any]) -> Dict[str, Any]:
@@ -22,14 +40,14 @@ def call_search_api(request: request, search_query: Dict[str, Any]) -> Dict[str,
     creates the required headers and makes a Search API call. Finally, it
     verifies the response status and passes the json results back to the caller.
     """
-    logger.error(request)
     # session object was added to the context by the authorization middleware
     # it contains both access_token and id_token required for the OSDU calls
     logger.debug(
         f"Extracting authorization tokens from the session object: {session}")
 
     # create authorization headers
-    headers = session.create_authorization_headers()
+    headers = create_authorization_headers()
+
     if headers is None:
         raise HTTPException(
             BadRequest,
@@ -41,12 +59,24 @@ def call_search_api(request: request, search_query: Dict[str, Any]) -> Dict[str,
     if "limit" not in search_query:
         search_query["limit"] = DEFAULT_QUERY_LIMIT
 
+    logger.debug(headers)
+
+    tmp_query = {
+   "kind": "opendes:wks:reference-data--DrillingReasonType:1.0.0",
+   "query": "*",
+   "limit": 100
+}
+
+
     # make request to OSDU Search API
     logger.debug(f"Starting API call to {OSDU_API_SEARCH_URL}")
     search_response = requests.post(
         OSDU_API_SEARCH_URL,
         headers=headers,
-        json=search_query)
+        json=tmp_query
+    )
+    logger.debug(search_response)
+
     logger.debug(f"Response details: {search_response.json()}")
 
     # verify status code

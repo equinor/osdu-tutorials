@@ -2,9 +2,8 @@
 import logging
 import json
 
-from flask import request
+from flask import request, session
 from flask_restful import Resource
-
 
 from utils import call_search_api
 
