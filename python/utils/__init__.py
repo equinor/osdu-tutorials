@@ -1,7 +1,6 @@
 """Module provides convenience wrappers for OSDU Search API calls."""
 import logging
 import requests
-import json
 
 from typing import Any, Dict, Optional
 from werkzeug.exceptions import HTTPException, BadRequest
@@ -40,11 +39,6 @@ def call_search_api(request: request, search_query: Dict[str, Any]) -> Dict[str,
     creates the required headers and makes a Search API call. Finally, it
     verifies the response status and passes the json results back to the caller.
     """
-    # session object was added to the context by the authorization middleware
-    # it contains both access_token and id_token required for the OSDU calls
-    logger.debug(
-        f"Extracting authorization tokens from the session object: {session}")
-
     # create authorization headers
     headers = create_authorization_headers()
 
@@ -59,21 +53,12 @@ def call_search_api(request: request, search_query: Dict[str, Any]) -> Dict[str,
     if "limit" not in search_query:
         search_query["limit"] = DEFAULT_QUERY_LIMIT
 
-    logger.debug(headers)
-
-    tmp_query = {
-   "kind": "opendes:wks:reference-data--DrillingReasonType:1.0.0",
-   "query": "*",
-   "limit": 100
-}
-
-
     # make request to OSDU Search API
     logger.debug(f"Starting API call to {OSDU_API_SEARCH_URL}")
     search_response = requests.post(
         OSDU_API_SEARCH_URL,
         headers=headers,
-        json=tmp_query
+        json=search_query
     )
     logger.debug(search_response)
 
