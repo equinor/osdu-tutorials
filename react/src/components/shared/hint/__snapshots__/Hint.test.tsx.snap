@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Hint should render self and subcomponents 1`] = `
+<div
+  className="hint hint--size_normal"
+>
+  <div
+    className="hint__text hint__title"
+  >
+    Test title
+  </div>
+  <div
+    className="hint__text hint__sub-title"
+  >
+    Test subtitle
+  </div>
+</div>
+`;

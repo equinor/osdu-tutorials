@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Loader should render self and subcomponents 1`] = `
+<div
+  className="loader"
+>
+  <div
+    className="loader__component"
+    style={
+      Object {
+        "fontSize": 24,
+      }
+    }
+  />
+</div>
+`;
