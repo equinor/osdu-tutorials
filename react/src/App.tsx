@@ -11,17 +11,6 @@ export const App = () => {
   return (
     <div className='App'>
       <AzureAD provider={authProvider} forceLogin={true} reduxStore={store}>
-        {({
-            authenticationState,
-          }: IAzureADFunctionProps) => {
-          if (authenticationState === AuthenticationState.Unauthenticated) {
-            return (
-              <>
-                <h1>Please log in first.</h1>
-              </>
-            );
-          }
-        }}
         <Router>
             <Switch>
               <Route path='/' component={MainPage} exact />

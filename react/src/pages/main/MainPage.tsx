@@ -2,6 +2,7 @@ import React from 'react';
 import './styles.css';
 import { Search } from 'components/well-search';
 import { authProvider } from '../../authProvider';
+import WellCanvas from "../../components/well-canvas/wellCanvas";
 
 /**
  * Contains login-logout functionality, search wells form,
@@ -39,6 +40,7 @@ export function MainPage() {
         <Search />
 
         {/* map canvas */}
+          <WellCanvas/>
 
         {/* login-logout functionality. plain and simple */}
         <div className='main__auth-buttons'>

@@ -40,7 +40,7 @@ export async function findWellsByName(wellName: string): Promise<FindWellsRespon
     },
     body: JSON.stringify({
       "kind": "opendes:wks:master-data--Well:1.0.0",
-      "limit":5,
+      "limit": 100,
       "query": "",
       "returnedFields": [
         "id",
