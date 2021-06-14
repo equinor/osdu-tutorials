@@ -1,0 +1,603 @@
+{
+	"info": {
+		"_postman_id": "d1bc7aad-8009-4e12-9fff-d87401add4ce",
+		"name": "Quickstart Backend",
+		"description": "This collection contains requests to verify a quickstart backend handlers, used by a frontend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Wells by Name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dab27566-937d-407e-8389-1dbd38eaea15",
+						"exec": [
+							"const Ajv = require('ajv');",
+							"const ajv = new Ajv({logger: console})",
+							"",
+							"pm.test(\"Expected correct response structure\", () => {",
+							"    const schema = JSON.parse(pm.variables.get(\"schema\"));",
+							"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify((ajv.errors || []).map(e => `${e.dataPath} ${e.message}`))).to.be.true;",
+							"})",
+							"",
+							"pm.test(\"Expected wells count\", () => {",
+							"    pm.expect(pm.response.json().wells.length).to.equal(14)",
+							"})",
+							"",
+							"pm.test(\"BIR-13 is in results\", () => {",
+							"    // We'll use its wellbore trajectories for visualization",
+							"    pm.expect(pm.response.json().wells.filter(w => w.facility_name === \"BIR-13\").length).to.equal(1)",
+							"})",
+							"",
+							"pm.test(\"BIR-04 is in results\", () => {",
+							"    // We'll use it to navigate to a map page",
+							"    pm.expect(pm.response.json().wells.filter(w => w.facility_name === \"BIR-04\").length).to.equal(1)",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f91fd53d-0058-4461-860e-2653bdf18444",
+						"exec": [
+							"pm.variables.set(\"schema\", JSON.stringify({",
+							"    \"$schema\": \"http://json-schema.org/draft-07/schema\",",
+							"    \"$id\": \"http://example.com/example.json\",",
+							"    \"type\": \"object\",",
+							"    \"required\": [",
+							"        \"wells\"",
+							"    ],",
+							"    \"properties\": {",
+							"        \"wells\": {",
+							"            \"$id\": \"#/properties/wells\",",
+							"            \"type\": \"array\",",
+							"            \"items\": {",
+							"                \"$id\": \"#/properties/wells/items\",",
+							"                \"type\": \"object\",",
+							"                \"required\": [",
+							"                    \"resource_id\",",
+							"                    \"facility_name\",",
+							"                    \"location\"",
+							"                ],",
+							"                \"properties\": {",
+							"                    \"resource_id\": {",
+							"                        \"$id\": \"#/properties/wells/items/properties/resource_id\",",
+							"                        \"type\": \"string\",",
+							"                    },",
+							"                    \"facility_name\": {",
+							"                        \"$id\": \"#/properties/wells/items/properties/facility_name\",",
+							"                        \"type\": \"string\",",
+							"                    },",
+							"                    \"location\": {",
+							"                        \"$id\": \"#/properties/wells/items/properties/location\",",
+							"                        \"type\": \"object\",",
+							"                        \"required\": [",
+							"                            \"coordinates\",",
+							"                            \"type\"",
+							"                        ],",
+							"                        \"properties\": {",
+							"                            \"coordinates\": {",
+							"                                \"$id\": \"#/properties/wells/items/properties/location/properties/coordinates\",",
+							"                                \"type\": \"array\",",
+							"                                \"items\": {",
+							"                                    \"$id\": \"#/properties/wells/items/properties/location/properties/coordinates/items\",",
+							"                                    \"type\": \"number\",",
+							"                                }",
+							"                            },",
+							"                            \"type\": {",
+							"                                \"$id\": \"#/properties/wells/items/properties/location/properties/type\",",
+							"                                \"type\": \"string\",",
+							"                            }",
+							"                        }",
+							"                    }",
+							"                }",
+							"            }",
+							"        }",
+							"    }",
+							"}))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "osdu_quickstart_session_id={{osdu_quickstart_session_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{backend_host}}/find/wells_by_name?well_name=BIR",
+					"host": [
+						"{{backend_host}}"
+					],
+					"path": [
+						"find",
+						"wells_by_name"
+					],
+					"query": [
+						{
+							"key": "well_name",
+							"value": "BIR"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Wellbores by a WellID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "86d3c3f6-47a9-4508-820b-1217a13b5f2b",
+						"exec": [
+							"pm.variables.set(\"schema\", JSON.stringify({",
+							"    \"$schema\": \"http://json-schema.org/draft-07/schema\",",
+							"    \"$id\": \"http://example.com/example.json\",",
+							"    \"type\": \"object\",",
+							"    \"required\": [",
+							"        \"wellbores\"",
+							"    ],",
+							"    \"properties\": {",
+							"        \"wellbores\": {",
+							"            \"$id\": \"#/properties/wellbores\",",
+							"            \"type\": \"array\",",
+							"            \"items\": {",
+							"                \"$id\": \"#/properties/wellbores/items\",",
+							"                \"type\": \"object\",",
+							"                \"required\": [",
+							"                    \"resource_id\",",
+							"                    \"facility_name\"",
+							"                ],",
+							"                \"properties\": {",
+							"                    \"resource_id\": {",
+							"                        \"$id\": \"#/properties/wellbores/items/properties/resource_id\",",
+							"                        \"type\": \"string\",",
+							"                    },",
+							"                    \"facility_name\": {",
+							"                        \"$id\": \"#/properties/wellbores/items/properties/facility_name\",",
+							"                        \"type\": \"string\",",
+							"                    }",
+							"                }",
+							"            }",
+							"        }",
+							"    }",
+							"}))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "15788e68-931a-476c-a29a-a00c433d9f28",
+						"exec": [
+							"const Ajv = require('ajv');",
+							"const ajv = new Ajv({logger: console})",
+							"",
+							"pm.test(\"Expected correct response structure\", () => {",
+							"    const schema = JSON.parse(pm.variables.get(\"schema\"));",
+							"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify((ajv.errors || []).map(e => `${e.dataPath} ${e.message}`))).to.be.true;",
+							"})",
+							"",
+							"pm.test(\"Expected wellbores count\", () => {",
+							"    pm.expect(pm.response.json().wellbores.length).to.equal(3)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "osdu_quickstart_session_id={{osdu_quickstart_session_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{backend_host}}/find/wellbores_by_well_id?well_id=srn:master-data/Well:3687:",
+					"host": [
+						"{{backend_host}}"
+					],
+					"path": [
+						"find",
+						"wellbores_by_well_id"
+					],
+					"query": [
+						{
+							"key": "well_id",
+							"value": "srn:master-data/Well:3687:"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Trajectory by a WellboreID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "17cf3232-3f0b-49ed-a3f7-28a9a5831119",
+						"exec": [
+							"pm.variables.set(\"schema\", JSON.stringify({",
+							"    \"$schema\": \"http://json-schema.org/draft-07/schema\",",
+							"    \"$id\": \"http://example.com/example.json\",",
+							"    \"type\": \"object\",",
+							"    \"required\": [",
+							"        \"wellbore_id\",",
+							"        \"data\"",
+							"    ],",
+							"    \"properties\": {",
+							"        \"wellbore_id\": {",
+							"            \"$id\": \"#/properties/wellbore_id\",",
+							"            \"type\": \"string\",",
+							"        },",
+							"        \"data\": {",
+							"            \"$id\": \"#/properties/data\",",
+							"            \"type\": \"object\",",
+							"            \"required\": [",
+							"                \"measured_depths\",",
+							"                \"azimuths\",",
+							"                \"inclinations\",",
+							"                \"surface_x\",",
+							"                \"surface_y\"",
+							"            ],",
+							"            \"properties\": {",
+							"                \"measured_depths\": {",
+							"                    \"$id\": \"#/properties/data/properties/measured_depths\",",
+							"                    \"type\": \"array\",",
+							"                    \"items\": {",
+							"                        \"$id\": \"#/properties/data/properties/measured_depths/items\",",
+							"                        \"type\": \"number\",",
+							"                    }",
+							"                },",
+							"                \"azimuths\": {",
+							"                    \"$id\": \"#/properties/data/properties/azimuths\",",
+							"                    \"type\": \"array\",",
+							"                    \"items\": {",
+							"                        \"$id\": \"#/properties/data/properties/azimuths/items\",",
+							"                        \"type\": \"number\",",
+							"                    }",
+							"                },",
+							"                \"inclinations\": {",
+							"                    \"$id\": \"#/properties/data/properties/inclinations\",",
+							"                    \"type\": \"array\",",
+							"                    \"items\": {",
+							"                        \"$id\": \"#/properties/data/properties/inclinations/items\",",
+							"                        \"type\": \"number\",",
+							"                    }",
+							"                },",
+							"                \"surface_x\": {",
+							"                    \"$id\": \"#/properties/data/properties/surface_x\",",
+							"                    \"type\": \"array\",",
+							"                    \"items\": {",
+							"                        \"$id\": \"#/properties/data/properties/surface_x/items\",",
+							"                        \"type\": \"number\",",
+							"                    }",
+							"                },",
+							"                \"surface_y\": {",
+							"                    \"$id\": \"#/properties/data/properties/surface_y\",",
+							"                    \"type\": \"array\",",
+							"                    \"items\": {",
+							"                        \"$id\": \"#/properties/data/properties/surface_y/items\",",
+							"                        \"type\": \"number\",",
+							"                    }",
+							"                }",
+							"            }",
+							"        }",
+							"    }",
+							"}))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f22f66bd-4f8f-4e72-a176-5a0cb219ceaa",
+						"exec": [
+							"const Ajv = require('ajv');",
+							"const ajv = new Ajv({logger: console})",
+							"",
+							"pm.test(\"Expected correct response structure\", () => {",
+							"    const schema = JSON.parse(pm.variables.get(\"schema\"));",
+							"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify((ajv.errors || []).map(e => `${e.dataPath} ${e.message}`))).to.be.true;",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "osdu_quickstart_session_id={{osdu_quickstart_session_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{backend_host}}/fetch/trajectory_by_wellbore_id?wellbore_id=srn:master-data/Wellbore:3687:",
+					"host": [
+						"{{backend_host}}"
+					],
+					"path": [
+						"fetch",
+						"trajectory_by_wellbore_id"
+					],
+					"query": [
+						{
+							"key": "wellbore_id",
+							"value": "srn:master-data/Wellbore:3687:"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Wells in Polygon",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5f6c93ae-d622-4bf5-9c84-a19c0b2f3c66",
+						"exec": [
+							"pm.variables.set(\"schema\", JSON.stringify({",
+							"    \"$schema\": \"http://json-schema.org/draft-07/schema\",",
+							"    \"$id\": \"http://example.com/example.json\",",
+							"    \"type\": \"array\",",
+							"    \"items\": {",
+							"        \"$id\": \"#/items\",",
+							"        \"type\": \"object\",",
+							"        \"required\": [",
+							"            \"resource_id\",",
+							"            \"facility_name\",",
+							"            \"location\"",
+							"        ],",
+							"        \"properties\": {",
+							"            \"resource_id\": {",
+							"                \"$id\": \"#/items/properties/resource_id\",",
+							"                \"type\": \"string\",",
+							"            },",
+							"            \"facility_name\": {",
+							"                \"$id\": \"#/items/properties/facility_name\",",
+							"                \"type\": \"string\",",
+							"            },",
+							"            \"location\": {",
+							"                \"$id\": \"#/items/properties/location\",",
+							"                \"type\": \"object\",",
+							"                \"required\": [",
+							"                    \"coordinates\",",
+							"                    \"type\"",
+							"                ],",
+							"                \"properties\": {",
+							"                    \"coordinates\": {",
+							"                        \"$id\": \"#/items/properties/location/properties/coordinates\",",
+							"                        \"type\": \"array\",",
+							"                        \"items\": {",
+							"                            \"$id\": \"#/items/properties/location/properties/coordinates/items\",",
+							"                            \"type\": \"number\",",
+							"                        }",
+							"                    },",
+							"                    \"type\": {",
+							"                        \"$id\": \"#/items/properties/location/properties/type\",",
+							"                        \"type\": \"string\",",
+							"                    }",
+							"                }",
+							"            }",
+							"        }",
+							"    }",
+							"}))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "8c430102-51a9-4cc5-9b5f-1081fbaff282",
+						"exec": [
+							"const Ajv = require('ajv');",
+							"const ajv = new Ajv({logger: console})",
+							"",
+							"pm.test(\"Expected correct response structure\", () => {",
+							"    const schema = JSON.parse(pm.variables.get(\"schema\"));",
+							"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify((ajv.errors || []).map(e => `${e.dataPath} ${e.message}`))).to.be.true;",
+							"})",
+							"",
+							"pm.test(\"Expected wells count\", () => {",
+							"    pm.expect(pm.response.json().length).to.equal(14)",
+							"})",
+							"",
+							"pm.test(\"Certain wells are present\", () => {",
+							"    // Those wells are good for a further cross-section composition.",
+							"    pm.expect(pm.response.json().filter(w => w.resource_id === \"srn:master-data/Well:1118:\").length).to.equal(1, \"BIR-12\")",
+							"    pm.expect(pm.response.json().filter(w => w.resource_id === \"srn:master-data/Well:1117:\").length).to.equal(1, \"BIR-11\")",
+							"    pm.expect(pm.response.json().filter(w => w.resource_id === \"srn:master-data/Well:1114:\").length).to.equal(1, \"BIR-08\")",
+							"    pm.expect(pm.response.json().filter(w => w.resource_id === \"srn:master-data/Well:1113:\").length).to.equal(1, \"BIR-07\")",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "osdu_quickstart_session_id={{osdu_quickstart_session_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"Polygon\",\n    \"coordinates\": [\n        [\n            [\n                6.882806,\n                53.374987\n            ],\n            [\n                6.884308,\n                53.370458\n            ],\n            [\n                6.888986,\n                53.371456\n            ],\n            [\n                6.887484,\n                53.375575\n            ],\n            [\n                6.882806,\n                53.374987\n            ]\n        ]\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{backend_host}}/find/wells_in_polygon",
+					"host": [
+						"{{backend_host}}"
+					],
+					"path": [
+						"find",
+						"wells_in_polygon"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Markers By WellboreIDs",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "db633276-8201-4414-ac14-fc6b83d2438c",
+						"exec": [
+							"pm.variables.set(\"schema\", JSON.stringify({",
+							"    \"$schema\": \"http://json-schema.org/draft-07/schema\",",
+							"    \"$id\": \"http://example.com/example.json\",",
+							"    \"type\": \"array\",",
+							"    \"items\": {",
+							"        \"$id\": \"#/items\",",
+							"        \"type\": \"object\",",
+							"        \"required\": [",
+							"            \"resource_id\",",
+							"            \"facility_name\",",
+							"            \"marker_depths\",",
+							"            \"formations\"",
+							"        ],",
+							"        \"properties\": {",
+							"            \"resource_id\": {",
+							"                \"$id\": \"#/items/properties/resource_id\",",
+							"                \"type\": \"string\",",
+							"            },",
+							"            \"facility_name\": {",
+							"                \"$id\": \"#/items/properties/facility_name\",",
+							"                \"type\": \"string\",",
+							"            },",
+							"            \"marker_depths\": {",
+							"                \"$id\": \"#/items/properties/marker_depths\",",
+							"                \"type\": \"array\",",
+							"                \"items\": {",
+							"                    \"$id\": \"#/items/properties/marker_depths/items\",",
+							"                    \"type\": \"number\",",
+							"                }",
+							"            },",
+							"            \"formations\": {",
+							"                \"$id\": \"#/items/properties/formations\",",
+							"                \"type\": \"array\",",
+							"                \"items\": {",
+							"                    \"$id\": \"#/items/properties/formations/items\",",
+							"                    \"type\": \"string\",",
+							"                }",
+							"            }",
+							"        }",
+							"    }",
+							"}))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "6cfec4cf-f460-4651-81e1-63a57e5d1a59",
+						"exec": [
+							"const Ajv = require('ajv');",
+							"const ajv = new Ajv({logger: console})",
+							"",
+							"pm.test(\"Expected correct response structure\", () => {",
+							"    const schema = JSON.parse(pm.variables.get(\"schema\"));",
+							"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify((ajv.errors || []).map(e => `${e.dataPath} ${e.message}`))).to.be.true;",
+							"})",
+							"",
+							"pm.test(\"Expected wells count\", () => {",
+							"    pm.expect(pm.response.json().length).to.equal(4)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "osdu_quickstart_session_id={{osdu_quickstart_session_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{backend_host}}/fetch/markers_by_well_ids?well_ids=srn:master-data/Well:1118:,srn:master-data/Well:1117:,srn:master-data/Well:1114:,srn:master-data/Well:1113:",
+					"host": [
+						"{{backend_host}}"
+					],
+					"path": [
+						"fetch",
+						"markers_by_well_ids"
+					],
+					"query": [
+						{
+							"key": "well_ids",
+							"value": "srn:master-data/Well:1118:,srn:master-data/Well:1117:,srn:master-data/Well:1114:,srn:master-data/Well:1113:"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "245c463d-cfc8-496d-a0af-6736b0bb0163",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "7fae37a3-6fcb-46f3-9516-64086000a8e9",
+				"type": "text/javascript",
+				"exec": [
+					"// Every request should be at least successful",
+					"pm.test(\"Status code is 200\", () => {",
+					"    pm.response.to.have.status(200);",
+					"});"
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
