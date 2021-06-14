@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NotFoundPage should render self and subcomponents 1`] = `
+<div
+  className="not-found"
+>
+  <h2>
+    Sorry. The page you are looking for was not found...
+  </h2>
+</div>
+`;
