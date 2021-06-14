@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FoundWell should render self 1`] = `
+<div
+  className="well"
+>
+  <div
+    className="well__label-container"
+  >
+    <label
+      className="well__label"
+      onClick={[Function]}
+    >
+      <div
+        className="well__label-mark"
+      >
+        <span
+          className="well__open-mark"
+        />
+      </div>
+      <span>
+        WellName1
+      </span>
+    </label>
+  </div>
+  <ul
+    className="well__trajectories-list"
+  />
+</div>
+`;

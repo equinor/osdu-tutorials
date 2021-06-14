@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Search should render self and subcomponents 1`] = `
+<div
+  className="search"
+>
+  <form
+    className="search__area"
+    onSubmit={[Function]}
+  >
+    <input
+      className="search__text"
+      onChange={[Function]}
+      placeholder="Enter well name"
+      type="text"
+      value="storeSearchName"
+    />
+    <input
+      className="search__submit"
+      onClick={[Function]}
+      type="submit"
+      value="Search"
+    />
+  </form>
+  <div
+    className="search__well-area"
+  >
+    <Hint
+      subTitle="Results will be displayed here"
+    />
+  </div>
+</div>
+`;
