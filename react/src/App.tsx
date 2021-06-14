@@ -1,49 +1,34 @@
-import { Switch, Route, useHistory } from "react-router-dom";
-// Material-UI imports
-import Grid from "@material-ui/core/Grid";
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { AuthenticationState, AzureAD, IAzureADFunctionProps } from 'react-aad-msal';
+import { MainPage } from 'pages/main';
+import { NotFoundPage } from 'pages/not-found';
+import store from './store';
+import { authProvider } from './authProvider';
+import './App.css';
 
-// MSAL imports
-import { MsalProvider } from "@azure/msal-react";
-import { IPublicClientApplication } from "@azure/msal-browser";
-import { CustomNavigationClient } from "./utils/NavigationClient";
-
-// Sample app imports
-import { PageLayout } from "./ui-components/PageLayout";
-import { Home } from "./pages/Home";
-import { Profile } from "./pages/Profile";
-
-type AppProps = {
-    pca: IPublicClientApplication
+export const App = () => {
+  return (
+    <div className='App'>
+      <AzureAD provider={authProvider} forceLogin={true} reduxStore={store}>
+        {({
+            authenticationState,
+          }: IAzureADFunctionProps) => {
+          if (authenticationState === AuthenticationState.Unauthenticated) {
+            return (
+              <>
+                <h1>Please log in first.</h1>
+              </>
+            );
+          }
+        }}
+        <Router>
+            <Switch>
+              <Route path='/' component={MainPage} exact />
+              <Route path='*' component={NotFoundPage} />
+            </Switch>
+        </Router>
+      </AzureAD>
+    </div>
+  );
 };
-
-function App({ pca }: AppProps) {
-    // The next 3 lines are optional. This is how you configure MSAL to take advantage of the router's navigate functions when MSAL redirects between pages in your app
-    const history = useHistory();
-    const navigationClient = new CustomNavigationClient(history);
-    pca.setNavigationClient(navigationClient);
-  
-    return (
-      <MsalProvider instance={pca}>
-        <PageLayout>
-          <Grid container justify="center">
-            <Pages />
-          </Grid>
-        </PageLayout>
-      </MsalProvider>
-    );
-}
-  
-function Pages() {
-    return (
-        <Switch>
-            <Route path="/profile">
-                <Profile />
-            </Route>
-            <Route path="/">
-                <Home />
-            </Route>
-        </Switch>
-    )
-}
-
-export default App;

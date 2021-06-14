@@ -1,0 +1,61 @@
+.well {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.well__label-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.well__label {
+  display: block;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: 1px;
+  color: rgba(0, 0, 0);
+  cursor: pointer;
+  flex: 1;
+}
+
+.well__label-mark {
+  display: block;
+  float: left;
+  width: 15px;
+  padding-top: 8px;
+}
+
+.well__open-mark {
+  position: relative;
+  top: 0px;
+  display: block;
+  width: 7px;
+  height: 7px;
+  border: 1px solid grey;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease-in-out, top 0.2s ease-in-out;
+}
+
+.well__open-mark--opened {
+  transform: rotate(135deg);
+  top: -2px;
+}
+
+.well__show-on-map {
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.well__show-on-map:hover {
+  text-decoration: underline;
+}
+
+.well__trajectories-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
