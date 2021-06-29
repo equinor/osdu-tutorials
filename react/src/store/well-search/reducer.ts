@@ -60,8 +60,8 @@ export const wellSearchReducer = (
           (well): WellSearchResponse => ({
             resourceId: well.id,
             location: new LatLng(
-              well.data['SpatialLocation.Wgs84Coordinates'].geometries[0].coordinates[0],
-              well.data['SpatialLocation.Wgs84Coordinates'].geometries[0].coordinates[1]
+              well.data['SpatialLocation.Wgs84Coordinates'].geometries[0].coordinates[1],
+              well.data['SpatialLocation.Wgs84Coordinates'].geometries[0].coordinates[0]
             )
           })
         ),
