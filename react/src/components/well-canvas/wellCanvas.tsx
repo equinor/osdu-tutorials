@@ -7,13 +7,8 @@ import {Hint} from "../shared";
 
 const WellCanvas = () => {
     const foundWells = useSelector((state: AppState) => state.wellSearch.foundWells);
-    //const center = new LatLng(51, 0.89);
 
     const locations = foundWells.map(well => well.location);
-
-    const getCentroid = function (arr: LatLng[]) {
-        return arr.reduce((x, y) => (x + y.lat), 0);
-    }
 
     if (foundWells.length == 0) {
         return (<></>);
@@ -21,13 +16,12 @@ const WellCanvas = () => {
     const xcenter = locations.reduce((x, y) => x + y.lat, 0) / locations.length;
     const ycenter = locations.reduce((x, y) => x + y.lng, 0) / locations.length;
     const center = new LatLng(xcenter, ycenter);
-    console.log(center);
 
     return (
         <MapContainer center={center} zoom={8} scrollWheelZoom={false}>
             <TileLayer
-                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap.US</a> contributors'
+                url="https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}"
             />
             {
                 foundWells.length == 0 ? (
@@ -36,7 +30,7 @@ const WellCanvas = () => {
                 foundWells.map( well =>
                     <Marker key={well.resourceId} position={new LatLng(well.location.lat, well.location.lng)}>
                         <Popup>
-                            A pretty CSS3 popup. <br/> Easily customizable.
+                            {well.resourceId}
                         </Popup>
                     </Marker>
                 )
