@@ -53,3 +53,25 @@ export async function findWellsByName(wellName: string): Promise<FindWellsRespon
     .then(handleErrors)
     .then(response => response.json())
 }
+
+/**
+ * Interface for wellbore
+ */
+interface Wellbore {
+  resource_id: string;
+  facility_name: string;
+}
+
+export interface FindWellboresResponse {
+  wellbores: Wellbore[];
+}
+
+/**
+ * Returns a collection of wellbores for a given well
+ * @param wellId
+ */
+export function findWellbores(wellId: string): Promise<FindWellboresResponse> {
+  return fetch(`/api/find/wellbores_by_well_id?well_id={wellId}`)
+      .then(handleErrors)
+      .then(response => response.json())
+}
