@@ -1,4 +1,4 @@
-import { FindWellsResponse } from 'api/well-search.api';
+import { FindWellsResponse, FindWellboresResponse } from 'api/well-search.api';
 
 export const FIND_WELLS_BY_NAME_START = 'FIND_WELLS_BY_NAME_START';
 export const FIND_WELLS_BY_NAME_SUCCESS = 'FIND_WELLS_BY_NAME_SUCCESS';

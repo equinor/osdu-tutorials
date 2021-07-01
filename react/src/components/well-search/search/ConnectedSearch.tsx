@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppState } from 'store';
-import { findWellsByNameAction } from 'store/well-search';
+import { findWellsByNameAction, findWellboresAction } from 'store/well-search';
 import {
   unselectAllTrajectoriesAction,
 } from 'store/trajectory';
@@ -21,6 +21,11 @@ export function ConnectedSearch() {
     dispatch(findWellsByNameAction(searchName));
   };
 
+  const handleLoadWellbores = (wellId: string) => {
+    dispatch(findWellboresAction(wellId));
+  };
+
+
   console.log("found wells", foundWells)
 
   return (
@@ -31,6 +36,7 @@ export function ConnectedSearch() {
       areWellsSearching={areWellsSearching}
       areWellsSearched={areWellsSearched}
       foundWells={foundWells}
+      onLoadWellbores={handleLoadWellbores}
     />
   );
 }

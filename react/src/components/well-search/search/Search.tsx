@@ -27,6 +27,9 @@ export interface SearchProps {
   /** we'll draw a cool list out of them */
   foundWells: WellSearchResponse[];
 
+  /** a user's request to load wellbores for a given well to look at them */
+  onLoadWellbores: (wellId: string) => void;
+
   /** search form submit */
   onSubmit: (name: string) => void;
 }
@@ -42,6 +45,7 @@ export function Search({
   areWellsSearching,
   areWellsSearched,
   foundWells,
+  onLoadWellbores,
 }: SearchProps) {
   const [searchName, setSearchName] = useState(storedSearchName);
 
@@ -95,6 +99,7 @@ export function Search({
                 <FoundWell
                   key={well.resourceId}
                   well={well}
+                  onLoadWellbores={onLoadWellbores}
                 />
               ))
             )

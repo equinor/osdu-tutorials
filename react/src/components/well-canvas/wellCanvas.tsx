@@ -21,7 +21,7 @@ const WellCanvas = () => {
         <MapContainer center={center} zoom={8} scrollWheelZoom={false}>
             <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap.US</a> contributors'
-                url="https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}"
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             {
                 foundWells.length == 0 ? (

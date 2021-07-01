@@ -1,2 +1,2 @@
-export { findWellsByNameAction } from './actions';
+export { findWellsByNameAction, findWellboresAction } from './actions';
 export * from './reducer';

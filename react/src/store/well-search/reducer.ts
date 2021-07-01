@@ -31,11 +31,28 @@ const initialState: WellSearchState = {
   searchError: undefined,
 };
 
+export interface Wellbore {
+  facilityName: string;
+  resourceId: string;
+}
+
 export interface WellSearchResponse {
   resourceId: string;
 
   /** a geo location, will be useful to reveal the well on the map */
   location: LatLng;
+
+  /** wellbores fetch api request progress flag */
+  areWellboresLoading: boolean;
+
+  /** proof that a wellbores fetch request was made */
+  areWellboresLoaded: boolean;
+
+  /** any error, occured during a wellbores fetch request */
+  wellboresError?: Error;
+
+  /** a list of wellbores fetched from the backend for a certain well */
+  wellbores: Wellbore[];
 }
 
 export const wellSearchReducer = (
