@@ -41,7 +41,7 @@ export async function findWellsByName(wellName: string): Promise<FindWellsRespon
     body: JSON.stringify({
       "kind": "opendes:wks:master-data--Well:1.0.0",
       "limit": 100,
-      "query": "",
+      "query": `id: \"opendes:master-data--Well:${wellName}\"`,
       "returnedFields": [
         "id",
         "data.SpatialLocation.Wgs84Coordinates.geometries"
@@ -81,7 +81,7 @@ export async function findWellbores(wellId: string): Promise<FindWellboresRespon
     },
     body: JSON.stringify({
       "kind": "opendes:*:Wellbore:*",
-      "query": "data.WellID: \"{opendes:master-data--Well:4448}\"",
+      "query": `data.WellID: \"${wellId}\"`,
       "limit": 100,
       "returnedFields": [
         "id",
