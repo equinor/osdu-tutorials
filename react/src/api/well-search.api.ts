@@ -58,20 +58,37 @@ export async function findWellsByName(wellName: string): Promise<FindWellsRespon
  * Interface for wellbore
  */
 interface Wellbore {
-  resource_id: string;
-  facility_name: string;
+  id: string;
 }
 
 export interface FindWellboresResponse {
-  wellbores: Wellbore[];
+  wellbores : Wellbore[];
 }
 
 /**
  * Returns a collection of wellbores for a given well
  * @param wellId
  */
-export function findWellbores(wellId: string): Promise<FindWellboresResponse> {
-  return fetch(`/api/find/wellbores_by_well_id?well_id={wellId}`)
+export async function findWellbores(wellId: string): Promise<FindWellboresResponse> {
+  const accessToken = await getAccessToken();
+
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'data-partition-id': 'opendes',
+      'Authorization': `Bearer ${accessToken}`
+    },
+    body: JSON.stringify({
+      "kind": "opendes:*:Wellbore:*",
+      "query": "data.WellID: \"{opendes:master-data--Well:4448}\"",
+      "limit": 100,
+      "returnedFields": [
+        "id",
+      ]
+    })
+  };
+  return fetch("/api/search/v2/query", requestOptions)
       .then(handleErrors)
       .then(response => response.json())
 }

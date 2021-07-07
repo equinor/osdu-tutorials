@@ -2,7 +2,7 @@ import {
   WellSearchActionTypes,
   FIND_WELLS_BY_NAME_START,
   FIND_WELLS_BY_NAME_FAIL,
-  FIND_WELLS_BY_NAME_SUCCESS,
+  FIND_WELLS_BY_NAME_SUCCESS, FIND_WELLBORES_START, FIND_WELLBORES_SUCCESS, FIND_WELLBORES_FAIL,
 } from './types';
 import { GeoJSON, LatLng } from 'leaflet';
 
@@ -32,8 +32,7 @@ const initialState: WellSearchState = {
 };
 
 export interface Wellbore {
-  facilityName: string;
-  resourceId: string;
+  id: string;
 }
 
 export interface WellSearchResponse {
@@ -79,7 +78,11 @@ export const wellSearchReducer = (
             location: new LatLng(
               well.data['SpatialLocation.Wgs84Coordinates'].geometries[0].coordinates[1],
               well.data['SpatialLocation.Wgs84Coordinates'].geometries[0].coordinates[0]
-            )
+            ),
+            areWellboresLoading: false,
+            areWellboresLoaded: false,
+            wellbores: [],
+            wellboresError: undefined,
           })
         ),
       };
@@ -89,6 +92,61 @@ export const wellSearchReducer = (
         areWellsSearching: false,
         areWellsSearched: true,
         searchError: action.payload,
+      };
+    case FIND_WELLBORES_START:
+      return {
+        ...state,
+        foundWells: state.foundWells.map(w => {
+          return action.payload.includes(w.resourceId)
+            ? {
+              ...w,
+              wellbores: [],
+              areWellboresLoading: true,
+              areWellboresLoaded: false,
+              wellboresError: undefined,
+            }
+            : w;
+        }),
+      };
+    case FIND_WELLBORES_SUCCESS:
+      state.foundWells.forEach(w => {
+        if (w.resourceId === "opendes:master-data--Well:4448") {
+          console.log(w)
+          console.log("wellbores", action.payload.result)
+          w.wellbores = action.payload.result.wellbores.map(d => {console.log(d); return {id: d.id} });
+          console.log(w)
+        }
+      })
+      return {
+        ...state,
+        foundWells: state.foundWells.map(w => {
+          return w.resourceId === "opendes:master-data--Well:4448"
+            ? {
+              ...w,
+              wellbores: action.payload.result.wellbores.map(
+                (d): Wellbore => ({
+                  id: d.id,
+                })
+              ),
+              areWellboresLoading: false,
+              areWellboresLoaded: true,
+            }
+            : w;
+        }),
+      };
+    case FIND_WELLBORES_FAIL:
+      return {
+        ...state,
+        foundWells: state.foundWells.map(w => {
+          return action.payload.wellId === w.resourceId
+            ? {
+              ...w,
+              areWellboresLoading: false,
+              areWellboresLoaded: true,
+              wellboresError: action.payload.err,
+            }
+            : w;
+        }),
       };
     default:
       return state;

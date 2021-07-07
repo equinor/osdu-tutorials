@@ -3,6 +3,7 @@ import './styles.css';
 import { Loader, Hint } from 'components/shared';
 import { FoundWell } from '../found-well';
 import { WellSearchResponse } from 'store/well-search';
+import { TrajectoryToDraw } from '../../../store/trajectory';
 
 export interface SearchProps {
   /**
@@ -27,8 +28,23 @@ export interface SearchProps {
   /** we'll draw a cool list out of them */
   foundWells: WellSearchResponse[];
 
+  /** this wellId marks to which well trajectories data belongs */
+  selectedWell: string;
+
   /** a user's request to load wellbores for a given well to look at them */
   onLoadWellbores: (wellId: string) => void;
+
+  /**
+   * trajectories data from a neighbor trajectory state.
+   * it will be passed further to a FoundWell
+   */
+  selectedTrajectories: TrajectoryToDraw[];
+
+  /** a user's request to load trajectory data to visualize it */
+  onFetchTrajectory: (wellId: string, wellboreId: string) => void;
+
+  /** a user's decree that she is done with the trajectory's visualization */
+  onUnselectTrajectory: (wellboreId: string) => void;
 
   /** search form submit */
   onSubmit: (name: string) => void;
@@ -46,6 +62,10 @@ export function Search({
   areWellsSearched,
   foundWells,
   onLoadWellbores,
+  selectedWell,
+  selectedTrajectories,
+  onFetchTrajectory,
+  onUnselectTrajectory,
 }: SearchProps) {
   const [searchName, setSearchName] = useState(storedSearchName);
 
@@ -100,6 +120,9 @@ export function Search({
                   key={well.resourceId}
                   well={well}
                   onLoadWellbores={onLoadWellbores}
+                  selectedTrajectories={well.resourceId === selectedWell ? selectedTrajectories : []}
+                  onFetchTrajectory={onFetchTrajectory}
+                  onUnselectTrajectory={onUnselectTrajectory}
                 />
               ))
             )
