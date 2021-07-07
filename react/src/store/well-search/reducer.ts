@@ -111,9 +111,7 @@ export const wellSearchReducer = (
     case FIND_WELLBORES_SUCCESS:
       state.foundWells.forEach(w => {
         if (w.resourceId === "opendes:master-data--Well:4448") {
-          console.log(w)
-          console.log("wellbores", action.payload.result)
-          w.wellbores = action.payload.result.wellbores.map(d => {console.log(d); return {id: d.id} });
+          w.wellbores = action.payload.result.results.map(d => {console.log(d); return {id: d.id} });
           console.log(w)
         }
       })
@@ -123,7 +121,7 @@ export const wellSearchReducer = (
           return w.resourceId === "opendes:master-data--Well:4448"
             ? {
               ...w,
-              wellbores: action.payload.result.wellbores.map(
+              wellbores: action.payload.result.results.map(
                 (d): Wellbore => ({
                   id: d.id,
                 })

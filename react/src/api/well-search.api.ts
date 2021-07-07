@@ -62,7 +62,7 @@ interface Wellbore {
 }
 
 export interface FindWellboresResponse {
-  wellbores : Wellbore[];
+  results: Wellbore[];
 }
 
 /**
