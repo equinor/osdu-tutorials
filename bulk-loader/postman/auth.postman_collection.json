@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "2e66008f-a221-4746-8dc9-7aa3492935ae",
+		"name": "Auth",
+		"description": "Exploring Authorization API in OSDU. This collection allows doing the following requests:\n\n1) Getting access and id tokens (aihtorization code flow)\n2) Discover OpenID Connect configuration\n3) Refreshing tokens\n4) Making secured User Info request (to validate the token)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. OpenID Connect Discovery",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "62e187eb-3969-4cad-848f-664393d8753f",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"pm.environment.set(\"auth_authorize_url\", data.authorization_endpoint);",
+							"pm.environment.set(\"auth_token_url\", data.token_endpoint);",
+							"pm.environment.set(\"auth_userinfo_url\", data.userinfo_endpoint);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{auth_discovery_url}}/{{auth_well_known_oic}}",
+					"host": [
+						"{{auth_discovery_url}}"
+					],
+					"path": [
+						"{{auth_well_known_oic}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Refresh Tokens",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dcc95883-8398-4463-90ce-d277d0bd497a",
+						"exec": [
+							"// this snippet extracts the new access and id tokens",
+							"// and puts them to environment variables",
+							"var data = JSON.parse(responseBody)",
+							"pm.environment.set(\"access_token\", data.access_token);",
+							"pm.environment.set(\"id_token\", data.id_token);",
+							"// Uncomment if server returns a new refresh_token,",
+							"// otherwise comment out to prevent overwriting it with null",
+							"// pm.environment.set(\"refresh_token\", data.refresh_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "refresh_token",
+							"type": "text"
+						},
+						{
+							"key": "refresh_token",
+							"value": "{{refresh_token}}",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{client_id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{client_secret}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{auth_token_url}}",
+					"host": [
+						"{{auth_token_url}}"
+					]
+				},
+				"description": "Change the refresh_token parameter to a valid one before requesting a new access_token. Discard the old refresh_token after using it."
+			},
+			"response": []
+		},
+		{
+			"name": "3.  Get Schemas (Secured)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{id_token}}",
+						"type": "text"
+					},
+					{
+						"key": "data-partition-id",
+						"value": "{{data-partition}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{storage_base_url}}/query/kinds",
+					"host": [
+						"{{storage_base_url}}"
+					],
+					"path": [
+						"query",
+						"kinds"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "accessToken",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "tokenType",
+				"value": "Bearer",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "14e8461e-a6e4-4b25-a695-38876ce42a78",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "3e7c2d3c-fb1c-4a98-8a94-8643ff55d55f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

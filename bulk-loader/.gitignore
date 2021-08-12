@@ -1,0 +1,15 @@
+.envrc
+.envrc_007
+test-data
+.pylintrc
+.pep8
+execution.log
+test-data
+.vscode
+.idea
+
+.venv
+__pycache__
+
+test/*postman_environment*
+!test/*template*postman_environment*

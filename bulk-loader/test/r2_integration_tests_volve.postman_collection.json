@@ -1,0 +1,1015 @@
+{
+	"info": {
+		"_postman_id": "25b01ee6-81d0-47e9-98f8-6e1a570f81ae",
+		"name": "R2 Integration Tests [Volve]",
+		"description": "This collection contains a set of tests that are used to verify the platform is ready to be released",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Smoke",
+			"item": [
+				{
+					"name": "1. Refresh Tokens",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "dcc95883-8398-4463-90ce-d277d0bd497a",
+								"exec": [
+									"// this snippet extracts the new access and id tokens",
+									"// and puts them to environment variables",
+									"",
+									"const isGoogle = pm.environment.get(\"auth_discovery_url\").indexOf(\"google\") !== -1;",
+									"const jsonData = pm.response.json();",
+									"",
+									"// it is not easy to change a variable name to get a token from",
+									"// lets handle this diversity with a little value hack.",
+									"pm.environment.set(\"access_token\", isGoogle ? jsonData.id_token : jsonData.access_token);",
+									"",
+									"//pm.environment.set(\"id_token\", data.id_token);",
+									"",
+									"// Uncomment if server returns a new refresh_token,",
+									"// otherwise comment out to prevent overwriting it with null",
+									"// pm.environment.set(\"refresh_token\", data.refresh_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "refresh_token",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "{{refresh_token}}",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{auth_token_url}}",
+							"host": [
+								"{{auth_token_url}}"
+							]
+						},
+						"description": "Change the `refresh_token` parameter to a valid one before requesting a new `access_token`."
+					},
+					"response": []
+				},
+				{
+					"name": "2. Get Schemas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6bb63ccc-c654-44ff-b6e1-c7aa95f583a1",
+								"exec": [
+									"const osduSchemas = [",
+									"\t\"opendes:osdu:seismic-acquisition-project:\",",
+									"    \"opendes:osdu:seismic-interpretation-project:\",",
+									"    \"opendes:osdu:seismic-processing-project:\",",
+									"    \"opendes:osdu:seismictracedata-wp:\",",
+									"    \"opendes:osdu:seismictracedata-wpc:\",",
+									"    \"opendes:osdu:seismichorizon-wp:\",",
+									"    \"opendes:osdu:seismichorizon-wpc:\",",
+									"\t",
+									"];",
+									"",
+									"const results = pm.response.json().results;",
+									"osduSchemas.forEach(schema => {",
+									"    fullSchemaId = schema + pm.environment.get(\"schema_version\");",
+									"    pm.test(`schema ${fullSchemaId} should be present`, () => {",
+									"        pm.expect(results.indexOf(fullSchemaId) !== -1).to.be.true",
+									"    })",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "data-partition-id",
+								"value": "{{data-partition-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{storage_api_url}}/query/kinds?limit=9999",
+							"host": [
+								"{{storage_api_url}}"
+							],
+							"path": [
+								"query",
+								"kinds"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "9999"
+								}
+							]
+						},
+						"description": "Schema versions for the initial data loading (0.2.0) and the enriched data (0.2.1) should be created."
+					},
+					"response": []
+				},
+				{
+					"name": "3. Count Records By Kind",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "925c949e-6702-4eba-9737-9ad00622f1e8",
+								"exec": [
+									"const expected = [",
+									"    {",
+									"        \"key\": \"opendes:osdu:seismic-acquisition-project:\",",
+									"        \"count\": 1",
+									"    },",
+									"    {",
+									"        \"key\": \"opendes:osdu:seismic-interpretation-project:\",",
+									"        \"count\": 1",
+									"    },",
+									"    {",
+									"        \"key\": \"opendes:osdu:seismic-processing-project:\",",
+									"        \"count\": 1",
+									"    },",
+									"    {",
+									"        \"key\": \"opendes:osdu:seismictracedata-wp:\",",
+									"        \"count\": 2",
+									"    },",
+									"    {",
+									"        \"key\": \"opendes:osdu:seismictracedata-wpc:\",",
+									"        \"count\": 2",
+									"    },",
+									"    {",
+									"        \"key\": \"opendes:osdu:seismichorizon-wp:\",",
+									"        \"count\": 7",
+									"    },",
+									"    {",
+									"        \"key\": \"opendes:osdu:seismichorizon-wpc:\",",
+									"        \"count\": 7",
+									"    }",
+									"    ",
+									"];",
+									"",
+									"const jsonData = pm.response.json();",
+									"const {aggregations} = jsonData;",
+									"",
+									"expected.each((expectedItem) => {",
+									"    fullItemKey = expectedItem.key + pm.environment.get(\"schema_version\");",
+									"    pm.test(`Valid count for aggregation ${fullItemKey}`, () => {",
+									"        const item = aggregations.find((a) => a.key === fullItemKey);",
+									"        pm.expect(item, \"should be present\").to.exist;",
+									"        pm.expect(item.count).to.equal(expectedItem.count, \"should have count\");",
+									"    })",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:seismic*:{{schema_version}}\",\r\n   \"query\": \"*\",\r\n   \"aggregateBy\": \"kind\",\r\n   \"limit\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "1. Get Aquisition Project By Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6e5de614-aea1-46aa-8624-a231d06229cc",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.equal(1, \"correct totalCount\")",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"type": "text",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:seismic-acquisition-project:{{schema_version}}\",\r\n   \"query\": \"data.Data.IndividualTypeProperties.ProjectID: ST0202R08\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						},
+						"description": "No enrichment required."
+					},
+					"response": []
+				},
+				{
+					"name": "2. Get All Processing Projects for Aquisition Project (Children)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ce6ed4b3-e011-4db7-abb8-e572d372c46a",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.equal(1, \"correct totalCount\")",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"type": "text",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:seismic-processing-project:{{schema_version}}\",\r\n   \"query\": \"data.Data.IndividualTypeProperties.SeismicAcquisitionProjects: \\\"srn:master-data/SeismicAcquisitionProject:ST2020R08:\\\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						},
+						"description": "We want to be able to find the processing project given the aquisition project id:\n\n\"srn:master-data/SeismicAcquisitionProject:ST2020R08:\".\n\nDoes not require enrichment and after the initial loading of manifests (master-data) we should be able to run the search."
+					},
+					"response": []
+				},
+				{
+					"name": "3. Get Aquisition Projects By Operator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "831eb767-d1b0-4757-b748-53359a64a8b4",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.equal(1, \"correct totalCount\")",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"type": "text",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:seismic-acquisition-project:{{schema_version}}\",\r\n   \"query\": \"(data.Data.IndividualTypeProperties.Operator: \\\"srn:master-data/Organisation:Statoil:\\\") AND (data.Data.IndividualTypeProperties.ProjectTypeID: \\\"srn:reference-data/ProjectType:Acquisition:\\\")\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						},
+						"description": "No enrichment required. Should be able to find aquisition project by Operator\n\n\"srn:master-data/SeismicAcquisitionProject:ST2020R08:\"\n\nShould return 1 aquisition project based on Volve manifests."
+					},
+					"response": []
+				},
+				{
+					"name": "4. Get Aquisition Projects Between X and Y",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a7ba895c-9a37-43ae-9515-46f8730bf53a",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.equal(1, \"correct totalCount\")",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"type": "text",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:seismic-acquisition-project:{{schema_version}}\",\r\n   \"query\": \"data.Data.IndividualTypeProperties.ProjectEndDate:[2000-01-01 TO 2008-02-01]\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						},
+						"description": "Doe snot require enrichment (search schema should have `datetime` )"
+					},
+					"response": []
+				},
+				{
+					"name": "5. Get Aquisition Projects With Cable Length Greater Than X",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "861a0390-7423-432b-b8d7-cae1fdc56770",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.equal(1, \"correct totalCount\")",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"type": "text",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:seismic-acquisition-project:{{schema_version}}\",\r\n   \"query\": \"data.Data.IndividualTypeProperties.CableLength: >5000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Get Trace by Geographic Region",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"type": "text",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:seismictracedata-wpc:{{schema_version}}\",\r\n    \"spatialFilter\": {\r\n        \"field\": \"data.Data.ExtensionProperties.locationWGS84\",\r\n        \"byGeoPolygon\": {\r\n            \"points\": [\r\n                {\r\n                    \"longitude\": 1.813767236,\r\n                    \"latitude\": 58.42946998\r\n                },\r\n                {\r\n                    \"longitude\": 1.949673713,\r\n                    \"latitude\": 58.4041567\r\n                },\r\n                {\r\n                    \"longitude\": 1.978324105,\r\n                    \"latitude\": 58.45614207\r\n                },\r\n                {\r\n                    \"longitude\": 1.84227351,\r\n                    \"latitude\": 58.48147214\r\n                },\r\n                {\r\n                    \"longitude\": 1.813767236,\r\n                    \"latitude\": 58.42946998\r\n                }\r\n            ]\r\n        }\r\n    },\r\n    \"offset\": 0,\r\n    \"limit\": 30\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. Get Trace by Domain Type (Depth/Time)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "72cd9623-d5bb-4d2c-a66d-1849398953b4",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.equal(1, \"correct totalCount\")",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"type": "text",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:seismictracedata-wpc:{{schema_version}}\",\r\n   \"query\": \"data.Data.IndividualTypeProperties.SeismicDomainTypeID:\\\"srn:reference-data/SeismicDomainType:Depth:\\\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8. Get Horizon by Geographic Region",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"type": "text",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:seismichorizon-wpc:{{schema_version}}\",\r\n    \"spatialFilter\": {\r\n        \"field\": \"data.Data.ExtensionProperties.locationWGS84\",\r\n        \"byGeoPolygon\": {\r\n            \"points\": [\r\n                {\r\n                    \"longitude\": 1.813767236,\r\n                    \"latitude\": 58.42946998\r\n                },\r\n                {\r\n                    \"longitude\": 1.949673713,\r\n                    \"latitude\": 58.4041567\r\n                },\r\n                {\r\n                    \"longitude\": 1.978324105,\r\n                    \"latitude\": 58.45614207\r\n                },\r\n                {\r\n                    \"longitude\": 1.84227351,\r\n                    \"latitude\": 58.48147214\r\n                },\r\n                {\r\n                    \"longitude\": 1.813767236,\r\n                    \"latitude\": 58.42946998\r\n                }\r\n            ]\r\n        }\r\n    },\r\n    \"offset\": 0,\r\n    \"limit\": 30\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "9. Get Horizon by Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fb8b347b-b25a-4883-8a53-89cae6da8559",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.equal(1, \"correct totalCount\")",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"type": "text",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:seismichorizon-wpc:{{schema_version}}\",\r\n   \"query\": \"data.Data.IndividualTypeProperties.Name: SHETLAND_GP\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "10. Get Horizon by GeologicalUnitAgePeriod & GeologicalUnitName (wildcards)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1b3fcc1c-d35b-429a-af52-70c6664236b8",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.equal(1, \"correct totalCount\")",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"type": "text",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:seismichorizon-wpc:{{schema_version}}\",\r\n   \"query\": \"(data.Data.IndividualTypeProperties.GeologicalUnitAgePeriod: Turonian) AND (data.Data.IndividualTypeProperties.GeologicalUnitName: Shetland*)\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "61ee67c8-e512-40e8-8697-a0b70c893903",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "db4b503b-72fb-4ad5-b8d0-4617d75a0ecf",
+						"type": "text/javascript",
+						"exec": [
+							"const Ajv = require('ajv');",
+							"const ajv = new Ajv({logger: console})",
+							"",
+							"pm.test(\"Expected correct response structure\", () => {",
+							"    const schema = {",
+							"        \"required\": [",
+							"            \"results\",",
+							"            \"aggregations\",",
+							"            \"totalCount\"",
+							"        ],",
+							"        \"properties\": {",
+							"            \"results\": {",
+							"                \"$id\": \"#/properties/results\",",
+							"                \"type\": \"array\"",
+							"            },",
+							"            \"aggregations\": {",
+							"                \"$id\": \"#/properties/aggregations\",",
+							"                \"type\": [\"array\", \"null\"]",
+							"            },",
+							"            \"totalCount\": {",
+							"                \"$id\": \"#/properties/totalCount\",",
+							"                \"type\": \"integer\"",
+							"            }",
+							"        },",
+							"        \"$id\": \"http://example.org/root.json#\",",
+							"        \"type\": \"object\",",
+							"        \"definitions\": {},",
+							"        \"$schema\": \"http://json-schema.org/draft-07/schema#\"",
+							"    };",
+							"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify((ajv.errors || []).map(e => `${e.dataPath} ${e.message}`))).to.be.true;",
+							"})"
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Delivery",
+			"item": [
+				{
+					"name": "Get Signed URL (Storage API)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"srns\": [\r\n\t\t\"srn:file/ascii:1061428024093:\",\r\n\t\t\"srn:file/las2:230943347594119996786:\",\r\n\t\t\"srn:file/csv:451730519478881828:\",\r\n\t\t\"srn:file/csv:43684674598363034:\",\r\n\t\t\"srn:file/csv:should-not-be-processed:1\" ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{storage_api_url}}/delivery/GetFileSignedURL",
+							"host": [
+								"{{storage_api_url}}"
+							],
+							"path": [
+								"delivery",
+								"GetFileSignedURL"
+							]
+						},
+						"description": "Put a list of SRNs to return singed URLs for and verify if proper signed URLs are returned in the 'processed' section."
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "87f7eac1-ee77-4873-a847-5784332bdb74",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "650abbe4-69ce-4201-890e-5744b1f96f6a",
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Status code is 200\", () => {",
+					"    pm.response.to.have.status(200);",
+					"});"
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

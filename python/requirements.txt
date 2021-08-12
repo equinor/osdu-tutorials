@@ -1,6 +1,8 @@
 Flask>=1,<2
 werkzeug>=1,<2
 flask-session~=0.3.2
+flask_restful
+python-dotenv
 requests>=2,<3
 msal>=1.7,<2
 

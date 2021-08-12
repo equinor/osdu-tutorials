@@ -1,0 +1,1848 @@
+{
+	"info": {
+		"_postman_id": "2bfdf574-5014-41be-ae28-6da032a4b211",
+		"name": "R2 Integration Tests [TNO]",
+		"description": "This collection contains a set of tests that are used to verify the R2 platform is ready to be released.\n\nHow to use it:\n\n1. Import environment template.\n2. Fill out everything except `id_token` and `access_token`. You will need to obtain the `refresh_token` for the first time using either Postman Auth capabilities or somewhere else depending on the cloud provider. Once the refresh token is there it is typically valid for 30 days and will allow you to get the new `access_token` multiple times.\n3. Start with the requests in the `Smoke` folder and verify you have the required schemas loaded as well as the TNO dataset, then proceed to the `Main` and `Delivery` queries.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Smoke",
+			"item": [
+				{
+					"name": "1. Refresh Tokens",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "dcc95883-8398-4463-90ce-d277d0bd497a",
+								"exec": [
+									"// this snippet extracts the new access and id tokens",
+									"// and puts them to environment variables",
+									"",
+									"const isGoogle = pm.environment.get(\"auth_discovery_url\").indexOf(\"google\") !== -1;",
+									"const jsonData = pm.response.json();",
+									"",
+									"// it is not easy to change a variable name to get a token from",
+									"// lets handle this diversity with a little value hack.",
+									"pm.environment.set(\"access_token\", isGoogle ? jsonData.id_token : jsonData.access_token);",
+									"",
+									"//pm.environment.set(\"id_token\", data.id_token);",
+									"",
+									"// Uncomment if server returns a new refresh_token,",
+									"// otherwise comment out to prevent overwriting it with null",
+									"// pm.environment.set(\"refresh_token\", data.refresh_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "refresh_token",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "{{refresh_token}}",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{auth_token_url}}",
+							"host": [
+								"{{auth_token_url}}"
+							]
+						},
+						"description": "Change the `refresh_token` parameter to a valid one before requesting a new `access_token`."
+					},
+					"response": []
+				},
+				{
+					"name": "2. Get Schemas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "07e6f566-2a3e-4ba7-9053-c36c7c9dfab8",
+								"exec": [
+									"const osduSchemas = [",
+									"\t\"opendes:osdu:agreement-type:0.2.0\",",
+									"\t\"opendes:osdu:alias-name-type:0.2.0\",",
+									"\t\"opendes:osdu:alias-name-type-class:0.2.0\",",
+									"\t\"opendes:osdu:artefact-role:0.2.0\",",
+									"\t\"opendes:osdu:azimuth-reference-type:0.2.0\",",
+									"\t\"opendes:osdu:basin-type:0.2.0\",",
+									"\t\"opendes:osdu:calculation-method-type:0.2.0\",",
+									"\t\"opendes:osdu:contractor-type:0.2.0\",",
+									"\t\"opendes:osdu:currency:0.2.0\",",
+									"\t\"opendes:osdu:document-type:0.2.0\",",
+									"\t\"opendes:osdu:drilling-reason-type:0.2.0\",",
+									"\t\"opendes:osdu:encoding-format-type:0.2.0\",",
+									"\t\"opendes:osdu:facility-event-type:0.2.0\",",
+									"\t\"opendes:osdu:facility-state-type:0.2.0\",",
+									"\t\"opendes:osdu:facility-type:0.2.0\",",
+									"\t\"opendes:osdu:facility-vertical-measurement-path:0.2.0\",",
+									"\t\"opendes:osdu:facility-vertical-measurement-source:0.2.0\",",
+									"\t\"opendes:osdu:facility-vertical-measurement-type:0.2.0\",",
+									"\t\"opendes:osdu:feature-type:0.2.0\",",
+									"\t\"opendes:osdu:file:0.2.0\",",
+									"\t\"opendes:osdu:file:0.2.1\",",
+									"\t\"opendes:osdu:geological-formation:0.2.0\",",
+									"\t\"opendes:osdu:geopolitical-entity-type:0.2.0\",",
+									"\t\"opendes:osdu:horizontal-crs:0.2.0\",",
+									"\t\"opendes:osdu:log-curve-business-value:0.2.0\",",
+									"\t\"opendes:osdu:log-curve-family:0.2.0\",",
+									"\t\"opendes:osdu:log-curve-type:0.2.0\",",
+									"\t\"opendes:osdu:log-type:0.2.0\",",
+									"\t\"opendes:osdu:marker-type:0.2.0\",",
+									"\t\"opendes:osdu:material-type:0.2.0\",",
+									"\t\"opendes:osdu:obligation-type:0.2.0\",",
+									"\t\"opendes:osdu:organisation-type:0.2.0\",",
+									"\t\"opendes:osdu:osdu-region:0.2.0\",",
+									"\t\"opendes:osdu:parameter-type:0.2.0\",",
+									"\t\"opendes:osdu:project-role:0.2.0\",",
+									"\t\"opendes:osdu:project-state-type:0.2.0\",",
+									"\t\"opendes:osdu:project-type:0.2.0\",",
+									"\t\"opendes:osdu:qualitative-spatial-accuracy-type:0.2.0\",",
+									"\t\"opendes:osdu:quantitative-accuracy-band:0.2.0\",",
+									"\t\"opendes:osdu:resource-curation-status:0.2.0\",",
+									"\t\"opendes:osdu:resource-lifecycle-status:0.2.0\",",
+									"\t\"opendes:osdu:resource-security-classification:0.2.0\",",
+									"\t\"opendes:osdu:schema-format-type:0.2.0\",",
+									"\t\"opendes:osdu:seismic-acquisition-project:0.2.0\",",
+									"\t\"opendes:osdu:seismic-geometry-type:0.2.0\",",
+									"\t\"opendes:osdu:seismic-interpretation-project:0.2.0\",",
+									"\t\"opendes:osdu:seismic-processing-project:0.2.0\",",
+									"\t\"opendes:osdu:spatial-geometry-type:0.2.0\",",
+									"\t\"opendes:osdu:spatial-parameter-type:0.2.0\",",
+									"\t\"opendes:osdu:unit-of-measure:0.2.0\",",
+									"\t\"opendes:osdu:vertical-crs:0.2.0\",",
+									"\t\"opendes:osdu:well-master:0.2.0\",",
+									"\t\"opendes:osdu:well-master:0.2.1\",",
+									"\t\"opendes:osdu:well-datum-type:0.2.0\",",
+									"\t\"opendes:osdu:well-interest-type:0.2.0\",",
+									"\t\"opendes:osdu:well-operating-environment:0.2.0\",",
+									"\t\"opendes:osdu:wellbore-master:0.2.0\",",
+									"\t\"opendes:osdu:wellbore-master:0.2.1\",",
+									"\t\"opendes:osdu:wellbore-trajectory-type:0.2.0\",",
+									"\t\"opendes:osdu:wellboremarker-wp:0.2.0\",",
+									"\t\"opendes:osdu:wellboremarker-wp:0.2.1\",",
+									"\t\"opendes:osdu:wellboremarker-wpc:0.2.0\",",
+									"\t\"opendes:osdu:wellboremarker-wpc:0.2.1\",",
+									"\t\"opendes:osdu:wellboretrajectory-wp:0.2.0\",",
+									"\t\"opendes:osdu:wellboretrajectory-wp:0.2.1\",",
+									"\t\"opendes:osdu:wellboretrajectory-wpc:0.2.0\",",
+									"\t\"opendes:osdu:wellboretrajectory-wpc:0.2.1\",",
+									"\t\"opendes:osdu:welllog-wp:0.2.0\",",
+									"\t\"opendes:osdu:welllog-wp:0.2.1\",",
+									"\t\"opendes:osdu:welllog-wpc:0.2.0\",",
+									"\t\"opendes:osdu:welllog-wpc:0.2.1\",",
+									"];",
+									"",
+									"const results = pm.response.json().results;",
+									"osduSchemas.forEach(schema => {",
+									"    pm.test(`schema ${schema} should be present`, () => {",
+									"        pm.expect(results.indexOf(schema) !== -1).to.be.true",
+									"    })",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "data-partition-id",
+								"value": "{{data-partition-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{storage_api_url}}/query/kinds?limit=9999",
+							"host": [
+								"{{storage_api_url}}"
+							],
+							"path": [
+								"query",
+								"kinds"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "9999"
+								}
+							]
+						},
+						"description": "Schema versions for the initial data loading (0.2.0) and the enriched data (0.2.1) should be created."
+					},
+					"response": []
+				},
+				{
+					"name": "3. Count Records By Kind",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3f2202c0-4e49-465c-9ca5-960aca620a3f",
+								"exec": [
+									"const schema_version = pm.environment.get(\"schema_version\");",
+									"const expected = [",
+									"    [\"opendes:osdu:file\", 12777],",
+									"    [\"opendes:osdu:wellbore-master\", 6485],",
+									"    [\"opendes:osdu:wellboretrajectory-wp\", 5944],",
+									"    [\"opendes:osdu:wellboretrajectory-wpc\", 5944],",
+									"    [\"opendes:osdu:wellboremarker-wp\", 5904],",
+									"    [\"opendes:osdu:wellboremarker-wpc\", 5904],",
+									"    [\"opendes:osdu:well-master\", 4947],",
+									"    [\"opendes:osdu:welllog-wp\", 929],",
+									"    [\"opendes:osdu:welllog-wpc\", 929],",
+									"];",
+									"const {aggregations} = pm.response.json();",
+									"",
+									"expected.each((expectedItem) => {",
+									"    const key = expectedItem[0] + \":\" + schema_version;",
+									"    const count = expectedItem[1];",
+									"    pm.test(`Valid count for aggregation ${key}`, () => {",
+									"        const item = aggregations.find((a) => a.key === key);",
+									"        pm.expect(item, \"should be present\").to.exist;",
+									"        ",
+									"        // just check non-emptiness until real numbers are defined",
+									"        pm.expect(item.count).to.equal(count, \"should have count\");",
+									"        //pm.expect(item.count).to.gt(0, \"should have count\");",
+									"    })",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n   \"query\": \"*\",\r\n   \"aggregateBy\": \"kind\",\r\n   \"limit\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						},
+						"description": "Assuming the TNO dataset is fully loaded you should expect the following numbers:\n\nwells = 4947\nwellbores = 6485\nmarkers = 5904\ntrajectories = 5944\nwelllogs = 929\ndocuments = 9"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0040bc58-bd85-49aa-9c28-6188ef87bba2",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "25b41fb8-8334-4a96-a6a2-e8a21e875314",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "1. Fulltext Search #1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "86f2ea41-4bac-4e5a-9a47-9469f288e3fb",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.equal(37, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"kind\": \"opendes:osdu:*:{{schema_version}}\",\n   \"query\": \"BIR\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Fulltext Search #2 (Wildcard)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9c5f0159-1d11-47eb-98c1-c7dbf9c4531e",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kind\": \"opendes:osdu:*:{{schema_version}}\",\n    \"query\": \"(BIR AND 0?)\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Get All Wellbores by WellID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2e3646d1-44a3-46fc-9f43-0143b7a61c18",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n    \"query\": \"data.Data.IndividualTypeProperties.WellID:\\\"srn:master-data/Well:8690:\\\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Get All Wellbores by WellID (Wildcard)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1191037f-bd42-48ab-9d42-7f3e00282416",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n    \"query\": \"data.Data.IndividualTypeProperties.WellID:(\\\"srn:master-data/Well:\\\" AND 101?)\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. Get Wells by ResourceIDs (OR)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "353c73cd-d1a2-4eb7-b727-a6dc05004ea0",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.equal(2, \"correct totalCount\")",
+									"})",
+									"",
+									"pm.test(\"Results are present\", () => {",
+									"    pm.expect(pm.response.json().results.filter(item => item.data.ResourceID === \"srn:master-data/Well:8690:\").length, \"8690 found and single\").to.equal(1)",
+									"    pm.expect(pm.response.json().results.filter(item => item.data.ResourceID === \"srn:master-data/Well:1000:\").length, \"8690 found and single\").to.equal(1)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"value": "{{data-partition-id}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n    \"query\": \"data.ResourceID:(\\\"srn:master-data/Well:8690:\\\" OR \\\"srn:master-data/Well:1000:\\\")\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Get Wells by ResourceID and CountryID (AND)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "dabe52f5-5b4c-4cad-9f4d-ea6ed7a3a0cb",
+								"exec": [
+									"pm.response.json().results.forEach(r => {",
+									"    pm.test(\"valid country\", () => {",
+									"        pm.expect(r.data[\"Data.IndividualTypeProperties.CountryID\"], r.data[\"Data.IndividualTypeProperties.CountryID\"]).to.eql(\"srn:master-data/GeopoliticalEntity:Netherlands:\")",
+									"    })",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n    \"query\": \"(data.ResourceID:(\\\"srn:master-data/Well:8690:\\\" OR \\\"srn:master-data/Well:1000:\\\")) AND (data.Data.IndividualTypeProperties.CountryID: \\\"srn:master-data/GeopoliticalEntity:Netherlands:\\\")\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. [0.2.1] Get All Resources by UWI (OR)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b6f2b759-c2d2-4a41-a871-52540f606135",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:*:0.2.1\",\r\n    \"query\": \"data.UWI:(8690 OR 8438)\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8. [0.2.1] Find WellLog with GR Curve (Nested)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6e3d968a-94d5-46c5-91c7-0939b8505c1b",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:welllog-wpc:0.2.1\",\r\n    \"query\": \"data.Curves.Mnemonic: GR\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "9. Get Markers and Trajectories for Wellbore (Children)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "366daabb-8aad-47b1-84e8-77018d8dc2f7",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.equal(2, \"correct totalCount\")",
+									"})",
+									"",
+									"pm.test(\"Results are present\", () => {",
+									"    pm.expect(pm.response.json().results.filter(item => item.data.ResourceTypeID === \"srn:type:work-product-component/WellboreTrajectory:\").length, \"WellboreTrajectory found and single\").to.equal(1)",
+									"    pm.expect(pm.response.json().results.filter(item => item.data.ResourceTypeID === \"srn:type:work-product-component/WellboreMarker:\").length, \"WellboreMarker found and single\").to.equal(1)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n    \"query\": \"(data.Data.IndividualTypeProperties.WellboreID: \\\"srn:master-data/Wellbore:3687:\\\") AND (data.ResourceTypeID: (\\\"srn:type:work-product-component/WellboreTrajectory:\\\" OR \\\"srn:type:work-product-component/WellboreMarker:\\\"))\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "10. [X] Get the Number of Wellbores for WellID (Limit)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "36c6e0e5-c8e7-4fb3-99e5-d67fcf1d19cc",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n    \"query\": \"data.Data.IndividualTypeProperties.WellID:\\\"srn:master-data/Well:3687:\\\"\",\r\n    \"limit\": 0\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						},
+						"description": "Expected zero results and the totalCount = 3"
+					},
+					"response": []
+				},
+				{
+					"name": "11. Get the First Wellbore (Pagination)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fd92c8ff-171d-46ff-b62c-be886e2c7ff3",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().results.length).to.equal(1, \"correct results length\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n    \"query\": \"data.Data.IndividualTypeProperties.WellID:\\\"srn:master-data/Well:3687:\\\"\",\r\n    \"offset\": 0,\r\n    \"limit\": 1,\r\n    \"sort\": {\r\n        \"field\": [\"data.Data.IndividualTypeProperties.SequenceNumber\"],\r\n        \"order\": [\"ASC\"]\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "12. Get the Second and Third Wellbore (Pagination)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cd282b6f-d29f-4cee-942b-4f431fbb1d30",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().results.length).to.equal(2, \"correct results length\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"value": "{{data-partition-id}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n    \"query\": \"data.Data.IndividualTypeProperties.WellID:\\\"srn:master-data/Well:3687:\\\"\",\r\n    \"offset\": 1,\r\n    \"limit\": 10,\r\n    \"sort\": {\r\n        \"field\": [\"data.Data.IndividualTypeProperties.SequenceNumber\"],\r\n        \"order\": [\"ASC\"]\r\n    }    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "13. [X] Group Results by ResourceTypeID (Aggregates)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "31ec6eb8-71f7-4866-81fb-b7f80c308682",
+								"exec": [
+									"pm.test(\"Status code is 400. Supposed to fail in R2\", () => {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n   \"query\": \"*\",\r\n   \"aggregateBy\": \"data.ResourceTypeID\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "14. Limit Returned Fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2f955e8f-6f4e-42b8-bba6-e92103963826",
+								"exec": [
+									"const Ajv = require('ajv');\r",
+									"const ajv = new Ajv({logger: console})\r",
+									"\r",
+									"pm.test(\"Expected returned fields limitation\", () => {\r",
+									"    const schema = {\r",
+									"        \"items\": {\r",
+									"            \"required\": [\r",
+									"                \"data\"\r",
+									"            ],\r",
+									"            \"properties\": {\r",
+									"                \"data\": {\r",
+									"                    \"required\": [\r",
+									"                        \"ResourceID\",\r",
+									"                        \"Data.IndividualTypeProperties.Name\"\r",
+									"                    ],\r",
+									"                    \"properties\": {\r",
+									"                        \"ResourceID\": {\r",
+									"                            \"$id\": \"#/items/properties/data/properties/ResourceID\",\r",
+									"                            \"type\": \"string\"\r",
+									"                        },\r",
+									"                        \"Data.IndividualTypeProperties.Name\": {\r",
+									"                            \"$id\": \"#/items/properties/data/properties/Data.IndividualTypeProperties.Name\",\r",
+									"                            \"type\": \"string\"\r",
+									"                        }\r",
+									"                    },\r",
+									"                    \"additionalProperties\": false,\r",
+									"                    \"$id\": \"#/items/properties/data\",\r",
+									"                    \"type\": \"object\"\r",
+									"                }\r",
+									"            },\r",
+									"            \"$id\": \"#/items\",\r",
+									"            \"type\": \"object\"\r",
+									"        },\r",
+									"        \"$id\": \"http://example.org/root.json#\",\r",
+									"        \"type\": \"array\",\r",
+									"        \"definitions\": {},\r",
+									"        \"$schema\": \"http://json-schema.org/draft-07/schema#\"\r",
+									"    };\r",
+									"    pm.expect(ajv.validate(schema, pm.response.json().results), JSON.stringify((ajv.errors || []).map(e => {\r",
+									"        switch (e.keyword) {\r",
+									"            case \"additionalProperties\":\r",
+									"                return `${e.params.additionalProperty} ${e.message}`;\r",
+									"            default:\r",
+									"            return `${e.dataPath} ${e.message}`;\r",
+									"        }\r",
+									"    }))).to.be.true;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n   \"query\": \"data.ResourceTypeID: \\\"srn:type:work-product-component/WellLog:\\\"\",\r\n   \"returnedFields\": [\"data.ResourceID\", \"data.Data.IndividualTypeProperties.Name\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "15. [0.2.1] Get Wells in Bounding Box",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d69a75c7-b9d7-4c76-9148-bccac84a1b67",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:well-master:0.2.1\",\r\n    \"spatialFilter\": {\r\n        \"field\": \"data.GeoLocation\",\r\n        \"byBoundingBox\": {\r\n\t\t    \"topLeft\": {\r\n\t\t    \t\"longitude\": 4.9493408203125,\r\n            \t\"latitude\": 52.859180945520826\r\n        \t},\r\n    \t\t\"bottomRight\": {\r\n        \t\t\"longitude\": 5.1580810546875,\r\n            \t\"latitude\": 52.75956761546834\r\n    \t\t}\r\n    \t}\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "16. [0.2.1] Get Wells within Distance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "981b2e7e-d065-4a7f-be8a-cd363fc04855",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:well-master:0.2.1\",\r\n    \"spatialFilter\": {\r\n        \"field\": \"data.GeoLocation\",\r\n        \"byDistance\": {\r\n            \"point\": {\r\n            \t\r\n                    \"longitude\": 5.1580810546875,\r\n                    \"latitude\": 52.859180945520826\r\n                },\r\n            \"distance\": 10000\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "17. [0.2.1] Get Wells in Polygon",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d7844cef-0444-445c-b02a-74a3ba201371",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:well-master:0.2.1\",\r\n    \"spatialFilter\": {\r\n        \"field\": \"data.GeoLocation\",\r\n        \"byGeoPolygon\": {\r\n            \"points\": [\r\n                {\r\n                    \"longitude\": 5.1580810546875,\r\n                    \"latitude\": 52.859180945520826\r\n                },\r\n                {\r\n                    \"longitude\": 4.9493408203125,\r\n                    \"latitude\": 52.75956761546834\r\n                },\r\n                {\r\n                    \"longitude\": 5.064697265625,\r\n                    \"latitude\": 52.579688026538726\r\n                },\r\n                {\r\n                    \"longitude\": 5.372314453125,\r\n                    \"latitude\": 52.68970242806752\r\n                },\r\n                {\r\n                    \"longitude\": 5.1580810546875,\r\n                    \"latitude\": 52.859180945520826\r\n                }\r\n            ]\r\n        }\r\n    },\r\n    \"offset\": 0,\r\n    \"limit\": 30\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "18. [0.2.1] Get Wells with Spud Date between X and Y",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "acae7373-e078-4a02-8703-c7c761a4fe59",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:well-master:0.2.1\",\r\n   \"query\": \"data.SpudDate:[1999-01-01 TO 1999-02-27}\",\r\n   \"sort\": {\r\n        \"field\": [\"data.SpudDate\"],\r\n        \"order\": [\"DESC\"]\r\n    },\r\n    \"limit\": 30\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "19. Get WellLogs with Total Depth greater than X (Range)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d5f7fa84-4505-4047-8606-161909ede618",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n   \"query\": \"data.Data.IndividualTypeProperties.TopMeasuredDepth.Depth: >2200\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "20. Get WellLogs with Total Depth between X and Y (Range)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "42de2792-1869-4a42-803c-3a66d7f0aa1b",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n   \"query\": \"data.Data.IndividualTypeProperties.TopMeasuredDepth.Depth:[2000 TO 3000}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "21. Get WellLogs with Author ML CGG",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7bdf2e01-04b0-4a5f-bce2-cb593c8c370f",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n    \"query\": \"data.Data.IndividualTypeProperties.AuthorIDs:\\\"ML CGG\\\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "22. Get Well With Well Name COV-04",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c2733a47-56b3-452b-94df-610680c8a734",
+								"exec": [
+									"pm.test(\"Expected result count\", () => {",
+									"    pm.expect(pm.response.json().totalCount).to.gt(0, \"correct totalCount\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kind\": \"opendes:osdu:*:{{schema_version}}\",\r\n    \"query\": \"data.Data.IndividualTypeProperties.FacilityName:\\\"COV-04\\\" AND data.ResourceTypeID:\\\"srn:type:master-data/Well:\\\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{search_api_url}}",
+							"host": [
+								"{{search_api_url}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e520bf09-d6ce-4a92-9de7-62a13ea7e47c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7a9e1d55-4239-4414-bef3-2f13fccc9128",
+						"type": "text/javascript",
+						"exec": [
+							"const Ajv = require('ajv');",
+							"const ajv = new Ajv({logger: console})",
+							"",
+							"pm.test(\"Expected correct response structure\", () => {",
+							"    const schema = {",
+							"        \"required\": [",
+							"            \"results\",",
+							"            \"aggregations\",",
+							"            \"totalCount\"",
+							"        ],",
+							"        \"properties\": {",
+							"            \"results\": {",
+							"                \"$id\": \"#/properties/results\",",
+							"                \"type\": \"array\"",
+							"            },",
+							"            \"aggregations\": {",
+							"                \"$id\": \"#/properties/aggregations\",",
+							"                \"type\": [\"array\", \"null\"]",
+							"            },",
+							"            \"totalCount\": {",
+							"                \"$id\": \"#/properties/totalCount\",",
+							"                \"type\": \"integer\"",
+							"            }",
+							"        },",
+							"        \"$id\": \"http://example.org/root.json#\",",
+							"        \"type\": \"object\",",
+							"        \"definitions\": {},",
+							"        \"$schema\": \"http://json-schema.org/draft-07/schema#\"",
+							"    };",
+							"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify((ajv.errors || []).map(e => `${e.dataPath} ${e.message}`))).to.be.true;",
+							"})"
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Delivery (Storage)",
+			"item": [
+				{
+					"name": "Get Signed URL (Storage API)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"srns\": [\r\n\t\t\"srn:file/las2:230943347594119996786:\",\r\n\t\t\"srn:file/csv:451730519478881828:\",\r\n\t\t\"srn:file/csv:43684674598363034:\",\r\n\t\t\"srn:file/csv:should-not-be-processed:1\" ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{storage_api_url}}/delivery/GetFileSignedURL",
+							"host": [
+								"{{storage_api_url}}"
+							],
+							"path": [
+								"delivery",
+								"GetFileSignedURL"
+							]
+						},
+						"description": "Put a list of SRNs to return singed URLs for and verify if proper signed URLs are returned in the 'processed' section."
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch a Record (Storage API)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{data-partition-id}}"
+							},
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{storage_api_url}}/records/opendes:doc:41d06fdfadbb45c286b183f838034898",
+							"host": [
+								"{{storage_api_url}}"
+							],
+							"path": [
+								"records",
+								"opendes:doc:41d06fdfadbb45c286b183f838034898"
+							]
+						},
+						"description": "Put the correct record id and verify the full record is returned - this may become a list of tests for various types of records."
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a70fefcf-819a-4d2c-ba01-b3dbe64a40af",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b416f67c-55c9-4a86-b23a-88a42a413909",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "08b8641c-9c32-422f-a5d0-4edff120a13c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "36071920-4847-4cc8-8003-28d490227aa6",
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Status code is 200\", () => {",
+					"    pm.response.to.have.status(200);",
+					"});"
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
