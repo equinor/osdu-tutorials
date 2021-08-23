@@ -24,7 +24,7 @@ export interface WellSearchState {
 }
 
 const initialState: WellSearchState = {
-  searchName: 'BIR',
+  searchName: '',
   areWellsSearching: false,
   areWellsSearched: false,
   foundWells: [],

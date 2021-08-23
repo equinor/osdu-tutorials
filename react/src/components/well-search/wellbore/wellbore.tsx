@@ -18,6 +18,7 @@ export interface WellboreProps {
 
 export function Wellbore({ wellbore, selectedTrajectories, onSelected }: WellboreProps) {
   console.log("wellog", wellbore)
+  console.log("trjectories", selectedTrajectories)
   const trajectory = selectedTrajectories.find(st => st.wellboreId === wellbore.id);
   const toggleTrajectorySelected = () => {
     onSelected(wellbore.id, trajectory !== undefined);
@@ -53,10 +54,13 @@ function getControl(
       </div>
     );
   }
+  console.log("test")
 
   if (trajectory.isLoading) {
     return <Loader size={8} />;
   }
+
+  console.log("test")
 
   if (trajectory.loadError !== undefined) {
     // an error "state-button" will be displayed and a description available in a tooltip
@@ -73,6 +77,7 @@ function getControl(
 
   if (trajectory.isLoaded) {
     // a success "state-button", activation will hide trajectory's visualization
+    console.log("loaded")
     return (
       <div className="wellbore__action wellbore__action--hide" onClick={toggleTrajectorySelected}>
         Hide
