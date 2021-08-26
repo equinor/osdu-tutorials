@@ -4,7 +4,6 @@ import { Search } from 'components/well-search';
 import { authProvider } from '../../authProvider';
 import WellCanvas from "../../components/well-canvas/wellCanvas";
 import { Trajectory } from 'components/trajectory';
-import { TrajectoryToDraw } from 'store/trajectory'
 import {useSelector} from "react-redux";
 import {AppState} from "../../store";
 

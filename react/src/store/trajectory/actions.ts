@@ -70,13 +70,13 @@ export const fetchTrajectoryPointsAction = (wellId: string, wellboreId: string):
   console.log("fetching mock data");
   dispatch(fetchTrajectoryPointsStartAction(wellId, wellboreId));
   const mockResponse: FetchTrajectoryPointsResponse = {
-    wellbore_id: wellboreId,
-    data: {
-      measured_depths: [109, 122.95, 132.98, 142.96, 152.93],
-      azimuths: [0, 171.75, 251.31, 250.95, 231.63],
-      inclinations: [0, 0.07, 0.08, 0.09, 0.04],
-      surface_x: [58.43590277, 58.43590277, 58.43590277, 58.43590277, 58.43590277],
-      surface_y: [1.929736075, 1.929736075, 1.929736075, 1.929736075, 1.929736075],
+    "wellbore_id": wellboreId,
+    "data": {
+      "measured_depths": [109, 122.95, 132.98, 142.96, 152.93],
+      "azimuths": [0, 171.75, 251.31, 250.95, 231.63],
+      "inclinations": [0, 0.07, 0.08, 0.09, 0.04],
+      "surface_x": [58.43590277, 58.43590277, 58.43590277, 58.43590277, 58.43590277],
+      "surface_y": [1.929736075, 1.929736075, 1.929736075, 1.929736075, 1.929736075],
     }
   }
   return Promise.resolve(mockResponse).then(data => dispatch(fetchTrajectoryPointsSuccessAction(wellId, data)));
