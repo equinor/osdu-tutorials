@@ -2,6 +2,7 @@ import React from "react";
 import {authProvider} from "../../authProvider";
 
 import "./style.css";
+import {Schedules} from "../../components/schedules/schedules";
 
 
 export function MainPage() {
@@ -28,6 +29,9 @@ export function MainPage() {
 
     return (
         <div className="main">
+            <div>
+                <Schedules/>
+            </div>
             <div className="auth-buttons">
                 {accountUi()}
             </div>
