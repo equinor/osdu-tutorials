@@ -3,6 +3,7 @@ import React from "react";
 import {Hint, Loader} from "../shared";
 import {AppState} from "../../store";
 import {useSelector} from "react-redux";
+import {FoundSchedule} from "../schedule/foundSchedule";
 
 const noSearchHint = 'Results will be displayed here';
 const noDataHint = 'No schedule found';
@@ -26,7 +27,7 @@ export function Schedules() {
                     <Hint subTitle={noDataHint} />
                 ) : (
                     loadedSchedules.map(schedule => (
-                        <h1>{schedule.id}</h1>
+                        <FoundSchedule schedule={schedule}/>
                     ))
                 )
             ) : (

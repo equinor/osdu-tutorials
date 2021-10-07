@@ -34,7 +34,8 @@ export function MainPage() {
 
     return (
         <div className="main">
-            <div>
+            <div className="main__page">
+                <label>Schedules</label>
                 <Schedules/>
             </div>
             <div className="auth-buttons">
