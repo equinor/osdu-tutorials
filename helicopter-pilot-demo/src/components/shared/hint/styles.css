@@ -1,0 +1,33 @@
+.hint {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.hint__text {
+    margin: 8px;
+    color: #000000de;
+}
+
+.hint__title {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.hint__sub-title {
+    font-size: 18px;
+}
+
+.hint--size_small .message {
+    margin: 0;
+}
+
+.hint--size_small .title {
+    font-size: 18px;
+}
+
+.hint--size_small .sub-title {
+    font-size: 16px;
+}
