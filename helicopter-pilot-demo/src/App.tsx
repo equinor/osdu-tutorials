@@ -8,7 +8,7 @@ import {authProvider} from "./authProvider";
 import {MainPage} from "./pages/main/MainPage";
 import store from "./store";
 
-function App() {
+export const App = () => {
   return (
     <div className="App">
       <AzureAD provider={authProvider} forceLogin={true} reduxStore={store}>
@@ -22,5 +22,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

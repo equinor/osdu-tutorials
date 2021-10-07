@@ -3,10 +3,15 @@ import {authProvider} from "../../authProvider";
 
 import "./style.css";
 import {Schedules} from "../../components/schedules/schedules";
+import {loadSchedulesAction} from "../../store/schedule/actions";
+import {useDispatch} from "react-redux";
 
 
 export function MainPage() {
+    const dispatch = useDispatch();
     const {userName} = authProvider.getAccount();
+
+    dispatch(loadSchedulesAction());
 
     const accountUi = () => {
         if (userName === null) {
