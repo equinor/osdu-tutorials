@@ -1,18 +1,16 @@
-import React from "react";
-import { Collapse } from 'antd';
+import React, {useState} from "react";
+import {Button, Collapse, Menu} from 'antd';
 import {useSelector} from "react-redux";
 import {AppState} from "../../store";
 import {Loader} from "../shared";
-
-const { Panel } = Collapse;
+import {AppstoreAddOutlined, MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons";
+import MenuItem from "antd/es/menu/MenuItem";
 
 export function Heliports() {
-    const text = "heliport name";
+    const [collapsed, setCollapsed] = useState(false);
 
     const areHeliportsLoadding = useSelector((state: AppState) => state.heliportLoad.areHeliportsLoading);
     const heliports = useSelector((state: AppState) => state.heliportLoad.heliports);
-
-    console.log(heliports);
 
     if (areHeliportsLoadding) {
         return (
@@ -22,19 +20,23 @@ export function Heliports() {
         );
     };
 
+    const getHeliportName = (id: string) => {
+        const arr = id.split(":");
+        return arr[2];
+    }
+
     return (
       <>
-          <Collapse defaultActiveKey={['1']}>
-              <Panel header="This is panel header 1" key="1">
-                  <p>{text}</p>
-              </Panel>
-              <Panel header="This is panel header 2" key="2">
-                  <p>{text}</p>
-              </Panel>
-              <Panel header="This is panel header 3" key="3">
-                  <p>{text}</p>
-              </Panel>
-          </Collapse>
+          <div style={{width: 128}}>
+              <Button type="primary" onClick={() => setCollapsed(!collapsed)} style={{marginBottom: 6, marginTop: 10}} icon={collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}>
+                  Heliports
+              </Button>
+              <Menu defaultSelectedKeys={["1"]} mode="inline" theme="dark" inlineCollapsed={collapsed} >
+                  {
+                      heliports.map(heliport => <MenuItem key={heliport.id} icon={<AppstoreAddOutlined />}>{getHeliportName(heliport.id)}</MenuItem>)
+                  }
+              </Menu>
+          </div>
       </>
     );
 }
