@@ -7,7 +7,7 @@ export const authProvider = new MsalAuthProvider(
     {
         auth: {
             authority: "https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0",
-            clientId: "749ee21f-0818-4aec-840d-33fa94bd3f08",
+            clientId: "ea31113d-90a2-47bf-befe-26c134b6354d",
             postLogoutRedirectUri: window.location.origin,
             redirectUri: window.location.origin,
             validateAuthority: true,
@@ -23,7 +23,7 @@ export const authProvider = new MsalAuthProvider(
         }
     },
     {
-        scopes: ["openid", "749ee21f-0818-4aec-840d-33fa94bd3f08/.default"]
+        scopes: ["openid", "ea31113d-90a2-47bf-befe-26c134b6354d/.default"]
     },
     {
         loginType: LoginType.Popup,

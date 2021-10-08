@@ -1,9 +1,11 @@
 import {createStore, compose, combineReducers, applyMiddleware} from "redux";
 import {scheduleLoadReducer, ScheduleLoadState} from "./schedule/reducer";
 import thunk from "redux-thunk";
+import {heliportLoadReducer, HeliportLoadState} from "./heliport/reducers";
 
 export interface AppState {
-    scheduleLoad: ScheduleLoadState;
+    scheduleLoad: ScheduleLoadState,
+    heliportLoad: HeliportLoadState
 };
 
 // property should be declared to soothe typescript struggles
@@ -18,6 +20,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const reducers = combineReducers<AppState>({
     scheduleLoad: scheduleLoadReducer,
+    heliportLoad: heliportLoadReducer
 });
 
 const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));

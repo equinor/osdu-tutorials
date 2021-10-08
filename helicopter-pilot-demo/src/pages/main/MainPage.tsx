@@ -2,9 +2,10 @@ import React from "react";
 import {authProvider} from "../../authProvider";
 
 import "./style.css";
-import {Schedules} from "../../components/schedules/schedules";
 import {loadSchedulesAction} from "../../store/schedule/actions";
 import {useDispatch} from "react-redux";
+import {loadHeliportsAction} from "../../store/heliport/actions";
+import {Heliports} from "../../components/heliports/heliports";
 
 
 export function MainPage() {
@@ -12,6 +13,7 @@ export function MainPage() {
     const {userName} = authProvider.getAccount();
 
     dispatch(loadSchedulesAction());
+    dispatch(loadHeliportsAction())
 
     const accountUi = () => {
         if (userName === null) {
@@ -35,8 +37,7 @@ export function MainPage() {
     return (
         <div className="main">
             <div className="main__page">
-                <label>Schedules</label>
-                <Schedules/>
+               <Heliports/>
             </div>
             <div className="auth-buttons">
                 {accountUi()}
