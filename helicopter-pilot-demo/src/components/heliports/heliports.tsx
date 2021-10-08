@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Collapse, Menu} from 'antd';
+import {Button, Menu} from 'antd';
 import {useSelector} from "react-redux";
 import {AppState} from "../../store";
 import {Loader} from "../shared";

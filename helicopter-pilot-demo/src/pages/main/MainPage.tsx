@@ -6,6 +6,7 @@ import 'antd/dist/antd.css';
 import {useDispatch, useSelector} from "react-redux";
 import {loadHeliportsAction} from "../../store/heliport/actions";
 import {Heliports} from "../../components/heliports/heliports";
+import {BarChart} from "../../components/charts/barChart";
 
 
 export function MainPage() {
@@ -36,6 +37,10 @@ export function MainPage() {
         <div className="main">
             <div className="main__page">
                 <Heliports/>
+            </div>
+
+            <div className="main__chart-area">
+                <BarChart/>
             </div>
 
             <div className="auth-buttons">
