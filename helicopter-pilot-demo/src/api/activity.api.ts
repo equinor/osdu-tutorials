@@ -2,7 +2,12 @@ import {handleErrors} from "./handleErrors";
 import {getAccessToken} from "./getAccessToken";
 
 export interface Activity {
-    id: string
+    id: string,
+    data: {
+        startTime: string,
+        finishTime: string,
+        allocatedHours: number,
+    }
 };
 
 export interface LoadActivityResponse {
@@ -24,6 +29,9 @@ export async function loadActivities(heliportId: string): Promise<LoadActivityRe
             "query": " ",
             "returnedFields": [
                 "id",
+                "data.AllocatedHours",
+                "data.EarlyStartDateTime",
+                "data.EarlyFinishDateTime"
             ]
         })
     };
