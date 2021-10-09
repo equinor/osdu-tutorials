@@ -25,13 +25,17 @@ export function Heliports() {
         return arr[2];
     }
 
+    const handleHeliportSelect = (key: string) => {
+       console.log(key);
+    }
+
     return (
       <>
           <div style={{width: 128}}>
               <Button type="primary" onClick={() => setCollapsed(!collapsed)} style={{marginBottom: 6, marginTop: 10}} icon={collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}>
                   Heliports
               </Button>
-              <Menu defaultSelectedKeys={["1"]} mode="inline" theme="dark" inlineCollapsed={collapsed} >
+              <Menu defaultSelectedKeys={["1"]} mode="inline" theme="dark" inlineCollapsed={collapsed} onClick={(e) => handleHeliportSelect(e.key)} >
                   {
                       heliports.map(heliport => <MenuItem key={heliport.id} icon={<AppstoreAddOutlined />}>{getHeliportName(heliport.id)}</MenuItem>)
                   }
