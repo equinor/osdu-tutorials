@@ -27,9 +27,9 @@ export function loadSchedulesFailAction(err: Error): LoadSchedulesType {
     }
 }
 
-export const loadSchedulesAction = (): AppThunk => dispatch => {
+export const loadSchedulesAction = (heliportId: string = ""): AppThunk => dispatch => {
     dispatch(loadScheduleStartAction());
-    return loadSchedules()
+    return loadSchedules(heliportId)
         .then(data => dispatch(loadSchedulesSuccessAction(data)))
         .catch(err => dispatch(loadSchedulesFailAction(err)));
 }

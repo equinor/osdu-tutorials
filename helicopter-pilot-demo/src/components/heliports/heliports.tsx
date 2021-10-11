@@ -5,20 +5,30 @@ import {AppState} from "../../store";
 import {Loader} from "../shared";
 import {AppstoreAddOutlined, MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons";
 import MenuItem from "antd/es/menu/MenuItem";
+import {loadSchedules, LoadSchedulesResponse} from "../../api/schedule.api";
 
 export function Heliports() {
     const [collapsed, setCollapsed] = useState(false);
 
-    const areHeliportsLoadding = useSelector((state: AppState) => state.heliportLoad.areHeliportsLoading);
-    const heliports = useSelector((state: AppState) => state.heliportLoad.heliports);
+    const areSchedulesLoading = useSelector((state: AppState) => state.scheduleLoad.areSchedulesLoading);
+    const schedules = useSelector((state: AppState) => state.scheduleLoad.schedules);
 
-    if (areHeliportsLoadding) {
+    if (areSchedulesLoading) {
         return (
             <div>
                 <Loader/>
             </div>
         );
-    };
+    }
+
+    console.log(schedules.length);
+
+    let originHeliports = schedules.map(s => s.data.OriginHeliport);
+    originHeliports = originHeliports.filter((n, i) => originHeliports.indexOf(n) === i);
+    let destinationHeliports = schedules.map(s => s.data.DestinationHeliport);
+
+    console.log(originHeliports);
+
 
     const getHeliportName = (id: string) => {
         const arr = id.split(":");
@@ -37,7 +47,7 @@ export function Heliports() {
               </Button>
               <Menu defaultSelectedKeys={["1"]} mode="inline" theme="dark" inlineCollapsed={collapsed} onClick={(e) => handleHeliportSelect(e.key)} >
                   {
-                      heliports.map(heliport => <MenuItem key={heliport.id} icon={<AppstoreAddOutlined />}>{getHeliportName(heliport.id)}</MenuItem>)
+                      originHeliports.map(heliport => <MenuItem key={heliport} icon={<AppstoreAddOutlined />}>{getHeliportName(heliport)}</MenuItem>)
                   }
               </Menu>
           </div>

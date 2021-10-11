@@ -3,16 +3,17 @@ import {authProvider} from "../../authProvider";
 
 import "./style.css";
 import 'antd/dist/antd.css';
-import {useDispatch, useSelector} from "react-redux";
-import {loadHeliportsAction} from "../../store/heliport/actions";
+import {useDispatch} from "react-redux";
 import {Heliports} from "../../components/heliports/heliports";
 import {BarChart} from "../../components/charts/barChart";
+import {loadSchedulesAction} from "../../store/schedule/actions";
 
 
 export function MainPage() {
     const dispatch = useDispatch();
     const {userName} = authProvider.getAccount();
-    dispatch(loadHeliportsAction())
+    //dispatch(loadHeliportsAction())
+    dispatch(loadSchedulesAction());
 
     const accountUi = () => {
         if (userName === null) {
