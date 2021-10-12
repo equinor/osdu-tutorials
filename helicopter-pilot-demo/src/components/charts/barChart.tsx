@@ -9,7 +9,7 @@ import {
   Tooltip,
   Legend,
   Line,
-  Label
+  Label,
 } from "recharts";
 
 const data = [
@@ -71,7 +71,7 @@ export function BarChart() {
       <Legend />
       <Bar dataKey="Shell" stackId="a" fill="#f5c82a" />
       <Bar dataKey="Equinor" stackId="a" fill="#DC143C"/>
-      <Line type="linear" dataKey="max" stroke="#b0b0b0"/>
+      <Line type="linear" dataKey="max" stroke="#b0b0b0" />
     </ComposedChart>
   );
 }
