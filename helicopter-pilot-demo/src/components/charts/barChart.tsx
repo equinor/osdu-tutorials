@@ -1,77 +1,81 @@
 import "./styles.css";
 import React from "react";
-import {
-  ComposedChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  Line,
-  Label,
-} from "recharts";
+import {Bar, CartesianGrid, ComposedChart, Legend, Line, Tooltip, XAxis, YAxis,} from "recharts";
+import {useSelector} from "react-redux";
+import {AppState} from "../../store";
 
-const data = [
-    {
-        "datetime": "2021-01",
-        "max": 18,
-        "Shell": 7,
-        "Equinor": 7,
-    },
-    {
-        "datetime": "2021-02",
-        "max": 18,
-        "Shell": 7,
-        "Equinor": 9,
-    },
-    {
-        "datetime": "2021-03",
-        "max": 18,
-        "Shell": 7,
-        "Equinor": 4,
-    },
-    {
-        "datetime": "2021-04",
-        "max": 18,
-        "Shell": 5,
-        "Equinor": 10,
-    },
-    {
-        "datetime": "2021-05",
-        "max": 18,
-        "Shell": 7,
-        "Equinor": 2,
-    },
-    {
-        "datetime": "2021-06",
-        "max": 18,
-        "Shell": 3,
-        "Equinor": 7,
-    },
-];
+interface AggregatedActivityData {
+    datetime: string,
+    max: number,
+    Shell: number,
+    Equinor: number,
+}
 
 export function BarChart() {
-  return (
-    <ComposedChart
-      width={1000}
-      height={500}
-      data={data}
-      margin={{
-        top: 20,
-        right: 30,
-        left: 100,
-        bottom: 5
-      }}
-    >
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="datetime" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Bar dataKey="Shell" stackId="a" fill="#f5c82a" />
-      <Bar dataKey="Equinor" stackId="a" fill="#DC143C"/>
-      <Line type="linear" dataKey="max" stroke="#b0b0b0" />
-    </ComposedChart>
-  );
+    const activities = useSelector((state: AppState) => state.activityLoad.activities);
+    const activityLoaded = useSelector((state: AppState) => state.activityLoad.areActivitiesLoaded);
+
+    let activityData: AggregatedActivityData[] = [];
+
+    const isEquinor = (senderId: string) => {
+        return senderId === "opendes:master-data--Organisation:Equinor:";
+    };
+
+    if (activityLoaded) {
+        for (const act of activities) {
+            const datetime = act.data.EarlyStartDateTime.slice(0, 7);
+            let actData = activityData.find(x => x.datetime === datetime)
+
+            const startDate = Date.parse(act.data.EarlyStartDateTime.slice(0, 7));
+            const endDate = Date.parse(act.data.EarlyFinishDateTime.slice(0, 7));
+
+            const diffTime = Math.abs(endDate- startDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            const hoursPerday = act.data.AllocatedHours / diffDays;
+            const persPerAct = hoursPerday / 12;
+
+            console.log(diffDays, persPerAct)
+
+            if (actData === undefined) {
+                actData = {
+                    datetime: datetime,
+                    max: 18,
+                    Shell: isEquinor(act.senderId) ? 0 : persPerAct,
+                    Equinor: isEquinor(act.senderId) ? persPerAct : 0
+                }
+                activityData.push(actData);
+            } else {
+                if (isEquinor(act.senderId)){
+                    actData.Equinor += persPerAct;
+                }
+                else {
+                    actData.Shell += persPerAct;
+                }
+            }
+        }
+    }
+
+    return (
+        <ComposedChart
+            width={1000}
+            height={500}
+            data={activityData}
+            margin={{
+                top: 20,
+                right: 30,
+                left: 100,
+                bottom: 5
+            }}
+        >
+            <CartesianGrid strokeDasharray="3 3"/>
+            <XAxis dataKey="datetime"/>
+            <YAxis/>
+            <Tooltip/>
+            <Legend/>
+            <Bar dataKey="Shell" stackId="a" fill="#f5c82a"/>
+            <Bar dataKey="Equinor" stackId="a" fill="#DC143C"/>
+            <Line type="linear" dataKey="max" stroke="#b0b0b0"/>
+        </ComposedChart>
+    );
 }
