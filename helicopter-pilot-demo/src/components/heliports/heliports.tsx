@@ -26,9 +26,18 @@ export function Heliports() {
     let originHeliports = schedules.map(s => s.data.OriginHeliport);
     originHeliports = originHeliports.filter((n, i) => originHeliports.indexOf(n) === i);
 
+    let heliMap = new Map([
+        ["ENZV", "Sola"],
+        ["ENDR", "Draugen"],
+        ["ENSL", "Sleipner A"],
+        ["ENJS", "Johan Sverdrup"],
+        ["ENVH", "Valhall"],
+        ["ENLA", "Ula"]
+    ]);
+
     const getHeliportName = (id: string) => {
         const arr = id.split(":");
-        return arr[2];
+        return heliMap.get(arr[2]);
     }
 
     const handleHeliportSelect = (key: string) => {
