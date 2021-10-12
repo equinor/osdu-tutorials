@@ -41,7 +41,6 @@ export function Heliports() {
 
     const getHeliportName = (id: string) => {
         const arr = id.split(":");
-        console.log(heliMap.get(arr[2]));
         return heliMap.get(arr[2]);
     }
 
