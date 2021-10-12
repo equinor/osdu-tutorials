@@ -40,6 +40,11 @@ export function MainPage() {
             <div className="main__page">
                 <Heliports/>
             </div>
+            <div className="header__page">
+                <header>
+                    <h1>OSDU Helicopter Demo</h1>
+                </header>
+            </div>
             <div 
             className="main__chart-area">
                 <h1>Departure Heliport</h1>

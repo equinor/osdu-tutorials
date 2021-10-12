@@ -8,6 +8,15 @@
     position: relative;
 }
 
+.header__page {
+    display: flex;
+    height: 100%;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
 .main__chart-area {
     width: 100%;
     height: 100%;
