@@ -1,13 +1,15 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Menu} from 'antd';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../store";
 import {Loader} from "../shared";
-import {AppstoreAddOutlined, MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons";
+import {MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons";
 import MenuItem from "antd/es/menu/MenuItem";
-import {loadSchedules, LoadSchedulesResponse} from "../../api/schedule.api";
+import {loadActivitiesAction} from "../../store/activity/actions";
 
 export function Heliports() {
+    const {SubMenu} = Menu;
+    const dispatch = useDispatch();
     const [collapsed, setCollapsed] = useState(false);
 
     const areSchedulesLoading = useSelector((state: AppState) => state.scheduleLoad.areSchedulesLoading);
@@ -21,14 +23,8 @@ export function Heliports() {
         );
     }
 
-    console.log(schedules.length);
-
     let originHeliports = schedules.map(s => s.data.OriginHeliport);
     originHeliports = originHeliports.filter((n, i) => originHeliports.indexOf(n) === i);
-    let destinationHeliports = schedules.map(s => s.data.DestinationHeliport);
-
-    console.log(originHeliports);
-
 
     const getHeliportName = (id: string) => {
         const arr = id.split(":");
@@ -37,6 +33,22 @@ export function Heliports() {
 
     const handleHeliportSelect = (key: string) => {
        console.log(key);
+       //schedules.filter(s => s.data.OriginHeliport === key).map(s => dispatch(loadActivitiesAction("opendes:work-product-component--HelicopterResourceSchedule:Platform_2")));
+       dispatch(loadActivitiesAction(key));
+    }
+
+    const heliportView = (originHeliportId: string) => {
+        let destinationHeliports = schedules.filter(s => s.data.OriginHeliport === originHeliportId);
+
+        return (
+            <>
+                <SubMenu key={originHeliportId} title={getHeliportName(originHeliportId)} onTitleClick={(e) => handleHeliportSelect(e.key)}>
+                    {destinationHeliports.map(heliport => (
+                        <MenuItem key={heliport.id}>{getHeliportName(heliport.data.DestinationHeliport)}</MenuItem>
+                    ))}
+                </SubMenu>
+            </>
+        )
     }
 
     return (
@@ -45,9 +57,9 @@ export function Heliports() {
               <Button type="primary" onClick={() => setCollapsed(!collapsed)} style={{marginBottom: 6, marginTop: 10}} icon={collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}>
                   Heliports
               </Button>
-              <Menu defaultSelectedKeys={["1"]} mode="inline" theme="dark" inlineCollapsed={collapsed} onClick={(e) => handleHeliportSelect(e.key)} >
+              <Menu defaultSelectedKeys={["1"]} mode="inline" theme="dark" inlineCollapsed={collapsed}>
                   {
-                      originHeliports.map(heliport => <MenuItem key={heliport} icon={<AppstoreAddOutlined />}>{getHeliportName(heliport)}</MenuItem>)
+                      originHeliports.map(heliport => heliportView(heliport))
                   }
               </Menu>
           </div>

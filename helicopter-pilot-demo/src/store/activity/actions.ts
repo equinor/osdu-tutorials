@@ -1,5 +1,5 @@
 import {LOAD_ACTIVITY_FAIL, LOAD_ACTIVITY_START, LOAD_ACTIVITY_SUCCESS, LoadActivityTypes} from "./types";
-import {loadActivities, LoadActivityResponse} from "../../api/activity.api";
+import {loadActivitiesByHeliportId, LoadActivityResponse} from "../../api/activity.api";
 import {ThunkAction} from "redux-thunk";
 import {AppState} from "../index";
 
@@ -27,7 +27,7 @@ export function loadActivitiesFailAction(err: Error): LoadActivityTypes {
 
 export const loadActivitiesAction = (heliportId: string): AppThunk => dispath => {
     dispath(loadActivitiesStartAction());
-    return loadActivities(heliportId)
+    return loadActivitiesByHeliportId(heliportId)
         .then(data => dispath(loadActivitiesSuccessAction(data)))
         .catch(err => dispath(loadActivitiesFailAction(err)));
 };
