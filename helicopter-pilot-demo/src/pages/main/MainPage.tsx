@@ -39,7 +39,6 @@ export function MainPage() {
             <div className="main__page">
                 <Heliports/>
             </div>
-
             <div className="main__chart-area">
                 <BarChart/>
             </div>
