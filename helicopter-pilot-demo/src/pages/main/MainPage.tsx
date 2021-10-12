@@ -7,7 +7,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {loadHeliportsAction} from "../../store/heliport/actions";
 import {Heliports} from "../../components/heliports/heliports";
 import {BarChart} from "../../components/charts/barChart";
-import {BarChart2} from "../../components/charts/barChart2";
 
 
 export function MainPage() {
@@ -39,12 +38,8 @@ export function MainPage() {
             <div className="main__page">
                 <Heliports/>
             </div>
-
             <div className="main__chart-area">
                 <BarChart/>
-            </div>
-            <div className="main__chart-area2">
-                <BarChart2/>
             </div>
 
             <div className="auth-buttons">

@@ -20,9 +20,19 @@ export function Heliports() {
         );
     };
 
+    let heliMap = new Map([
+        ["ENZV", "Sola"],
+        ["ENDR", "Draugen"],
+        ["ENSL", "Sleipner A"],
+        ["ENJS", "Johan Sverdrup"],
+        ["ENVH", "Valhall"],
+        ["ENLA", "Ula"]
+    ]);
+
     const getHeliportName = (id: string) => {
         const arr = id.split(":");
-        return arr[2];
+        console.log(heliMap.get(arr[2]));
+        return heliMap.get(arr[2]);
     }
 
     const handleHeliportSelect = (key: string) => {
