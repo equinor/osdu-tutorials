@@ -11,6 +11,9 @@ interface AggregatedActivityData {
     Equinor: number,
 }
 
+/** This chart will aggregate based on Origin heliport */
+
+
 export function BarChart() {
     const activities = useSelector((state: AppState) => state.activityLoad.activities);
     const activityLoaded = useSelector((state: AppState) => state.activityLoad.areActivitiesLoaded);
