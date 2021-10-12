@@ -30,7 +30,9 @@ export function BarChart() {
             const endDate = Date.parse(act.data.EarlyFinishDateTime.slice(0, 7));
 
             const diffTime = Math.abs(endDate- startDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays === 0)
+               diffDays = 1;
 
             const hoursPerday = act.data.AllocatedHours / diffDays;
             const persPerAct = hoursPerday / 12;
