@@ -1,4 +1,4 @@
-import { AxesHelper, Camera, PerspectiveCamera, Renderer, Scene, WebGLRenderer } from 'three';
+import { AxesHelper, Camera, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { TrajectoryChartConfiguration } from './chart-config';
 
@@ -14,7 +14,7 @@ export function createRenderer(container: HTMLElement) {
   return renderer;
 }
 
-export function createCamera(renderer: Renderer): PerspectiveCamera {
+export function createCamera(renderer: WebGLRenderer): PerspectiveCamera {
   const sceneWidth = renderer.domElement.clientWidth;
   const sceneHeight = renderer.domElement.clientHeight;
 

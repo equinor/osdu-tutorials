@@ -1,6 +1,6 @@
 import { AppState } from 'store';
-import { ThunkAction } from 'redux-thunk';
-import { fetchTrajectoryPoints, FetchTrajectoryPointsResponse } from 'api/trajectory.api';
+import {ThunkAction} from 'redux-thunk';
+import { FetchTrajectoryPointsResponse } from 'api/trajectory.api';
 import {
   TrajectoryActionTypes,
   FETCH_TRAJECTORY_POINTS_START,

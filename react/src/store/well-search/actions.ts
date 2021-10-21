@@ -1,5 +1,5 @@
 import {AppState} from 'store';
-import {ThunkAction} from 'redux-thunk';
+import {ThunkAction} from "redux-thunk";
 import {
   FIND_WELLBORES_FAIL,
   FIND_WELLBORES_START,
