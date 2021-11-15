@@ -2,7 +2,7 @@ import React from 'react';
 import './styles.css';
 import { authProvider } from '../../authProvider';
 import {Search} from "../../components/well/Search";
-import WellCanvas from "../../components/well/WellCanvas";
+import MyComponent from "../../components/intersection/intersection"
 
 /**
  * Contains login-logout functionality, search wells form,
@@ -38,7 +38,7 @@ export function MainPage() {
                 {/* wells search with results */}
                 <Search />
 
-                <WellCanvas/>
+                <MyComponent className="main__intersection"/>
 
                 {/* login-logout functionality. plain and simple */}
                 <div className='main__auth-buttons'>
