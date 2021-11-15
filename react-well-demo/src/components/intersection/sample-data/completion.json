@@ -1,0 +1,51 @@
+[
+  {
+    "mdTop": 139.7,
+    "mdBottom": 202,
+    "odMax": 30,
+    "innerDiameter": 28,
+    "hasShoe": true
+  },
+  {
+    "mdTop": 139,
+    "mdBottom": 1389,
+    "odMax": 20,
+    "innerDiameter": 18.73,
+    "hasShoe": true
+  },
+  {
+    "mdTop": 140.4,
+    "mdBottom": 2607,
+    "odMax": 13.38,
+    "innerDiameter": 12.347,
+    "hasShoe": true
+  },
+  {
+    "mdTop": 21.14,
+    "mdBottom": 1800,
+    "odMax": 10.75,
+    "innerDiameter": 9.66,
+    "hasShoe": true
+  },
+  {
+    "mdTop": 1800,
+    "mdBottom": 2507,
+    "odMax": 9.63,
+    "innerDiameter": 8.535,
+    "hasShoe": true
+  },
+  {
+    "mdTop": 2507,
+    "mdBottom": 3435,
+    "odMax": 9.63,
+    "innerDiameter": 8.535,
+    "hasShoe": true
+  },
+  {
+    "mdTop": 3335,
+    "mdBottom": 5795,
+    "odMax": 7,
+    "innerDiameter": 6.184,
+    "hasShoe": true
+  }
+]

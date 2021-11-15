@@ -1,6 +1,6 @@
 import React from 'react';
 import './styles.css';
-import { authProvider } from '../../authProvider';
+import {authProvider} from '../../authProvider';
 import {Search} from "../../components/well/Search";
 import MyComponent from "../../components/intersection/intersection"
 
@@ -9,7 +9,7 @@ import MyComponent from "../../components/intersection/intersection"
  * found wells list and area for drawing well trajectories
  */
 export function MainPage() {
-    const { name } = authProvider.getAccount();
+    const {name} = authProvider.getAccount();
 
     const accountUi = () => {
         if (name === null) {
@@ -24,7 +24,8 @@ export function MainPage() {
             return (
                 <>
                     <span>Welcome {name}</span>
-                    <a className='auth-button' href={`/logout?frontend_state=${encodeURIComponent(window.location.href)}`}>
+                    <a className='auth-button'
+                       href={`/logout?frontend_state=${encodeURIComponent(window.location.href)}`}>
                         Logout
                     </a>
                 </>
@@ -36,7 +37,7 @@ export function MainPage() {
         <div className='main'>
             <div className='main__page'>
                 {/* wells search with results */}
-                <Search />
+                <Search/>
 
                 <MyComponent className="main__intersection"/>
 

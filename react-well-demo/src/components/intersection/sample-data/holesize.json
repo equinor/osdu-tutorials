@@ -1,0 +1,7 @@
+[
+  { "start": 139.7, "end": 207, "diameter": 36 },
+  { "start": 207, "end": 1403, "diameter": 26 },
+  { "start": 1403, "end": 2619, "diameter": 17.5 },
+  { "start": 2619, "end": 3446, "diameter": 12.25 },
+  { "start": 3446, "end": 5331, "diameter": 8.5 }
+]

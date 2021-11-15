@@ -1,0 +1,58 @@
+[
+  {
+    "casingId": "1",
+    "start": 139.7,
+    "end": 202,
+    "diameter": 30,
+    "innerDiameter": 28,
+    "hasShoe": true
+  },
+  {
+    "casingId": "2",
+    "start": 139,
+    "end": 1389,
+    "diameter": 20,
+    "innerDiameter": 18.73,
+    "hasShoe": true
+  },
+  {
+    "casingId": "3",
+    "start": 140.4,
+    "end": 2607,
+    "diameter": 13.38,
+    "innerDiameter": 12.347,
+    "hasShoe": true
+  },
+  {
+    "casingId": "4",
+    "start": 21.14,
+    "end": 1800,
+    "diameter": 10.75,
+    "innerDiameter": 9.66,
+    "hasShoe": true
+  },
+  {
+    "casingId": "5",
+    "start": 1800,
+    "end": 2507,
+    "diameter": 9.63,
+    "innerDiameter": 8.535,
+    "hasShoe": true
+  },
+  {
+    "casingId": "6",
+    "start": 2507,
+    "end": 3435,
+    "diameter": 9.63,
+    "innerDiameter": 8.535,
+    "hasShoe": true
+  },
+  {
+    "casingId": "7",
+    "start": 3335,
+    "end": 5795,
+    "diameter": 7,
+    "innerDiameter": 6.184,
+    "hasShoe": true
+  }
+]
