@@ -3,6 +3,7 @@ import './styles.css';
 import {authProvider} from '../../authProvider';
 import {Search} from "../../components/well/Search";
 import MyComponent from "../../components/intersection/intersection"
+import Welllog from "../../components/welllog/welllog";
 
 /**
  * Contains login-logout functionality, search wells form,
@@ -40,6 +41,8 @@ export function MainPage() {
                 <Search/>
 
                 <MyComponent className="main__intersection"/>
+
+                <Welllog/>
 
                 {/* login-logout functionality. plain and simple */}
                 <div className='main__auth-buttons'>
