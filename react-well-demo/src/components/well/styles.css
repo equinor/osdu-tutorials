@@ -5,6 +5,21 @@
     flex-direction: column;
 }
 
+.canvas {
+    min-width: 700px;
+    background: #fafafa;
+    flex-direction: column;
+}
+
+.header {
+    height: 22px;
+    padding: 2.5px;
+    background: #ccc;
+    font-size: 14px;
+    border: solid 1px #000;
+    border-bottom: none;
+}
+
 .search__area {
     padding: 16px;
     background-color: #4286f4;

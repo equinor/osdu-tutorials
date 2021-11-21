@@ -15,13 +15,16 @@ const WellCanvas = () => {
     const ycenter = locations.reduce((x, y) => x + y.lng, 0) / locations.length;
 
     return (
-        <Map height={500} defaultCenter={[xcenter, ycenter]} defaultZoom={11}>
+        <div className="canvas">
+            <div className="header">Well map</div>
+            <Map height={400} defaultCenter={[xcenter, ycenter]} defaultZoom={11}>
             {
                 foundWells.map(well => (
                     <Marker key={well.resourceId} color={"red"} width={20} anchor={[well.location.lat, well.location.lng]}/>
                 ))
             }
-        </Map>
+            </Map>
+        </div>
     );
 }
 

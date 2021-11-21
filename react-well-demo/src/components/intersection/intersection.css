@@ -2,18 +2,24 @@
     display: inline-block;
     text-align: initial;
     box-sizing: border-box;
+    position: fixed;
+    left: 370px;
+    top: 500px;
+    flex-direction: column;
 }
 
 .intersection-container > * {
     box-sizing: border-box;
+    flex-direction: column;
 }
 
 .intersection-header {
     height: 22px;
+    width: 700px;
     padding: 2.5px;
     background: #ccc;
     font-size: 14px;
-    text-align: center;
+    text-align: right;
     border: solid 1px #000;
     border-bottom: none;
 }

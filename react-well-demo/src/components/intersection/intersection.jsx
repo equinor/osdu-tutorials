@@ -77,7 +77,7 @@ class MyComponent extends React.Component {
     render() {
         return (
             <div className="intersection-container">
-                <div className="header">Intersection</div>
+                <div className="intersection-header">Intersection</div>
                 <div className="intersection-root">
                     <div ref={this.myRef} className="intersection-layers"/>
                 </div>
