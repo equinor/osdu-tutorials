@@ -47,6 +47,8 @@ export function MainPage() {
 
                 <MyComponent/>
 
+                <Welllog/>
+
                 {/* login-logout functionality. plain and simple */}
                 <div className='main__auth-buttons'>
                     {accountUi()}

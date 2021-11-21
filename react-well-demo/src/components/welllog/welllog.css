@@ -1,6 +1,7 @@
 .chart{
     float: left;
-    padding-top: 30px;
-    padding-left: 700px;
     text-align:justify;
+    position: fixed;
+    left: 1100px;
+    height: 1500px;
 }
