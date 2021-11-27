@@ -42,6 +42,16 @@ def get_access_token() -> str:
 
 
 def search_well_log_datasets(wellbore_id: str) -> List[str]:
+    """
+    Search the given wellbore by id and returns the datasets.
+    Args:
+        wellbore_id (str): id of the wellbore
+
+    Returns:
+        List of dataset ids.
+    """
+
+
     print(colored(f"Searching {wellbore_id}", "green"))
 
     osdu_url = os.environ.get("OSDU_URL")
@@ -70,6 +80,14 @@ def search_well_log_datasets(wellbore_id: str) -> List[str]:
 
 
 def download_dataset(dataset_id: str) -> str:
+    """
+    Download dataset by given id and save the content in string.
+    Args:
+        dataset_id (str): Id of the datasets.
+
+    Returns:
+        Content of the dataset.
+    """
     print(colored(f"Downloading {dataset_id}...", "green"))
     osdu_url = os.environ.get("OSDU_URL")
     file_url = urljoin(osdu_url, f"/api/file/v2/files/{dataset_id}/downloadURL")
