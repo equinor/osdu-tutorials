@@ -17,6 +17,7 @@ def get_access_token() -> str:
     Return(str): Access Token
     """
     token_url = os.environ.get("TOKEN_URL")
+
     client_id = os.environ.get("CLIENT_ID")
     client_secret = os.environ.get("CLIENT_SECRET")
     refresh_token = os.environ.get("REFRESH_TOKEN")
