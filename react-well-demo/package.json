@@ -19,6 +19,7 @@
     "@types/redux-thunk": "^2.1.0",
     "antd": "^4.16.13",
     "d3-force": "^2.1.1",
+    "las-js": "^3.2.4",
     "leaflet": "^1.7.1",
     "msal": "^1.4.14",
     "pigeon-maps": "^0.19.7",
