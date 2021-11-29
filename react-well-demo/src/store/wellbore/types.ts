@@ -23,7 +23,6 @@ export interface FindWellboreFailAction {
         err: Error
         wellboreId: string
     }
-    };
 }
 
 export type WellboreSearchActionTypes =
