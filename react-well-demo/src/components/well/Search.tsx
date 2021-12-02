@@ -6,6 +6,7 @@ import { FoundWell } from './FoundWell';
 import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../store";
 import {findWellsByNameAction} from "../../store/well/actions";
+import {loadWellboreTrajectoryAction} from "../../store/wellbore_trajectory/actions";
 
 const noSearchHint = 'Results will be displayed here';
 const noDataHint = 'No wells found';
@@ -31,6 +32,7 @@ export function Search() {
     const handleSubmit = (event: FormEvent | MouseEvent) => {
         event.preventDefault();
         dispatch(findWellsByNameAction(searchName));
+        dispatch(loadWellboreTrajectoryAction("aaaa"));
     };
 
     useEffect(() => {

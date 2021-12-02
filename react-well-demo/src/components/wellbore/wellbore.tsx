@@ -2,7 +2,7 @@ import React from 'react';
 import { Wellbore as WellboreModel } from '../../store/well/reducer';
 
 export interface WellboreProps {
-    /** a wellbore model to be represented by the component */
+    /** a wellbore_trajectory model to be represented by the component */
     wellbore: WellboreModel;
 }
 

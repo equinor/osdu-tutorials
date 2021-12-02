@@ -50,7 +50,7 @@ export async function findWellsByName(wellName: string): Promise<FindWellsRespon
 }
 
 /**
- * Interface for wellbore
+ * Interface for wellbore_trajectory
  */
 interface Wellbore {
     id: string;
