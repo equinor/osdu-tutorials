@@ -1,25 +1,23 @@
 import {AppState} from "../index";
 import {ThunkAction} from "redux-thunk";
-
-import {FIND_WELLBORE_FAIL, FIND_WELLBORE_START, FIND_WELLBORE_SUCCESS, WellboreSearchActionTypes} from "./types";
 import {FindWellboreResponse, findWellLogDatasetsById} from "../../api/welllog.api";
-import {findWellboresFailAction} from "../well/actions";
+import {FIND_WELLBORE_TRAJECTORY_START, FIND_WELLBORE_TRAJECTORY_SUCCESS, FIND_WELLBORE_TRAJECTORY_FAIL WellboreTrajectoryLoadActionTypes} from "./types";
 
 type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, null, WellboreSearchActionTypes>;
 
-export function findWellboreStartAction(wellboreId: string): WellboreSearchActionTypes {
+export function findWellboreTrajectoryStartAction(wellboreId: string): WellboreTrajectoryLoadActionTypes {
     return {
-        type: FIND_WELLBORE_START,
+        type: FIND_WELLBORE_TRAJECTORY_START,
         payload: wellboreId,
     }
 }
 
-export function findWellboreSuccessAction(
+export function findWellboreTrajectorySuccessAction(
     wellboreId: string,
     response: FindWellboreResponse
-): WellboreSearchActionTypes {
+): WellboreTrajectoryLoadActionTypes {
     return {
-        type: FIND_WELLBORE_SUCCESS,
+        type: FIND_WELLBORE_TRAJECTORY_SUCCESS,
         payload: {
             wellboreId: wellboreId,
             results: response,
@@ -27,12 +25,12 @@ export function findWellboreSuccessAction(
     };
 }
 
-export function findWellboreFailAction(
+export function findWellboreTrajectoryFailAction(
     err: Error,
     wellboreId: string
-) : WellboreSearchActionTypes {
+) : WellboreTrajectoryLoadActionTypes {
     return {
-        type: FIND_WELLBORE_FAIL,
+        type: FIND_WELLBORE_TRAJECTORY_FAIL,
         payload: {
             err: err,
             wellboreId: wellboreId
