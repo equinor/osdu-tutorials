@@ -1,5 +1,6 @@
 import {handleErrors} from "./handleErrors";
 import {getAccessToken} from "./getAccessToken";
+import {parseString} from "@fast-csv/parse";
 
 export interface WellboreTrajectoryPoint {
     md: number,
@@ -73,23 +74,42 @@ async function getDatasetsFromWellboreTrajectory(accessToken: string, wellboreId
         .then(response => response.json());
 }
 
+async function downloadTrajectory(downloadUrl: string): Promise<string> {
+    return fetch(downloadUrl, {
+        method: "GET",
+        redirect: "follow"
+    })
+        .catch(handleErrors)
+        .then(response => response.text())
+}
+
 /**
  * Return wellbore_trajectory trajectory by a given id
  */
-export async function loadWellboreTrajectory(wellboreId: string): Promise<any> {
+export async function loadWellboreTrajectory(wellboreId: string): Promise<WellboreTrajectoryData> {
     const accessToken = await getAccessToken();
     const datasets = await getDatasetsFromWellboreTrajectory(accessToken, wellboreId);
     const trajectoryDataset = datasets.results[0].data.Datasets[0].slice(0, -1);
     const downloadUrl = await getDownloadUrl(accessToken, trajectoryDataset);
 
-    return fetch(downloadUrl.SignedUrl, {
-        method: "GET",
-        mode: "no-cors",
-    })
-        .catch(handleErrors)
-        .then(response => response.text())
-        .then(result => {
-            console.log("result", result);
-            return result;
-        });
+    let trajectoryPoints: WellboreTrajectoryData = {
+        points: []
+    };
+
+    let trajectoryData = await downloadTrajectory(downloadUrl.SignedUrl);
+    parseString(trajectoryData, {delimiter: ",", headers: true})
+        .on("error", err => console.error(err))
+        .on("data", row => {
+            let point: WellboreTrajectoryPoint = {
+                md: row["MD"],
+                tvd: row["TVD"],
+                azimuth: row["AZIMUTH"],
+                inclination: row["INCLINATION"],
+                latitude: row["LATITUDE"],
+                longitude: row["LONGITUDE"]
+            }
+            trajectoryPoints.points.push(point);
+        })
+
+    return trajectoryPoints;
 }

@@ -3,7 +3,7 @@ import {ThunkAction} from "redux-thunk";
 import {LOAD_WELLBORE_TRAJECTORY_START, LOAD_WELLBORE_TRAJECTORY_SUCCESS, LOAD_WELLBORE_TRAJECTORY_FAIL, WellboreTrajectoryActionTypes} from "./types";
 import {
     loadWellboreTrajectory,
-    LoadWellboreTrajectoryResponse
+    WellboreTrajectoryData
 } from "../../api/wellbore_trajectory.api";
 
 type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, null, WellboreTrajectoryActionTypes>;
@@ -19,7 +19,7 @@ export function loadWellboreTrajectoryStartAction(wellboreId: string): WellboreT
 
 export function loadWellboreTrajectorySuccessAction(
     wellboreId: string,
-    response: LoadWellboreTrajectoryResponse
+    response: WellboreTrajectoryData
 ): WellboreTrajectoryActionTypes {
     return {
         type: LOAD_WELLBORE_TRAJECTORY_SUCCESS,
@@ -44,7 +44,6 @@ export function loadWellboreTrajectoryFailAction(
 }
 
 export const loadWellboreTrajectoryAction = (wellboreId: string): AppThunk => dispatch => {
-    console.log("load trajectory");
     dispatch(loadWellboreTrajectoryStartAction(wellboreId));
 
     return loadWellboreTrajectory(wellboreId)

@@ -42,7 +42,7 @@ export const wellboreTrajectoryReducer = (
                 ...state,
                 isWellboreTrajectoryLoading: false,
                 isWellboreTrajectoryLoaded: true,
-                points: action.payload.results.data.points,
+                points: action.payload.results.points,
             }
         case LOAD_WELLBORE_TRAJECTORY_FAIL:
             return {
