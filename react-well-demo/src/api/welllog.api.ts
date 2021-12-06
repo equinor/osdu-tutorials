@@ -1,23 +1,15 @@
 import { handleErrors } from "./handleErrors";
 import {getAccessToken} from "./getAccessToken";
 
-interface Wellbore {
-    id: string,
-    data: {
-        "Datasets": [string]
-    }
+interface WellLog {
+    id: string
 }
 
-export interface FindWellboreResponse {
-    results: Wellbore[];
+export interface FindWellLogResponse {
+    results: WellLog[];
 }
 
-/**
- * Return well log data by a given id
- */
-export async function findWellLogDatasetsById(wellboreId: string): Promise<FindWellboreResponse> {
-    const accessToken = await getAccessToken();
-
+async function getWellLogs(accessToken: string, wellboreId: string): Promise<FindWellLogResponse> {
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -29,13 +21,32 @@ export async function findWellLogDatasetsById(wellboreId: string): Promise<FindW
             "kind": "osdu:wks:work-product-component--WellLog:1.0.0",
             "query": `data.WellboreID:(\"${wellboreId}\")`,
             "returnedFields": [
-                "id",
-                "data.Datasets"
+                "id"
             ]
         })
     };
-
     return fetch("/api/search/v2/query", requestOptions)
+        .catch(handleErrors)
+        .then(response => response.json());
+}
+
+/**
+ * Return well log data by a given id
+ */
+export async function loadWellLogData(wellboreId: string): Promise<any> {
+    const accessToken = await getAccessToken();
+    const wellLogs = await getWellLogs(accessToken, wellboreId);
+
+    const ddmsUrl = `/api/os-wellbore-ddms/ddms/v3/welllogs/${wellLogs.results[0].id}/data`;
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'data-partition-id': 'opendes',
+            'Authorization': `Bearer ${accessToken}`
+        },
+    }
+    return fetch(ddmsUrl, requestOptions)
         .then(handleErrors)
         .then(response => response.json())
 }
