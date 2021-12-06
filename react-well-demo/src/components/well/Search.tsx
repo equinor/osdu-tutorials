@@ -32,7 +32,6 @@ export function Search() {
     const handleSubmit = (event: FormEvent | MouseEvent) => {
         event.preventDefault();
         dispatch(findWellsByNameAction(searchName));
-        dispatch(loadWellboreTrajectoryAction("aaaa"));
     };
 
     useEffect(() => {

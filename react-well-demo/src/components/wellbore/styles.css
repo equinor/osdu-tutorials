@@ -1,0 +1,48 @@
+.wellbore {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-indent: 0;
+    margin: 0;
+    padding-left: 26px;
+    font-size: 15px;
+    height: 30px;
+    letter-spacing: 1px;
+}
+
+.wellbore__control {
+    text-align: center;
+    width: 85px;
+}
+
+.wellbore__action {
+    position: relative;
+    width: 85px;
+    height: 20px;
+    line-height: 20px;
+    border: none;
+    border-radius: 4px;
+    text-align: center;
+    text-transform: uppercase;
+    background-color: #4285f4;
+    box-shadow: 0px 5.5px 5px rgba(0, 0, 0, 0.24), 0px 9px 18px rgba(0, 0, 0, 0.18);
+    color: white;
+    font-size: 12px;
+    outline: none;
+    transition: box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.wellbore__action:hover,
+.wellbore__action:focus {
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    0 1px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.wellbore__action:active {
+    box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+}
+
+.wellbore__action--visualize {
+    background-color: #4285f4;
+}

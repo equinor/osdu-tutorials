@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from "react";
+import React, {useRef, useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {createTrajectoryChart} from "./createTrajectoryChart";
 import "./style.css";
@@ -10,9 +10,14 @@ export function WellboreTrajectory() {
     const trajectory = useSelector((state: AppState) => state.wellboreTrajectory)
     const loaded = trajectory.isWellboreTrajectoryLoaded;
 
+    const [points, setPoints] = useState(trajectory.points);
+
+    console.log(loaded, trajectory.points)
+
     useEffect(() => {
         if (ref.current) {
-            createTrajectoryChart(ref.current, trajectory.points);
+            console.log("leng", points.length)
+            createTrajectoryChart(ref.current, points);
         }
     }, [trajectory]);
 

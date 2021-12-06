@@ -1,5 +1,8 @@
 import React from 'react';
 import { Wellbore as WellboreModel } from '../../store/well/reducer';
+import "./styles.css"
+import {useDispatch} from "react-redux";
+import {loadWellboreTrajectoryAction} from "../../store/wellbore_trajectory/actions";
 
 export interface WellboreProps {
     /** a wellbore_trajectory model to be represented by the component */
@@ -7,9 +10,20 @@ export interface WellboreProps {
 }
 
 export function Wellbore({ wellbore }: WellboreProps) {
+    const dispatch = useDispatch();
+
+    function handleClick() {
+        dispatch(loadWellboreTrajectoryAction(wellbore.id));
+    }
+
     return (
-        <li>
-            <span>{wellbore.id}</span>
+        <li className="wellbore">
+            <span onClick={handleClick}>{wellbore.id}</span>
+            <div className="wellbore__control">
+                <button className="wellbore__action--visualize" onClick={handleClick}>
+                    Visualize
+                </button>
+            </div>
         </li>
     );
 }

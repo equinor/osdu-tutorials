@@ -1,5 +1,6 @@
 .search {
     min-width: 370px;
+    max-width: 370px;
     background: #fafafa;
     display: flex;
     flex-direction: column;
@@ -70,3 +71,4 @@
 .search__submit:active {
     box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
 }
+

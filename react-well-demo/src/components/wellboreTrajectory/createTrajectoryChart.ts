@@ -19,6 +19,7 @@ export function createTrajectoryChart(
     const wellboreId = "Wellborepath";
 
     if (points.length > 1) {
+        console.log("points", points)
 
         const referenceSystem = new IntersectionReferenceSystem(points.map((p) => [p.azimuth, p.inclination, p.tvd]));
 
@@ -37,7 +38,6 @@ export function createTrajectoryChart(
             stroke: 'red',
             referenceSystem: referenceSystem,
         });
-
 
         const layers = [
             gridLayer,

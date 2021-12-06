@@ -62,8 +62,8 @@ async function getDatasetsFromWellboreTrajectory(accessToken: string, wellboreId
         },
         body: JSON.stringify({
             "kind": "osdu:wks:work-product-component--WellboreTrajectory:1.1.0",
-            "query": "data.WellboreID:(\"opendes:master-data--Wellbore:ad215042-05db-2b7e-e053-c818a488c79a\")",
-            //"query": `data.WellboreID:(\"${wellboreId}\")`,
+            //"query": "data.WellboreID:(\"opendes:master-data--Wellbore:ad215042-05db-2b7e-e053-c818a488c79a\")",
+            "query": `data.WellboreID:(\"${wellboreId}\")`,
             "returnedFields": [
                 "data.Datasets",
             ]
