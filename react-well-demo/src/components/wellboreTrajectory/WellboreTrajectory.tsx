@@ -10,14 +10,11 @@ export function WellboreTrajectory() {
     const trajectory = useSelector((state: AppState) => state.wellboreTrajectory)
     const loaded = trajectory.isWellboreTrajectoryLoaded;
 
-    const [points, setPoints] = useState(trajectory.points);
-
     console.log(loaded, trajectory.points)
 
     useEffect(() => {
         if (ref.current) {
-            console.log("leng", points.length)
-            createTrajectoryChart(ref.current, points);
+            createTrajectoryChart(ref.current, trajectory.points);
         }
     }, [trajectory]);
 

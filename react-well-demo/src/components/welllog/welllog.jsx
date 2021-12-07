@@ -1,105 +1,29 @@
-import React from "react";
-import {Readout, WellborePath, WellxTypes} from '@equinor/wellx-wellog'
+import React, {useEffect, useRef} from "react";
 import "./welllog.css"
+import {createWellLogChart} from "./createWellLogChart";
+import {useSelector} from "react-redux";
 
-class Welllog extends React.Component {
-    constructor(props) {
-        super(props)
-        this.wellLog = React.createRef()
-        this.readout = React.createRef()
-    }
+export default function WellLog() {
+    const wellLog = useRef(null);
+    const readout = useRef(null);
 
-    // HTML in render method
-    render() {
-        return (
-            <div className="chart">
-                <wellx-welllog ref={this.wellLog}></wellx-welllog>
-                <div class="readout" ref={this.readout}></div>
-            </div>
-        )
-    }
+    const wellLogState = useSelector(state => state.wellLogState);
 
-    componentDidMount() {
-        const wellLog = this.wellLog.current
-        const readoutElem = this.readout.current
-        wellLog.width = 400;
-        wellLog.height = 800;
+    console.log("welllog data ", wellLogState.data);
 
-        const config = {
-            activeScale: 0,
-            tracks: [
-                {
-                    id: 19,
-                    kind: 'graph',
-                    header: {
-                        label: 'Stability curves',
-                    },
-                    legend: {
-                        kind: 'graph',
-                    },
-                    widthMultiplier: 2.5,
-                    plot: {
-                        kind: 'graph',
-                        plots: [
-                            {
-                                kind: 'line',
-                                lineType: WellxTypes.LinePlotType['DashDot'],
-                                name: 'Name 1',
-                                color: '#DD2C00',
-                                unit: '',
-                                scale: {
-                                    kind: 'linear',
-                                    domain: [0, 2.2],
-                                },
-                                plotData: [
-                                    [0, 2.2],
-                                    [1500, 1.8],
-                                    [4000, 0.5],
-                                ],
-                            },
-                            {
-                                kind: 'line',
-                                lineType: 0,
-                                name: 'Name 2',
-                                color: '#22aa99',
-                                unit: '',
-                                scale: {
-                                    kind: 'linear',
-                                    domain: [0, 2.2],
-                                },
-                                plotData: [
-                                    [0, 1.5],
-                                    [500, 1.6],
-                                    [2000, 1.8],
-                                    [4500, 1.5],
-                                ],
-                            },
-                        ],
-                    },
-                },
-            ],
-            wellborePath: new WellborePath(0, [
-                {md: 0, tvd: 0},
-                {md: 1500, tvd: 1500},
-                {md: 3000, tvd: 2500},
-                {md: 4500, tvd: 3200},
-            ]),
+    useEffect(() => {
+        if (wellLog.current && readout.current) {
+            createWellLogChart(wellLog.current, readout.current, wellLogState.data);
         }
+    }, [wellLogState]);
 
-        const renderReadout = (depth) =>
-            Readout(readoutElem, config, depth.md, {
-                showHeaders: 1,
-                columns: 1,
-            })
-        renderReadout({md: null})
+    if (wellLogState.isLoaded === false)
+        return <dev/>;
 
-        wellLog.activeScale = config.activeScale
-        wellLog.wellborePath = config.wellborePath
-        wellLog.tracks = config.tracks
-        wellLog.addEventListener('wellxWellLogRubberBand', (event) =>
-            renderReadout(event.detail.depth),
-        )
-    }
+    return (
+        <div className="chart">
+            <wellx-welllog ref={wellLog}></wellx-welllog>
+            <div class="readout" ref={readout}></div>
+        </div>
+    );
 }
-
-export default Welllog;

@@ -12,15 +12,13 @@ export function createTrajectoryChart(
     container: HTMLElement,
     points: WellboreTrajectoryPoint[],
 ) {
-    const root = createChartRootElement();
-    container.innerHTML = '';
-    container.appendChild(root);
-
     const wellboreId = "Wellborepath";
 
-    if (points.length > 1) {
-        console.log("points", points)
+    const root = document.createElement("intersection");
+    container.innerHTML = "";
+    container.appendChild(root);
 
+    if (points.length > 1) {
         const referenceSystem = new IntersectionReferenceSystem(points.map((p) => [p.azimuth, p.inclination, p.tvd]));
 
         const gridLayer = new GridLayer('grid', {
@@ -48,7 +46,7 @@ export function createTrajectoryChart(
         const yBounds: [number, number] = [0, 1000];
 
         const controller = new Controller({
-            container: container,
+            container: root,
             layers: layers,
             axisOptions: {unitOfMeasure: 'm', xLabel: 'Displacement', yLabel: 'MD'},
             scaleOptions: {

@@ -18,7 +18,7 @@ async function getWellLogs(accessToken: string, wellboreId: string): Promise<Fin
             'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify({
-            "kind": "osdu:wks:work-product-component--WellLog:1.0.0",
+            "kind": "osdu:wks:work-product-component--Welllog:1.0.0",
             "query": `data.WellboreID:(\"${wellboreId}\")`,
             "returnedFields": [
                 "id"
@@ -43,7 +43,8 @@ export async function loadWellLogData(wellboreId: string): Promise<any> {
         headers: {
             'Content-Type': 'application/json',
             'data-partition-id': 'opendes',
-            'Authorization': `Bearer ${accessToken}`
+            'Authorization': `Bearer ${accessToken}`,
+            "accept": "application/json"
         },
     }
     return fetch(ddmsUrl, requestOptions)

@@ -1,13 +1,10 @@
 import React from 'react';
-import {Container, Row, Col} from "react-grid-system";
 import './styles.css';
 import {authProvider} from '../../authProvider';
 import {Search} from "../../components/well/Search";
-//import MyComponent from "../../components/intersection/intersection"
 import {WellboreTrajectory} from "../../components/wellboreTrajectory/WellboreTrajectory";
-import Welllog from "../../components/welllog/welllog";
+import WellLog from "../../components/welllog/welllog";
 import WellCanvas from "../../components/well/WellCanvas";
-import {Wellbore} from "../../components/wellbore/wellbore";
 
 /**
  * Contains login-logout functionality, search wells form,
@@ -46,6 +43,7 @@ export function MainPage() {
 
                 <WellCanvas/>
                 <WellboreTrajectory/>
+                <WellLog/>
 
                 {/* login-logout functionality. plain and simple */}
                 <div className='main__auth-buttons'>

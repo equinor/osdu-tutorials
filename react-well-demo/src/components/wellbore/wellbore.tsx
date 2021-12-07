@@ -3,6 +3,7 @@ import { Wellbore as WellboreModel } from '../../store/well/reducer';
 import "./styles.css"
 import {useDispatch} from "react-redux";
 import {loadWellboreTrajectoryAction} from "../../store/wellbore_trajectory/actions";
+import {loadWellLogDataAction} from "../../store/welllog/actions";
 
 export interface WellboreProps {
     /** a wellbore_trajectory model to be represented by the component */
@@ -14,6 +15,7 @@ export function Wellbore({ wellbore }: WellboreProps) {
 
     function handleClick() {
         dispatch(loadWellboreTrajectoryAction(wellbore.id));
+        dispatch(loadWellLogDataAction(wellbore.id));
     }
 
     return (
