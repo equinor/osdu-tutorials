@@ -1,11 +1,13 @@
 import { createStore, compose, applyMiddleware, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import { wellSearchReducer, WellSearchState } from "./well/reducer";
+import { wellLogReducer, WellLogState } from "./welllog/reducer";
 import { wellboreTrajectoryReducer, WellboreTrajectoryState } from "./wellbore_trajectory/reducer";
 
 export interface AppState {
     wellSearch: WellSearchState;
-    wellboreTrajectory: WellboreTrajectoryState
+    wellboreTrajectory: WellboreTrajectoryState;
+    wellLogState: WellLogState;
 }
 
 // property should be declared to soothe typescript struggles
@@ -21,6 +23,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const reducers = combineReducers<AppState>({
     wellSearch: wellSearchReducer,
     wellboreTrajectory: wellboreTrajectoryReducer,
+    wellLogState: wellLogReducer,
 });
 
 const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
