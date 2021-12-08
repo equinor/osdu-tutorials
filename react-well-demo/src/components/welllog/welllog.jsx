@@ -9,16 +9,14 @@ export default function WellLog() {
 
     const wellLogState = useSelector(state => state.wellLogState);
 
-    console.log("welllog data ", wellLogState.data);
-
     useEffect(() => {
         if (wellLog.current && readout.current) {
             createWellLogChart(wellLog.current, readout.current, wellLogState.data);
         }
     }, [wellLogState]);
 
-    if (wellLogState.isLoaded === false)
-        return <dev/>;
+    if (wellLogState.isLoaded === false || wellLog.current == undefined || readout.current == undefined)
+        return <div/>;
 
     return (
         <div className="chart">

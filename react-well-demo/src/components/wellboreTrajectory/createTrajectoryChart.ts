@@ -1,22 +1,11 @@
 import {Controller, GridLayer, IntersectionReferenceSystem, WellborepathLayer} from "@equinor/esv-intersection";
 import {WellboreTrajectoryPoint} from "../../api/wellbore_trajectory.api";
 
-function createChartRootElement(): HTMLElement {
-    const root = document.createElement('div');
-    //root.classList.add('trajectory-chart__layout');
-
-    return root;
-}
-
 export function createTrajectoryChart(
     container: HTMLElement,
     points: WellboreTrajectoryPoint[],
 ) {
     const wellboreId = "Wellborepath";
-
-    const root = document.createElement("intersection");
-    container.innerHTML = "";
-    container.appendChild(root);
 
     if (points.length > 1) {
         const referenceSystem = new IntersectionReferenceSystem(points.map((p) => [p.azimuth, p.inclination, p.tvd]));
@@ -46,7 +35,7 @@ export function createTrajectoryChart(
         const yBounds: [number, number] = [0, 1000];
 
         const controller = new Controller({
-            container: root,
+            container: container,
             layers: layers,
             axisOptions: {unitOfMeasure: 'm', xLabel: 'Displacement', yLabel: 'MD'},
             scaleOptions: {

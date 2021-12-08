@@ -32,7 +32,6 @@ async function getDatasetsFromWellboreTrajectory(accessToken: string, wellboreId
         },
         body: JSON.stringify({
             "kind": "osdu:wks:work-product-component--WellboreTrajectory:1.1.0",
-            //"query": "data.WellboreID:(\"opendes:master-data--Wellbore:ad215042-05db-2b7e-e053-c818a488c79a\")",
             "query": `data.WellboreID:(\"${wellboreId}\")`,
             "returnedFields": [
                 "data.Datasets",
@@ -53,6 +52,27 @@ async function downloadTrajectory(downloadUrl: string): Promise<string> {
         .then(response => response.text())
 }
 
+async function parseTrajectory(trajectoryData: string): Promise<WellboreTrajectoryPoint[]> {
+    return new Promise((resolve, reject) => {
+        const data: WellboreTrajectoryPoint[] = [];
+        parseString(trajectoryData, {delimiter: ",", headers: true})
+            .on("data", row=> {
+                let point: WellboreTrajectoryPoint = {
+                    md: row["MD"],
+                    tvd: row["TVD"],
+                    azimuth: row["AZIMUTH"],
+                    inclination: row["INCLINATION"],
+                    latitude: row["LATITUDE"],
+                    longitude: row["LONGITUDE"]
+                };
+                data.push(point);
+            })
+            .on("end", () => {
+                resolve(data);
+            });
+    });
+}
+
 /**
  * Return wellbore_trajectory trajectory by a given id
  */
@@ -61,25 +81,8 @@ export async function loadWellboreTrajectory(wellboreId: string): Promise<Wellbo
     const datasets = await getDatasetsFromWellboreTrajectory(accessToken, wellboreId);
     const trajectoryDataset = datasets.results[0].data.Datasets[0].slice(0, -1);
     const downloadUrl = await getDownloadUrl(accessToken, trajectoryDataset);
+    const trajectoryData = await downloadTrajectory(downloadUrl.SignedUrl);
 
-    let trajectoryPoints: WellboreTrajectoryData = {
-        points: []
-    };
-
-    let trajectoryData = await downloadTrajectory(downloadUrl.SignedUrl);
-    parseString(trajectoryData, {delimiter: ",", headers: true})
-        .on("error", err => console.error(err))
-        .on("data", row => {
-            let point: WellboreTrajectoryPoint = {
-                md: row["MD"],
-                tvd: row["TVD"],
-                azimuth: row["AZIMUTH"],
-                inclination: row["INCLINATION"],
-                latitude: row["LATITUDE"],
-                longitude: row["LONGITUDE"]
-            }
-            trajectoryPoints.points.push(point);
-        })
-
-    return trajectoryPoints;
+    const points = await parseTrajectory(trajectoryData);
+    return {points: points}
 }
