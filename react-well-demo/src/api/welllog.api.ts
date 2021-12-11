@@ -1,5 +1,6 @@
 import { handleErrors } from "./handleErrors";
 import {getAccessToken} from "./getAccessToken";
+import {URLSearchParams} from "url";
 
 interface WellLog {
     id: string
@@ -34,14 +35,19 @@ async function getWellLogs(accessToken: string, wellboreId: string): Promise<Fin
  * Return well log data by a given id
  */
 export async function loadWellLogData(wellboreId: string): Promise<any> {
+    console.log("load well log data", wellboreId)
     const accessToken = await getAccessToken();
     const wellLogs = await getWellLogs(accessToken, wellboreId);
+    console.log("well logs", wellLogs);
 
-    const ddmsUrl = `/api/os-wellbore-ddms/ddms/v3/welllogs/${wellLogs.results[0].id}/data`;
+    //const params = {"curves": "DEPTH, GR"}
+    //const searchParams = new URLSearchParams(params);
+    //console.log("search", searchParams.toString())
+
+    const ddmsUrl = `/api/os-wellbore-ddms/ddms/v3/welllogs/${wellLogs.results[0].id}/data?curves=DEPTH,GR`;
     const requestOptions = {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json',
             'data-partition-id': 'opendes',
             'Authorization': `Bearer ${accessToken}`,
             "accept": "application/json"

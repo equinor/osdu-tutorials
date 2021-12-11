@@ -5,10 +5,9 @@ export function createWellLogChart(wellLogRoot, readoutRoot, wellLogData) {
     wellLogRoot.width = 400;
     wellLogRoot.height = 800;
 
-    if (wellLogData !== undefined) {
+    console.log(wellLogData);
 
-        const grIdx = wellLogData.columns.findIndex(c => c === "GR");
-        const tvdIdx = wellLogData.columns.findIndex(c => c === "TVD");
+    if (wellLogData !== undefined) {
 
         /*
         let grPlotData = [];
@@ -41,14 +40,9 @@ export function createWellLogChart(wellLogRoot, readoutRoot, wellLogData) {
                                 unit: '',
                                 scale: {
                                     kind: 'linear',
-                                    domain: [0, 2.2],
+                                    domain: [0, 100],
                                 },
-                                plotData: [
-                                    [0, 1.5],
-                                    [500, 1.6],
-                                    [2000, 1.8],
-                                    [4500, 1.5],
-                                ],
+                                plotData: wellLogData,
                             },
                         ],
                     },
