@@ -2,7 +2,7 @@
   "name": "react-well-demo",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://020.api.osdu.equinor.com",
+  "proxy": "https://oaktree.energy.azure.com",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@equinor/esv-intersection": "^1.5.1",

@@ -25,12 +25,13 @@ interface Well {
  */
 export async function findWellsByName(wellName: string): Promise<FindWellsResponse> {
     const accessToken = await getAccessToken();
+    console.log(accessToken);
 
     const requestOptions = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'data-partition-id': 'opendes',
+            'data-partition-id': 'oaktree-acorn',
             'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify({
@@ -71,7 +72,7 @@ export async function findWellbores(wellId: string): Promise<FindWellboresRespon
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'data-partition-id': 'opendes',
+            'data-partition-id': 'oaktree-acorn',
             'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify({

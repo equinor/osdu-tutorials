@@ -15,7 +15,7 @@ async function getWellLogs(accessToken: string, wellboreId: string): Promise<Fin
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'data-partition-id': 'opendes',
+            'data-partition-id': 'oaktree-acorn',
             'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify({
@@ -35,10 +35,8 @@ async function getWellLogs(accessToken: string, wellboreId: string): Promise<Fin
  * Return well log data by a given id
  */
 export async function loadWellLogData(wellboreId: string): Promise<any> {
-    console.log("load well log data", wellboreId)
     const accessToken = await getAccessToken();
     const wellLogs = await getWellLogs(accessToken, wellboreId);
-    console.log("well logs", wellLogs);
 
     //const params = {"curves": "DEPTH, GR"}
     //const searchParams = new URLSearchParams(params);
@@ -48,7 +46,7 @@ export async function loadWellLogData(wellboreId: string): Promise<any> {
     const requestOptions = {
         method: 'GET',
         headers: {
-            'data-partition-id': 'opendes',
+            'data-partition-id': 'oaktree-acorn',
             'Authorization': `Bearer ${accessToken}`,
             "accept": "application/json"
         },

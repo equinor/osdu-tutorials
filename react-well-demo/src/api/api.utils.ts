@@ -22,7 +22,7 @@ export async function getDownloadUrl(accessToken: string, dataset: string): Prom
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'data-partition-id': 'opendes',
+            'data-partition-id': 'oaktree-acorn',
             'Authorization': `Bearer ${accessToken}`
         }
     };

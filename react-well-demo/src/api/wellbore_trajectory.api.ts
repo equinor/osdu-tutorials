@@ -27,7 +27,7 @@ async function getDatasetsFromWellboreTrajectory(accessToken: string, wellboreId
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'data-partition-id': 'opendes',
+            'data-partition-id': 'oaktree-acorn',
             'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify({
