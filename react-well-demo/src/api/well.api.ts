@@ -37,7 +37,7 @@ export async function findWellsByName(wellName: string): Promise<FindWellsRespon
         body: JSON.stringify({
             "kind": "osdu:wks:master-data--Well:1.0.0",
             "limit": 100,
-            "query": wellName !== "" ? `id: "opendes:master-data--Well:${wellName}"` : " ",
+            "query": wellName !== "" ? `id: "oaktree-acorn:master-data--Well:${wellName}"` : " ",
             "returnedFields": [
                 "id",
                 "data.SpatialLocation.Wgs84Coordinates.geometries"

@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../store";
 import {findWellsByNameAction} from "../../store/well/actions";
 import {loadWellboreTrajectoryAction} from "../../store/wellbore_trajectory/actions";
+import { WellHierarchyGraph } from './HierarchyGraph';
 
 const noSearchHint = 'Results will be displayed here';
 const noDataHint = 'No wells found';
@@ -74,7 +75,7 @@ export function Search() {
                         <Alert message={noDataHint} type="warning" />
                     ) : (
                         // success, wells will be drawn
-                        foundWells.map(well => (
+                        foundWells.slice(0, 10).map(well => (
                             <FoundWell
                                 key={well.resourceId}
                                 well={well}
@@ -84,6 +85,9 @@ export function Search() {
                 ) : (
                     <Alert message={noSearchHint} type="success"/>
                 )}
+            </div>
+            <div className="search__hierarchy-area">
+                <WellHierarchyGraph/>
             </div>
         </div>
     );
