@@ -1,20 +1,22 @@
-import { handleErrors } from './handleErrors';
-import {getAccessToken} from "./getAccessToken";
+import { handleErrors } from "./handleErrors";
+import { getAccessToken } from "./getAccessToken";
 
 export interface FindWellsResponse {
-    results: Well[];
+  results: Well[];
 }
 
 interface Well {
-    id: string;
-    data: {
-        "SpatialLocation.Wgs84Coordinates": {
-            geometries: [{
-                coordinates: [number, number];
-            }
-            ]
-        };
-    }
+  id: string;
+  data: {
+    "SpatialLocation.Wgs84Coordinates": {
+      geometries: [
+        {
+          coordinates: [number, number];
+        }
+      ];
+    };
+    FacilityName: string;
+  };
 }
 
 /**
@@ -23,68 +25,72 @@ interface Well {
  * Error handler is included
  * @param {string} wellName
  */
-export async function findWellsByName(wellName: string): Promise<FindWellsResponse> {
-    const accessToken = await getAccessToken();
-    console.log(accessToken);
+export async function findWellsByName(
+  wellName: string
+): Promise<FindWellsResponse> {
+  const accessToken = await getAccessToken();
+  console.log(accessToken);
 
-    const requestOptions = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'data-partition-id': 'oaktree-acorn',
-            'Authorization': `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({
-            "kind": "osdu:wks:master-data--Well:1.0.0",
-            "limit": 100,
-            "query": wellName !== "" ? `id: "opendes:master-data--Well:${wellName}"` : " ",
-            "returnedFields": [
-                "id",
-                "data.SpatialLocation.Wgs84Coordinates.geometries"
-            ]
-        })
-    };
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "data-partition-id": "oaktree-acorn",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({
+      kind: "osdu:wks:master-data--Well:1.0.0",
+      limit: 100,
+      query:
+        wellName !== "" ? `id: "opendes:master-data--Well:${wellName}"` : " ",
+      returnedFields: [
+        "id",
+        "data.SpatialLocation.Wgs84Coordinates.geometries",
+        "data.FacilityName",
+      ],
+    }),
+  };
 
-    return fetch("/api/search/v2/query", requestOptions)
-        .then(handleErrors)
-        .then(response => response.json())
+  return fetch("/api/search/v2/query", requestOptions)
+    .then(handleErrors)
+    .then((response) => response.json());
 }
 
 /**
  * Interface for wellbore_trajectory
  */
 interface Wellbore {
-    id: string;
+  id: string;
 }
 
 export interface FindWellboresResponse {
-    results: Wellbore[];
+  results: Wellbore[];
 }
 
 /**
  * Returns a collection of wellbores for a given well
  * @param wellId
  */
-export async function findWellbores(wellId: string): Promise<FindWellboresResponse> {
-    const accessToken = await getAccessToken();
+export async function findWellbores(
+  wellId: string
+): Promise<FindWellboresResponse> {
+  const accessToken = await getAccessToken();
 
-    const requestOptions = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'data-partition-id': 'oaktree-acorn',
-            'Authorization': `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({
-            "kind": "osdu:wks:master-data--Wellbore:1.0.0",
-            "query": `data.WellID: "${wellId}"`,
-            "limit": 100,
-            "returnedFields": [
-                "id",
-            ]
-        })
-    };
-    return fetch("/api/search/v2/query", requestOptions)
-        .then(handleErrors)
-        .then(response => response.json())
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "data-partition-id": "oaktree-acorn",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({
+      kind: "osdu:wks:master-data--Wellbore:1.0.0",
+      query: `data.WellID: "${wellId}"`,
+      limit: 100,
+      returnedFields: ["id"],
+    }),
+  };
+  return fetch("/api/search/v2/query", requestOptions)
+    .then(handleErrors)
+    .then((response) => response.json());
 }
