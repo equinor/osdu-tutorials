@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Spin, Alert } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import "./styles.css";
@@ -17,17 +17,23 @@ export function FoundWell({ well }: FoundWellProps) {
 
   const markClass = ["well__open-mark"].concat("well__open-mark--opened");
   const [opened, setOpened] = useState(false);
-
-  const toggleWellbores = () => {
+  useEffect(() => {
     if (
-      !opened &&
       !well.areWellboresLoading &&
       (!well.areWellboresLoaded || well.wellboresError !== undefined)
     ) {
       dispatch(findWellboresAction(well.resourceId));
     }
+  }, []);
 
-    setOpened(!opened);
+  const toggleWellbores = () => {
+    // if (
+    //   !well.areWellboresLoading &&
+    //   (!well.areWellboresLoaded || well.wellboresError !== undefined)
+    // ) {
+    //   dispatch(findWellboresAction(well.resourceId));
+    // }
+    // setOpened(!opened);
   };
 
   const loadingIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -55,11 +61,11 @@ export function FoundWell({ well }: FoundWellProps) {
       </div>
       {/* a list of a well's wellbores, with a drop-down behavior */}
       <ul className="well__trajectories-list">
-        {opened &&
-          well.wellbores.map((wb) => <Wellbore key={wb.id} wellbore={wb} />)}
+        {well?.wellbores ??
+          well?.wellbores?.map((wb) => <Wellbore key={wb.id} wellbore={wb} />)}
       </ul>
 
-      {opened && well.wellboresError && (
+      {well.wellboresError && (
         <Alert
           message="Cannot load wellbore"
           showIcon

@@ -22,9 +22,9 @@ export function Wellbore({ wellbore }: WellboreProps) {
     <li className="wellbore">
       <span onClick={handleClick}>{wellbore.id}</span>
       <div className="wellbore__control">
-        <button className="wellbore__action--visualize" onClick={handleClick}>
+        {/* <button className="wellbore__action--visualize" onClick={handleClick}>
           Visualize
-        </button>
+        </button> */}
       </div>
     </li>
   );
