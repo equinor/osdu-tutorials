@@ -29,7 +29,6 @@ export async function findWellsByName(
   wellName: string
 ): Promise<FindWellsResponse> {
   const accessToken = await getAccessToken();
-  console.log(accessToken);
 
   const requestOptions = {
     method: "POST",

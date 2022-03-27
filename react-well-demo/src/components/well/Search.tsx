@@ -6,7 +6,8 @@ import { FoundWell } from "./FoundWell";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../store";
 import { findWellsByNameAction } from "../../store/well/actions";
-import { loadWellboreTrajectoryAction } from "../../store/wellbore_trajectory/actions";
+import SearchIcon from '@mui/icons-material/Search';
+import Button from '@mui/material/Button';
 
 const noSearchHint = "Results will be displayed here";
 const noDataHint = "No wells found";
@@ -49,7 +50,6 @@ export function Search() {
     // and never realy watched, creating an illusion of a coherent behavior
     setSearchName(storedSearchName);
   }, [storedSearchName]);
-  console.log("searchName: " + searchName);
   return (
     <div className="search">
       {/* a search form at the top */}
@@ -61,12 +61,14 @@ export function Search() {
           onChange={handleSearchChange}
           value={searchName}
         />
+        {/* <Button type="submit" onClick={handleSubmit} className="search__submit">{SearchIcon}</Button> */}
+        {/* <Button type="submit" value={SearchIcon}></Button> */}
         <input
           className="search__submit"
           type="submit"
           value="Search"
           onClick={handleSubmit}
-        />
+        ></input>
       </form>
       {/* a result representing area right under it */}
       <div className="search__well-area">

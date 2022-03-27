@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { Map, Marker, Overlay } from "pigeon-maps";
 import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../store";
 import { WellSearchResponse } from "../../store/well/reducer";
 import {
   findWellsByNameAction,
-  findWellboresAction,
 } from "../../store/well/actions";
 import { FoundWell } from "./FoundWell";
+import { Search } from "./Search";
+import Account from '../account'
+import {Box} from '@mui/material';
 
-const WellCanvas = () => {
-  const [selectedWell, setSelectedWell] = useState<WellSearchResponse>(
-    {} as WellSearchResponse
-  );
-  /*
-run this here?
-  dispatch(findWellsByNameAction(searchName));
-  */
+const WellCanvas: FC = () => {
+  const [selectedWell, setSelectedWell] = useState<WellSearchResponse | undefined>();
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(findWellsByNameAction(""));
@@ -26,15 +23,7 @@ run this here?
     (state: AppState) => state.wellSearch.foundWells
   );
 
-  // useEffect(() => {
-  //   dispatch(findWellboresAction(selectedWell.resourceId));
-  // }, [selectedWell]);
-
-  //   const dispatch = useDispatch();
-  //   const wells = dispatch({ type: })
-
-  if (foundWells.length == 0) {
-    //return <></>;
+  if (foundWells.length === 0) {
 
     const xcenter = 58.81955986060605; //somewhere Norwegian sea
     const ycenter = 2.5851197555555556;
@@ -53,12 +42,14 @@ run this here?
   const locations = foundWells.map((well) => well.location);
   const xcenter = locations.reduce((x, y) => x + y.lat, 0) / locations.length;
   const ycenter = locations.reduce((x, y) => x + y.lng, 0) / locations.length;
-  //console.log(xcenter + " " + ycenter);
 
   return (
     <div className="canvas">
-      <div className="header">Well map</div>
-      <Map height={400} center={[xcenter, ycenter]} zoom={11}>
+      <Map center={[xcenter, ycenter]} zoom={11}>
+      <Box className="search-container">
+        <Search />
+        <Account />
+      </Box>
         {foundWells.map((well) => (
           <Marker
             onClick={() => setSelectedWell(well)}
@@ -70,19 +61,14 @@ run this here?
         ))}
         {selectedWell && (
           <Overlay
-            anchor={[selectedWell?.location?.lat, selectedWell?.location?.lng]}
-          >
-            <div>{selectedWell.FacilityName}</div>
+            anchor={[selectedWell?.location?.lat, selectedWell?.location?.lng]} offset={[25, 35]}
+          > 
+            <div className="highligh-circle"/>
           </Overlay>
         )}
       </Map>
       <div>
-        {/* <div>
-          {selectedWell.wellbores?.map((wb) => (
-            <div key={wb.id}>{wb.id}</div>
-          ))}
-        </div> */}
-        <FoundWell well={selectedWell} />
+        {selectedWell && <FoundWell well={selectedWell} />}
       </div>
     </div>
   );

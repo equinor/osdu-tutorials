@@ -17,15 +17,9 @@ export function Wellbore({ wellbore }: WellboreProps) {
     dispatch(loadWellboreTrajectoryAction(wellbore.id));
     dispatch(loadWellLogDataAction(wellbore.id));
   }
-  console.log(wellbore);
   return (
     <li className="wellbore">
       <span onClick={handleClick}>{wellbore.id}</span>
-      <div className="wellbore__control">
-        {/* <button className="wellbore__action--visualize" onClick={handleClick}>
-          Visualize
-        </button> */}
-      </div>
     </li>
   );
 }

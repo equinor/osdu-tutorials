@@ -10,11 +10,6 @@
     letter-spacing: 1px;
 }
 
-.wellbore__control {
-    text-align: center;
-    width: 85px;
-}
-
 .wellbore__action {
     position: relative;
     width: 85px;

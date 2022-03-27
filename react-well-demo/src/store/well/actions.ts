@@ -45,7 +45,6 @@ export function findWellboresSuccessAction(
     wellId: string,
     response: FindWellboresResponse
 ): WellSearchActionTypes {
-    console.log(response);
     return {
         type: FIND_WELLBORES_SUCCESS,
         payload: {
