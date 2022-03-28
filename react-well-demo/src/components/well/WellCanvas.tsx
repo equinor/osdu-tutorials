@@ -7,16 +7,20 @@ import { findWellsByNameAction } from "../../store/well/actions";
 import { FoundWell } from "./FoundWell";
 import { Col, Row } from "react-bootstrap";
 
+import { Search } from "./Search";
+import Account from "../account";
+import { Box } from "@mui/material";
+
 const WellCanvas: FC = () => {
+  const [selectedWell, setSelectedWell] = useState<
+    WellSearchResponse | undefined
+  >();
+
   const dispatch = useDispatch();
 
   const searchName = useSelector(
     (state: AppState) => state.wellSearch.searchName
   );
-
-  const [selectedWell, setSelectedWell] = useState<
-    WellSearchResponse | undefined
-  >();
 
   useEffect(() => {
     dispatch(findWellsByNameAction(""));
@@ -62,7 +66,7 @@ const WellCanvas: FC = () => {
     <div className="canvas">
       <Row className="h-80">
         <Col>
-          <Map center={[xcenter, ycenter]} zoom={6}>
+          <Map center={[xcenter, ycenter]} zoom={11}>
             {foundWells.map((well) => (
               <Marker
                 onClick={() => setSelectedWell(well)}
