@@ -19,7 +19,8 @@ export function Wellbore({ wellbore }: WellboreProps) {
   }
   return (
     <li className="wellbore">
-      <span onClick={handleClick}>{wellbore.id}</span>
+      {/* <span onClick={handleClick}>{wellbore.id}</span> */}
+      {wellbore.FacilityName}
     </li>
   );
 }

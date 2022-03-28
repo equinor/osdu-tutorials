@@ -7,6 +7,8 @@ import { Wellbore } from "../wellbore/wellbore";
 import { useDispatch, useSelector } from "react-redux";
 import { findWellboresAction } from "../../store/well/actions";
 import { AppState } from "../../store";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 
 export interface FoundWellProps {
   /** a well model to be represented by the component */
@@ -48,15 +50,32 @@ export function FoundWell({ well }: FoundWellProps) {
               )}
             </div>
           </div>
-          <span>{well.FacilityName}</span>
         </label>
+        <Row>
+          <Col md={2}>Well name</Col>
+          <Col>{well.FacilityName}</Col>
+        </Row>
+        <Row>
+          <Col md={2}>
+            {wellbores && wellbores?.length > 1 ? "Well bores" : "Well bore"}
+            {/* Well bore{(wellbores && wellbores?.length > 1) ?? "s"} */}
+          </Col>
+        </Row>
+
+        {wellbores?.map((wb) => (
+          <Row>
+            <Col>
+              <Wellbore key={wb.id} wellbore={wb} />
+            </Col>
+          </Row>
+        ))}
       </div>
       {/* a list of a well's wellbores, with a drop-down behavior */}
-      <ul className="well__trajectories-list">
+      {/* <ul className="well__trajectories-list">
         {wellbores?.map((wb) => (
           <Wellbore key={wb.id} wellbore={wb} />
         ))}
-      </ul>
+      </ul> */}
 
       {well.wellboresError && (
         <Alert

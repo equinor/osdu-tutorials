@@ -36,6 +36,7 @@ const initialState: WellSearchState = {
 
 export interface Wellbore {
   id: string;
+  FacilityName: string;
 }
 
 export interface WellSearchResponse {
@@ -127,6 +128,7 @@ export const wellSearchReducer = (
                 wellbores: action.payload.result.results.map(
                   (d): Wellbore => ({
                     id: d.id,
+                    FacilityName: d.data.FacilityName,
                   })
                 ),
                 areWellboresLoading: false,
