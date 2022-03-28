@@ -3,18 +3,20 @@ import { Map, Marker, Overlay } from "pigeon-maps";
 import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../store";
 import { WellSearchResponse } from "../../store/well/reducer";
-import {
-  findWellsByNameAction,
-} from "../../store/well/actions";
+import { findWellsByNameAction } from "../../store/well/actions";
 import { FoundWell } from "./FoundWell";
-import { Search } from "./Search";
-import Account from '../account'
-import {Box} from '@mui/material';
 
 const WellCanvas: FC = () => {
-  const [selectedWell, setSelectedWell] = useState<WellSearchResponse | undefined>();
-
   const dispatch = useDispatch();
+
+  const searchName = useSelector(
+    (state: AppState) => state.wellSearch.searchName
+  );
+
+  const [selectedWell, setSelectedWell] = useState<
+    WellSearchResponse | undefined
+  >();
+
   useEffect(() => {
     dispatch(findWellsByNameAction(""));
   }, []);
@@ -23,21 +25,33 @@ const WellCanvas: FC = () => {
     (state: AppState) => state.wellSearch.foundWells
   );
 
-  if (foundWells.length === 0) {
+  useEffect(() => {
+    if (searchName) {
+      //dispatch(findWellsByNameAction(searchName));
+      const well = foundWells.find((i) => i.FacilityName === searchName);
+      if (well) setSelectedWell(well);
+    }
+  }, [searchName, foundWells]);
 
-    const xcenter = 58.81955986060605; //somewhere Norwegian sea
-    const ycenter = 2.5851197555555556;
-    return (
-      <div className="canvas">
-        <div className="header">Well map empty</div>
-        <Map
-          height={400}
-          defaultCenter={[xcenter, ycenter]}
-          defaultZoom={7}
-        ></Map>
-      </div>
-    );
+  console.log("selectedWell", selectedWell, searchName);
+  if (foundWells.length === 0) {
+    return null;
   }
+
+  // if (foundWells.length === 0) {
+  //   const xcenter = 58.81955986060605; //somewhere Norwegian sea
+  //   const ycenter = 2.5851197555555556;
+  //   return (
+  //     <div className="canvas">
+  //       <div className="header">Well map empty</div>
+  //       <Map
+  //         height={400}
+  //         defaultCenter={[xcenter, ycenter]}
+  //         defaultZoom={7}
+  //       ></Map>
+  //     </div>
+  //   );
+  // }
 
   const locations = foundWells.map((well) => well.location);
   const xcenter = locations.reduce((x, y) => x + y.lat, 0) / locations.length;
@@ -45,11 +59,7 @@ const WellCanvas: FC = () => {
 
   return (
     <div className="canvas">
-      <Map center={[xcenter, ycenter]} zoom={11}>
-      <Box className="search-container">
-        <Search />
-        <Account />
-      </Box>
+      <Map center={[xcenter, ycenter]} zoom={6}>
         {foundWells.map((well) => (
           <Marker
             onClick={() => setSelectedWell(well)}
@@ -61,15 +71,14 @@ const WellCanvas: FC = () => {
         ))}
         {selectedWell && (
           <Overlay
-            anchor={[selectedWell?.location?.lat, selectedWell?.location?.lng]} offset={[25, 35]}
-          > 
-            <div className="highligh-circle"/>
+            anchor={[selectedWell?.location?.lat, selectedWell?.location?.lng]}
+            offset={[25, 35]}
+          >
+            <div className="highligh-circle" />
           </Overlay>
         )}
       </Map>
-      <div>
-        {selectedWell && <FoundWell well={selectedWell} />}
-      </div>
+      <div>{selectedWell && <FoundWell well={selectedWell} />}</div>
     </div>
   );
 };

@@ -14,23 +14,26 @@ export interface FoundWellProps {
 }
 
 export function FoundWell({ well }: FoundWellProps) {
-
   const dispatch = useDispatch();
   const markClass = ["well__open-mark"].concat("well__open-mark--opened");
 
   useEffect(() => {
-      dispatch(findWellboresAction(well.resourceId));
+    dispatch(findWellboresAction(well.resourceId));
   }, [well]);
 
-  const updatedWells = useSelector((state: AppState) => state.wellSearch.foundWells);
-  const wellbores = updatedWells.find((i) => i.resourceId === well.resourceId)?.wellbores;
+  const updatedWells = useSelector(
+    (state: AppState) => state.wellSearch.foundWells
+  );
+  const wellbores = updatedWells.find(
+    (i) => i.resourceId === well.resourceId
+  )?.wellbores;
 
   const loadingIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
   return (
     <div className="well">
       <div className="well__label-container">
-        <label className="well__label" >
+        <label className="well__label">
           {/* despite a special responsive icon, the whole name is clickable */}
           {/* not to force a user into a pixel-hunting */}
 
@@ -50,8 +53,9 @@ export function FoundWell({ well }: FoundWellProps) {
       </div>
       {/* a list of a well's wellbores, with a drop-down behavior */}
       <ul className="well__trajectories-list">
-        {
-          wellbores?.map((wb) => <Wellbore key={wb.id} wellbore={wb} />)}
+        {wellbores?.map((wb) => (
+          <Wellbore key={wb.id} wellbore={wb} />
+        ))}
       </ul>
 
       {well.wellboresError && (

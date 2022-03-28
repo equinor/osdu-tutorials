@@ -1,9 +1,10 @@
 .main__auth-buttons {
-    padding: 16px;
+  padding: 16px;
 }
 
 .auth-button {
-    padding: 16px;
-    color: black;
-    background-color: white;
+  padding: 16px;
+  color: black;
+  background-color: white;
+  height: 42px;
 }

@@ -6,8 +6,9 @@ import { FoundWell } from "./FoundWell";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../store";
 import { findWellsByNameAction } from "../../store/well/actions";
-import SearchIcon from '@mui/icons-material/Search';
-import Button from '@mui/material/Button';
+import SearchIcon from "@mui/icons-material/Search";
+import Button from "@mui/material/Button";
+import { TextField } from "@mui/material";
 
 const noSearchHint = "Results will be displayed here";
 const noDataHint = "No wells found";
@@ -31,36 +32,36 @@ export function Search() {
     (state: AppState) => state.wellSearch.searchError
   );
 
-  const [searchName, setSearchName] = useState(storedSearchName);
+  const [searchName, setSearchName] = useState<string>("");
   const loadingIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
-  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    // note, that this value does not sync with the store
-    // store will be updated only on an actual search action
-    setSearchName(event.target.value);
-  };
+  console.log(searchName);
 
   const handleSubmit = (event: FormEvent | MouseEvent) => {
     event.preventDefault();
     dispatch(findWellsByNameAction(searchName));
   };
 
-  useEffect(() => {
-    // without this update, value from the store used only once.
-    // and never realy watched, creating an illusion of a coherent behavior
-    setSearchName(storedSearchName);
-  }, [storedSearchName]);
+  // useEffect(() => {
+  //   // without this update, value from the store used only once.
+  //   // and never realy watched, creating an illusion of a coherent behavior
+  //   setSearchName(storedSearchName);
+  // }, [storedSearchName]);
   return (
     <div className="search">
       {/* a search form at the top */}
       <form className="search__area" onSubmit={handleSubmit}>
+        {/* <TextField value={searchName} onChange={handleSearchChange} /> */}
         <input
           type="text"
           className="search__text"
           placeholder="Enter well name"
-          onChange={handleSearchChange}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearchName(e.target.value)
+          }
           value={searchName}
         />
+
         {/* <Button type="submit" onClick={handleSubmit} className="search__submit">{SearchIcon}</Button> */}
         {/* <Button type="submit" value={SearchIcon}></Button> */}
         <input
@@ -68,10 +69,10 @@ export function Search() {
           type="submit"
           value="Search"
           onClick={handleSubmit}
-        ></input>
+        />
       </form>
       {/* a result representing area right under it */}
-      <div className="search__well-area">
+      {/* <div className="search__well-area">
         {areWellsSearching ? (
           // a progress, an anticipation
           <Spin indicator={loadingIcon} />
@@ -98,7 +99,7 @@ export function Search() {
         ) : (
           <Alert message={noSearchHint} type="success" />
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
