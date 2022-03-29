@@ -34,7 +34,7 @@ export function FoundWell({ well }: FoundWellProps) {
 
   return (
     <div className="well">
-      <div className="well__label-container">
+      <div className="well__label-container px-3">
         <label className="well__label">
           {/* despite a special responsive icon, the whole name is clickable */}
           {/* not to force a user into a pixel-hunting */}
@@ -51,11 +51,11 @@ export function FoundWell({ well }: FoundWellProps) {
             </div>
           </div>
         </label>
-        <Row>
+        <Row className="welldetails">
           <Col md={2}>Well name</Col>
           <Col>{well.FacilityName}</Col>
         </Row>
-        <Row>
+        <Row className="welldetails">
           <Col md={2}>
             {wellbores && wellbores?.length > 1 ? "Well bores" : "Well bore"}
             {/* Well bore{(wellbores && wellbores?.length > 1) ?? "s"} */}
@@ -63,7 +63,7 @@ export function FoundWell({ well }: FoundWellProps) {
         </Row>
 
         {wellbores?.map((wb) => (
-          <Row>
+          <Row className="welldetails">
             <Col md={2}></Col>
             <Col>
               <Wellbore key={wb.id} wellbore={wb} />

@@ -5,6 +5,7 @@ import { AppState } from "../../store";
 import { WellSearchResponse } from "../../store/well/reducer";
 import { findWellsByNameAction } from "../../store/well/actions";
 import { FoundWell } from "./FoundWell";
+import { Col, Row } from "react-bootstrap";
 
 const WellCanvas: FC = () => {
   const dispatch = useDispatch();
@@ -59,26 +60,37 @@ const WellCanvas: FC = () => {
 
   return (
     <div className="canvas">
-      <Map center={[xcenter, ycenter]} zoom={6}>
-        {foundWells.map((well) => (
-          <Marker
-            onClick={() => setSelectedWell(well)}
-            key={well.resourceId}
-            color={"red"}
-            width={20}
-            anchor={[well.location.lat, well.location.lng]}
-          />
-        ))}
-        {selectedWell && (
-          <Overlay
-            anchor={[selectedWell?.location?.lat, selectedWell?.location?.lng]}
-            offset={[25, 35]}
-          >
-            <div className="highligh-circle" />
-          </Overlay>
-        )}
-      </Map>
-      <div>{selectedWell && <FoundWell well={selectedWell} />}</div>
+      <Row className="h-80">
+        <Col>
+          <Map center={[xcenter, ycenter]} zoom={6}>
+            {foundWells.map((well) => (
+              <Marker
+                onClick={() => setSelectedWell(well)}
+                key={well.resourceId}
+                color={"red"}
+                width={20}
+                anchor={[well.location.lat, well.location.lng]}
+              />
+            ))}
+            {selectedWell && (
+              <Overlay
+                anchor={[
+                  selectedWell?.location?.lat,
+                  selectedWell?.location?.lng,
+                ]}
+                offset={[25, 35]}
+              >
+                <div className="highligh-circle" />
+              </Overlay>
+            )}
+          </Map>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <div>{selectedWell && <FoundWell well={selectedWell} />}</div>
+        </Col>
+      </Row>
     </div>
   );
 };

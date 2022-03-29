@@ -5,12 +5,12 @@
   flex-direction: column;
 }
 
-/* .canvas {
-    height: 85%;
-    min-width: 700px;
-    background: #fafafa;
-    flex-direction: column;
-} */
+.canvas {
+  height: 85%;
+  min-width: 700px;
+  /* background: #fafafa; */
+  flex-direction: column;
+}
 
 .search-container {
   display: flex;
@@ -80,3 +80,11 @@
   height: 50px;
   width: 50px;
 }
+
+.h-80 {
+  height: 80% !important;
+}
+
+/* .welldetails {
+  background: #fafafa;
+} */
