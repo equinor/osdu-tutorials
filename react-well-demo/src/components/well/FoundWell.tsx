@@ -57,7 +57,7 @@ export function FoundWell({ well }: FoundWellProps) {
         </Row>
         <Row className="welldetails">
           <Col md={2}>
-            {wellbores && wellbores?.length > 1 ? "Well bores" : "Well bore"}
+            {wellbores && wellbores?.length > 1 ? "Wellbores" : "Wellbore"}
             {/* Well bore{(wellbores && wellbores?.length > 1) ?? "s"} */}
           </Col>
         </Row>
