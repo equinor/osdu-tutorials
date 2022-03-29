@@ -3,7 +3,7 @@ import "./styles.css";
 import { WellboreTrajectory } from "../../components/wellboreTrajectory/WellboreTrajectory";
 import WellLog from "../../components/welllog/welllog";
 import WellCanvas from "../../components/well/WellCanvas";
-import { Search } from "../../components/well/Search";
+import Search from "../../components/well/Search";
 import Account from "../../components/account";
 import { Box } from "@mui/material";
 

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, FormEvent, useEffect } from "react";
+import React, { FC, ChangeEvent, useState, FormEvent, useEffect } from "react";
 import { Spin, Alert } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import "./styles.css";
@@ -8,12 +8,16 @@ import { AppState } from "../../store";
 import { findWellsByNameAction } from "../../store/well/actions";
 import SearchIcon from "@mui/icons-material/Search";
 import Button from "@mui/material/Button";
-import { TextField } from "@mui/material";
+import { TextField, Autocomplete } from "@mui/material";
 
 const noSearchHint = "Results will be displayed here";
 const noDataHint = "No wells found";
 
-export function Search() {
+type SearchProps = {
+  setSearchNameCallback: (searchName: string) => void;
+};
+
+const Search: FC<SearchProps> = ({ setSearchNameCallback }) => {
   const dispatch = useDispatch();
 
   const storedSearchName = useSelector(
@@ -32,14 +36,14 @@ export function Search() {
     (state: AppState) => state.wellSearch.searchError
   );
 
+  const wellNames = foundWells.map((well) => well.FacilityName);
+
   const [searchName, setSearchName] = useState<string>("");
   const loadingIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
-  console.log(searchName);
-
   const handleSubmit = (event: FormEvent | MouseEvent) => {
     event.preventDefault();
-    dispatch(findWellsByNameAction(searchName));
+    setSearchNameCallback(searchName);
   };
 
   // useEffect(() => {
@@ -52,7 +56,7 @@ export function Search() {
       {/* a search form at the top */}
       <form className="search__area" onSubmit={handleSubmit}>
         {/* <TextField value={searchName} onChange={handleSearchChange} /> */}
-        <input
+        {/* <input
           type="text"
           className="search__text"
           placeholder="Enter well name"
@@ -60,8 +64,24 @@ export function Search() {
             setSearchName(e.target.value)
           }
           value={searchName}
+        /> */}
+        <Autocomplete
+          sx={{ width: 300 }}
+          options={wellNames}
+          onChange={(_, v) => setSearchName(v ?? "")}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              type="text"
+              className="search__text"
+              placeholder="Enter well name"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSearchName(e?.target.value)
+              }
+              value={searchName}
+            />
+          )}
         />
-
         {/* <Button type="submit" onClick={handleSubmit} className="search__submit">{SearchIcon}</Button> */}
         {/* <Button type="submit" value={SearchIcon}></Button> */}
         <input
@@ -102,4 +122,6 @@ export function Search() {
       </div> */}
     </div>
   );
-}
+};
+
+export default Search;
