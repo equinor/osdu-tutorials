@@ -1,26 +1,27 @@
-import { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { Map, Marker } from "pigeon-maps";
 import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../store";
 import { WellSearchResponse } from "../../store/well/reducer";
 import { findWellsByNameAction } from "../../store/well/actions";
 import { FoundWell } from "./FoundWell";
-import { Col, Row } from "react-bootstrap";
 import { CircularProgress } from "@mui/material";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
-const WellCanvas: FC = () => {
+type WellCanvasProps = {
+  searchName: string;
+};
+
+const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
+  const dispatch = useDispatch();
+
   const [selectedWell, setSelectedWell] = useState<
     WellSearchResponse | undefined
   >();
   const [wellZoom, setWellZoom] = useState<boolean>(false);
   const [searchedWell, setSearchedWell] = useState<WellSearchResponse>(
     {} as WellSearchResponse
-  );
-
-  const dispatch = useDispatch();
-
-  const searchName = useSelector(
-    (state: AppState) => state.wellSearch.searchName
   );
 
   useEffect(() => {
