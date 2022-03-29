@@ -70,7 +70,6 @@ const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
               well.resourceId === selectedWell?.resourceId
                 ? {
                     zIndex: 1,
-                    position: "relative",
                   }
                 : {}
             }
