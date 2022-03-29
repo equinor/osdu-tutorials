@@ -1,25 +1,26 @@
-import React, { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect } from "react";
 import { Map, Marker } from "pigeon-maps";
 import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../store";
 import { WellSearchResponse } from "../../store/well/reducer";
 import { findWellsByNameAction } from "../../store/well/actions";
 import { FoundWell } from "./FoundWell";
+import { Col, Row } from "react-bootstrap";
 import { CircularProgress } from "@mui/material";
 
-type WellCanvasProps = {
-  searchName: string;
-};
-
-const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
-  const dispatch = useDispatch();
-
+const WellCanvas: FC = () => {
   const [selectedWell, setSelectedWell] = useState<
     WellSearchResponse | undefined
   >();
   const [wellZoom, setWellZoom] = useState<boolean>(false);
   const [searchedWell, setSearchedWell] = useState<WellSearchResponse>(
     {} as WellSearchResponse
+  );
+
+  const dispatch = useDispatch();
+
+  const searchName = useSelector(
+    (state: AppState) => state.wellSearch.searchName
   );
 
   useEffect(() => {
@@ -56,28 +57,36 @@ const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
 
   return (
     <div className="canvas">
-      <Map center={[xcenter, ycenter]} zoom={wellZoom ? 11 : 6}>
-        {foundWells.map((well) => (
-          <Marker
-            onClick={() => setSelectedWell(well)}
-            key={well.resourceId}
-            color={
-              well.resourceId === selectedWell?.resourceId ? "green" : "red"
-            }
-            width={20}
-            anchor={[well.location.lat, well.location.lng]}
-            style={
-              well.resourceId === selectedWell?.resourceId
-                ? {
-                    zIndex: 1,
-                    position: "relative",
-                  }
-                : {}
-            }
-          />
-        ))}
-      </Map>
-      <div>{selectedWell && <FoundWell well={selectedWell} />}</div>
+      <Row className="h-80">
+        <Col>
+          <Map center={[xcenter, ycenter]} zoom={wellZoom ? 11 : 6}>
+            {foundWells.map((well) => (
+              <Marker
+                onClick={() => setSelectedWell(well)}
+                key={well.resourceId}
+                color={
+                  well.resourceId === selectedWell?.resourceId ? "green" : "red"
+                }
+                width={20}
+                anchor={[well.location.lat, well.location.lng]}
+                style={
+                  well.resourceId === selectedWell?.resourceId
+                    ? {
+                        zIndex: 1,
+                        position: "relative",
+                      }
+                    : {}
+                }
+              />
+            ))}
+          </Map>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <div>{selectedWell && <FoundWell well={selectedWell} />}</div>
+        </Col>
+      </Row>
     </div>
   );
 };

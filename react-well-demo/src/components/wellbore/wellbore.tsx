@@ -4,6 +4,7 @@ import "./styles.css";
 import { useDispatch } from "react-redux";
 import { loadWellboreTrajectoryAction } from "../../store/wellbore_trajectory/actions";
 import { loadWellLogDataAction } from "../../store/welllog/actions";
+import Col from "react-bootstrap/Col";
 
 export interface WellboreProps {
   /** a wellbore_trajectory model to be represented by the component */
@@ -18,8 +19,15 @@ export function Wellbore({ wellbore }: WellboreProps) {
     dispatch(loadWellLogDataAction(wellbore.id));
   }
   return (
-    <li className="wellbore">
-      <span onClick={handleClick}>{wellbore.id}</span>
-    </li>
+    <>
+      {/* <span onClick={handleClick}>{wellbore.id}</span> */}
+
+      <Col md={2} className="fs-4">
+        {wellbore.FacilityName}
+      </Col>
+      <Col md={6} className="fs-6">
+        {wellbore.id}
+      </Col>
+    </>
   );
 }

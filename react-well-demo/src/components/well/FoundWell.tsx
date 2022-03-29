@@ -7,6 +7,8 @@ import { Wellbore } from "../wellbore/wellbore";
 import { useDispatch, useSelector } from "react-redux";
 import { findWellboresAction } from "../../store/well/actions";
 import { AppState } from "../../store";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 
 export interface FoundWellProps {
   /** a well model to be represented by the component */
@@ -32,7 +34,7 @@ export function FoundWell({ well }: FoundWellProps) {
 
   return (
     <div className="well">
-      <div className="well__label-container">
+      <div className="well__label-container px-3">
         <label className="well__label">
           {/* despite a special responsive icon, the whole name is clickable */}
           {/* not to force a user into a pixel-hunting */}
@@ -48,15 +50,49 @@ export function FoundWell({ well }: FoundWellProps) {
               )}
             </div>
           </div>
-          <span>{well.FacilityName}</span>
         </label>
+        <Row className="welldetails">
+          <Col md={2} className="fs-4">
+            Well name
+          </Col>
+          <Col md={2} className="fs-4">
+            {well.FacilityName}
+          </Col>
+          <Col md={6} className="fs-6">
+            {well.resourceId}
+          </Col>
+        </Row>
+
+        <Row className="welldetails">
+          <Col>&nbsp;</Col>
+        </Row>
+
+        {/* <Row className="welldetails">
+          <Col md={2} className="fs-4">
+            {wellbores && wellbores?.length > 1 ? "Wellbores" : "Wellbore"}
+            
+          </Col>
+        </Row> */}
+
+        {wellbores?.map((wb, index) => (
+          <Row className="welldetails">
+            <Col md={2} className="fs-4">
+              {index === 0
+                ? wellbores && wellbores?.length > 1
+                  ? "Wellbores"
+                  : "Wellbore"
+                : null}
+            </Col>
+            <Wellbore key={wb.id} wellbore={wb} />
+          </Row>
+        ))}
       </div>
       {/* a list of a well's wellbores, with a drop-down behavior */}
-      <ul className="well__trajectories-list">
+      {/* <ul className="well__trajectories-list">
         {wellbores?.map((wb) => (
           <Wellbore key={wb.id} wellbore={wb} />
         ))}
-      </ul>
+      </ul> */}
 
       {well.wellboresError && (
         <Alert

@@ -60,6 +60,9 @@ export async function findWellsByName(
  */
 interface Wellbore {
   id: string;
+  data: {
+    FacilityName: string;
+  };
 }
 
 export interface FindWellboresResponse {
@@ -86,7 +89,7 @@ export async function findWellbores(
       kind: "osdu:wks:master-data--Wellbore:1.0.0",
       query: `data.WellID: "${wellId}"`,
       limit: 100,
-      returnedFields: ["id"],
+      returnedFields: ["id", "data.FacilityName"],
     }),
   };
   return fetch("/api/search/v2/query", requestOptions)
