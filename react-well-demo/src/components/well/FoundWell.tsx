@@ -64,6 +64,7 @@ export function FoundWell({ well }: FoundWellProps) {
 
         {wellbores?.map((wb) => (
           <Row>
+            <Col md={2}></Col>
             <Col>
               <Wellbore key={wb.id} wellbore={wb} />
             </Col>

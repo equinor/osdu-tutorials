@@ -18,9 +18,9 @@ export function Wellbore({ wellbore }: WellboreProps) {
     dispatch(loadWellLogDataAction(wellbore.id));
   }
   return (
-    <li className="wellbore">
+    <>
       {/* <span onClick={handleClick}>{wellbore.id}</span> */}
       {wellbore.FacilityName}
-    </li>
+    </>
   );
 }
