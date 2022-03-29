@@ -52,22 +52,38 @@ export function FoundWell({ well }: FoundWellProps) {
           </div>
         </label>
         <Row className="welldetails">
-          <Col md={2}>Well name</Col>
-          <Col>{well.FacilityName}</Col>
-        </Row>
-        <Row className="welldetails">
-          <Col md={2}>
-            {wellbores && wellbores?.length > 1 ? "Wellbores" : "Wellbore"}
-            {/* Well bore{(wellbores && wellbores?.length > 1) ?? "s"} */}
+          <Col md={2} className="fs-4">
+            Well name
+          </Col>
+          <Col md={2} className="fs-4">
+            {well.FacilityName}
+          </Col>
+          <Col md={6} className="fs-6">
+            {well.resourceId}
           </Col>
         </Row>
 
-        {wellbores?.map((wb) => (
+        <Row className="welldetails">
+          <Col>&nbsp;</Col>
+        </Row>
+
+        {/* <Row className="welldetails">
+          <Col md={2} className="fs-4">
+            {wellbores && wellbores?.length > 1 ? "Wellbores" : "Wellbore"}
+            
+          </Col>
+        </Row> */}
+
+        {wellbores?.map((wb, index) => (
           <Row className="welldetails">
-            <Col md={2}></Col>
-            <Col>
-              <Wellbore key={wb.id} wellbore={wb} />
+            <Col md={2} className="fs-4">
+              {index === 0
+                ? wellbores && wellbores?.length > 1
+                  ? "Wellbores"
+                  : "Wellbore"
+                : null}
             </Col>
+            <Wellbore key={wb.id} wellbore={wb} />
           </Row>
         ))}
       </div>
