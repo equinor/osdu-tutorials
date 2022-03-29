@@ -66,7 +66,7 @@ const WellCanvas: FC = () => {
     <div className="canvas">
       <Row className="h-80">
         <Col>
-          <Map center={[xcenter, ycenter]} zoom={11}>
+          <Map center={[xcenter, ycenter]} zoom={6}>
             {foundWells.map((well) => (
               <Marker
                 onClick={() => setSelectedWell(well)}
