@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./styles.css";
 import { WellboreTrajectory } from "../../components/wellboreTrajectory/WellboreTrajectory";
 import WellLog from "../../components/welllog/welllog";
@@ -12,11 +12,13 @@ import { Box } from "@mui/material";
  * found wells list and area for drawing well trajectories
  */
 export function MainPage() {
+  const [searchName, setSearchName] = useState<string>("");
+
   return (
     <div className="main">
       <div className="main__page">
         <Box className="navbar">
-          <Search />
+          <Search setSearchNameCallback={setSearchName} />
           <Account />
         </Box>
         <WellCanvas />
