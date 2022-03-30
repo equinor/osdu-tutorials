@@ -74,7 +74,6 @@ const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
                   well.resourceId === selectedWell?.resourceId
                     ? {
                         zIndex: 1,
-                        position: "relative",
                       }
                     : {}
                 }
@@ -88,6 +87,8 @@ const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
           <div>{selectedWell && <FoundWell well={selectedWell} />}</div>
         </Col>
       </Row>
+
+      <div>{selectedWell && <FoundWell well={selectedWell} />}</div>
     </div>
   );
 };
