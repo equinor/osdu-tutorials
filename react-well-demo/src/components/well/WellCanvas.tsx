@@ -36,7 +36,6 @@ const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
     if (searchName) {
       const well = foundWells?.find((well) => well.FacilityName === searchName);
       if (well) {
-        console.log("yo");
         setSelectedWell(well);
         setSearchedWell(well);
         setWellZoom(true);
