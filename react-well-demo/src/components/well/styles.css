@@ -95,3 +95,7 @@
 .welldetails {
   align-items: center;
 }
+
+.welldetails .col-md-2:first-child {
+  color: #212529a8;
+}
