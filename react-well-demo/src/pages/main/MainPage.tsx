@@ -19,7 +19,7 @@ export function MainPage() {
       <div className="main__page">
         <Box className="navbar">
           <Search setSearchNameCallback={setSearchName} />
-          {/* <Account /> */}
+          <Account />
         </Box>
         <WellCanvas searchName={searchName} />
         <WellboreTrajectory />
