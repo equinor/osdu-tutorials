@@ -9,6 +9,7 @@ import { findWellboresAction } from "../../store/well/actions";
 import { AppState } from "../../store";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import { CircularProgress } from "@mui/material";
 
 export interface FoundWellProps {
   /** a well model to be represented by the component */
@@ -73,19 +74,22 @@ export function FoundWell({ well }: FoundWellProps) {
             
           </Col>
         </Row> */}
-
-        {wellbores?.map((wb, index) => (
-          <Row className="welldetails">
-            <Col md={2} className="fs-4">
-              {index === 0
-                ? wellbores && wellbores?.length > 1
-                  ? "Wellbores"
-                  : "Wellbore"
-                : null}
-            </Col>
-            <Wellbore key={wb.id} wellbore={wb} />
-          </Row>
-        ))}
+        {wellbores?.length === 0 ? (
+          <CircularProgress className="loader" />
+        ) : (
+          wellbores?.map((wb, index) => (
+            <Row className="welldetails">
+              <Col md={2} className="fs-4">
+                {index === 0
+                  ? wellbores && wellbores?.length > 1
+                    ? "Wellbores"
+                    : "Wellbore"
+                  : null}
+              </Col>
+              <Wellbore key={wb.id} wellbore={wb} />
+            </Row>
+          ))
+        )}
       </div>
       {/* a list of a well's wellbores, with a drop-down behavior */}
       {/* <ul className="well__trajectories-list">
