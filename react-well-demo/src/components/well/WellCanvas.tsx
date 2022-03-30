@@ -8,6 +8,7 @@ import { FoundWell } from "./FoundWell";
 import { CircularProgress } from "@mui/material";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { Container } from "react-bootstrap";
 
 type WellCanvasProps = {
   searchName: string;
@@ -81,11 +82,13 @@ const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
           </Map>
         </Col>
       </Row>
-      <Row>
-        <Col>
-          <div>{selectedWell && <FoundWell well={selectedWell} />}</div>
-        </Col>
-      </Row>
+      <Container fluid>
+        <Row>
+          <Col>
+            <div>{selectedWell && <FoundWell well={selectedWell} />}</div>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };
