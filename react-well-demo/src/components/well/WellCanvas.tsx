@@ -87,8 +87,6 @@ const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
           <div>{selectedWell && <FoundWell well={selectedWell} />}</div>
         </Col>
       </Row>
-
-      <div>{selectedWell && <FoundWell well={selectedWell} />}</div>
     </div>
   );
 };
