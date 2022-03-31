@@ -68,7 +68,7 @@ export const useTrajectories = () => {
       console.error(`Error while fetching wells: ${e}`);
     }
   };
-
+  console.log(trajectories, "trajectories");
   return {
     wellboreType,
     trajectories,

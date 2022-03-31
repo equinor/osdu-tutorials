@@ -29,7 +29,7 @@ const TrajectoryPage: FC = () => {
   return (
     <Box>
       <Intersection />
-      <WellboreTrajectory trajectory={trajectories} />
+      {trajectories ? <WellboreTrajectory trajectory={trajectories} /> : null}
     </Box>
   );
 };

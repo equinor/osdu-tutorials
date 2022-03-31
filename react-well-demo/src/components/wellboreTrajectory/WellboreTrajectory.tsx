@@ -6,7 +6,7 @@ import { AppState } from "../../store";
 import { Trajectory } from "../../hooks/types/trajectory";
 
 type WellboreTrajectoryProps = {
-  trajectory?: Trajectory;
+  trajectory: Trajectory;
 };
 
 const WellboreTrajectory: FC<WellboreTrajectoryProps> = ({ trajectory }) => {
@@ -14,16 +14,13 @@ const WellboreTrajectory: FC<WellboreTrajectoryProps> = ({ trajectory }) => {
 
   //const trajectory = useSelector((state: AppState) => state.wellboreTrajectory);
   //const loaded = trajectory.isWellboreTrajectoryLoaded;
+  console.log("trajectory:");
   console.log(trajectory);
   useEffect(() => {
     if (ref.current) {
-      //createTrajectoryChart(ref.current, trajectory?.points!);
+      createTrajectoryChart(ref.current, trajectory?.points);
     }
   }, [trajectory]);
-
-  if (!trajectory) {
-    return null;
-  }
 
   return (
     <div className="intersection-container">
