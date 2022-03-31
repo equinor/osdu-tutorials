@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Wellbore as WellboreModel } from "../../store/well/reducer";
 import "./styles.css";
 import Col from "react-bootstrap/Col";
-import { Button, Snackbar } from "@mui/material";
+import { Alert, Button, Snackbar, SnackbarOrigin } from "@mui/material";
 import WellboreTrajectory from "../wellboreTrajectory/WellboreTrajectory";
 import { useTrajectories } from "../../hooks/useTrajectories";
 
@@ -11,8 +11,18 @@ export interface WellboreProps {
   wellbore: WellboreModel;
 }
 
+export interface AlertState extends SnackbarOrigin {
+  open: boolean;
+}
+
 export function Wellbore({ wellbore }: WellboreProps) {
   const [displayTrajectory, setDisplayTrajectory] = useState<boolean>(false);
+  const [openAlert, setOpenAlert] = useState<AlertState>({
+    open: false,
+    vertical: "bottom",
+    horizontal: "center",
+  });
+  const { open, vertical, horizontal } = openAlert;
   const { fetchWellBoreId, wellboreType, fetchTrajectories, trajectories } =
     useTrajectories();
 
@@ -26,12 +36,12 @@ export function Wellbore({ wellbore }: WellboreProps) {
     }
   }, [wellboreType]);
 
-  console.log(trajectories);
+  const handleCloseAlert = () => {
+    setOpenAlert({ open: false, vertical, horizontal });
+  };
 
   return (
     <>
-      {/* <span onClick={handleClick}>{wellbore.id}</span> */}
-
       <Col md={2} className="fs-4">
         {wellbore.FacilityName}
       </Col>
@@ -49,9 +59,20 @@ export function Wellbore({ wellbore }: WellboreProps) {
           </Button>
         )}
       </Col>
-      {trajectories.length !== 0 && displayTrajectory ? (
+      {trajectories.length !== 0 && displayTrajectory && (
         <WellboreTrajectory trajectoryPoints={trajectories} />
-      ) : null}
+      )}
+      {trajectories.length === 0 && displayTrajectory && (
+        <Snackbar
+          open={true}
+          autoHideDuration={500}
+          onClose={handleCloseAlert}
+          message="No trajectories available on wellbore"
+          anchorOrigin={{ vertical, horizontal }}
+        >
+          <Alert severity="error">No trajectories available on wellbore</Alert>
+        </Snackbar>
+      )}
     </>
   );
 }

@@ -10,7 +10,6 @@ export default function WellLog() {
   const wellLogState = useSelector((state) => state.wellLogState);
 
   useEffect(() => {
-    console.log("render...");
     if (wellLogRef.current && readout.current) {
       createWellLogChart(
         wellLogRef.current,

@@ -20,7 +20,6 @@ const WellboreTrajectory: FC<WellboreTrajectoryProps> = ({
 
   return (
     <div className="intersection-container">
-      <div className="intersection-header">Intersection</div>
       <div className="intersection-root">
         <div ref={ref} className="intersection-layers" />
       </div>
