@@ -25,14 +25,15 @@ export const useTrajectories = () => {
     };
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions).then(
-        (response) => {
-          if (!response.ok) {
-            throw new Error(response.statusText);
-          }
-          return response;
+      const response = await fetch(
+        `${API_BASE_URL}/api/search/v2/query`,
+        requestOptions
+      ).then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
         }
-      );
+        return response;
+      });
       const data = (await response.json()) as WellboreType;
       setWellboreType(data);
     } catch (e) {
@@ -52,25 +53,26 @@ export const useTrajectories = () => {
     };
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/storage/v2/records/${trajectoryId}`, requestOptions).then(
-        (response) => {
-          if (!response.ok) {
-            throw new Error(response.statusText);
-          }
-          return response;
+      const response = await fetch(
+        `${API_BASE_URL}/api/storage/v2/records/${trajectoryId}`,
+        requestOptions
+      ).then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
         }
-      );
+        return response;
+      });
       const data = (await response.json()) as Trajectory;
       setTrajectories(data);
     } catch (e) {
       console.error(`Error while fetching wells: ${e}`);
     }
-  }
+  };
 
   return {
     wellboreType,
     trajectories,
     fetchWellBoreId,
-    fetchTrajectories
+    fetchTrajectories,
   };
 };

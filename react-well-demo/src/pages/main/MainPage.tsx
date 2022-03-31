@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./styles.css";
-import { WellboreTrajectory } from "../../components/wellboreTrajectory/WellboreTrajectory";
+import WellboreTrajectory from "../../components/wellboreTrajectory/WellboreTrajectory";
 import WellLog from "../../components/welllog/welllog";
 import WellCanvas from "../../components/well/WellCanvas";
 import Search from "../../components/well/Search";
@@ -22,7 +22,7 @@ export function MainPage() {
           <Account />
         </Box>
         <WellCanvas searchName={searchName} />
-        <WellboreTrajectory />
+        {/* <WellboreTrajectory /> */}
         <WellLog />
       </div>
     </div>

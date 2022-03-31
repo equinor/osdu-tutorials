@@ -2,7 +2,7 @@ import React, { FC, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box } from "@mui/material";
 import Intersection from "../../components/intersection/intersection";
-import { WellboreTrajectory } from "../../components/wellboreTrajectory/WellboreTrajectory";
+import WellboreTrajectory from "../../components/wellboreTrajectory/WellboreTrajectory";
 import { useTrajectories } from "../../hooks/useTrajectories";
 
 type WellboreParams = {
@@ -11,7 +11,8 @@ type WellboreParams = {
 
 const TrajectoryPage: FC = () => {
   const { wellboreId } = useParams<WellboreParams>();
-  const { fetchWellBoreId, wellboreType, fetchTrajectories, trajectories } = useTrajectories();
+  const { fetchWellBoreId, wellboreType, fetchTrajectories, trajectories } =
+    useTrajectories();
 
   useEffect(() => {
     fetchWellBoreId(wellboreId);
@@ -19,16 +20,16 @@ const TrajectoryPage: FC = () => {
 
   useEffect(() => {
     if (wellboreType) {
-      fetchTrajectories(wellboreType.results[0].id)
+      fetchTrajectories(wellboreType.results[0].id);
     }
-  }, [wellboreType])
+  }, [wellboreType]);
 
   console.log(wellboreType, trajectories);
 
   return (
     <Box>
       <Intersection />
-      <WellboreTrajectory />
+      <WellboreTrajectory trajectory={trajectories} />
     </Box>
   );
 };

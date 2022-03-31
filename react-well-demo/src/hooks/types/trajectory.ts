@@ -1,16 +1,16 @@
 export type Trajectory = {
-    points: WellboreTrajectoryPoint[];
-}
+  points: WellboreTrajectoryPoint[];
+};
 
 export type WellboreTrajectoryPoint = {
-    md: number;
-    tvd: number;
-    azimuth: number;
-    inclination: number;
-    longitude: number;
-    latitude: number;
-  }
-  
+  md: number;
+  tvd: number;
+  azimuth: number;
+  inclination: number;
+  longitude: number;
+  latitude: number;
+};
+
 type WellboreTrajectoryData = {
-    points: WellboreTrajectoryPoint[];
-  }
+  points: WellboreTrajectoryPoint[];
+};

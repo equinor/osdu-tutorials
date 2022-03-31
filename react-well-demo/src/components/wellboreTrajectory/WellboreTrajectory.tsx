@@ -1,23 +1,28 @@
-import React, { useRef, useEffect } from "react";
+import React, { FC, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { createTrajectoryChart } from "./createTrajectoryChart";
 import "./style.css";
 import { AppState } from "../../store";
+import { Trajectory } from "../../hooks/types/trajectory";
 
-export function WellboreTrajectory() {
+type WellboreTrajectoryProps = {
+  trajectory?: Trajectory;
+};
+
+const WellboreTrajectory: FC<WellboreTrajectoryProps> = ({ trajectory }) => {
   const ref = useRef<HTMLDivElement>(null);
 
-  const trajectory = useSelector((state: AppState) => state.wellboreTrajectory);
-  const loaded = trajectory.isWellboreTrajectoryLoaded;
+  //const trajectory = useSelector((state: AppState) => state.wellboreTrajectory);
+  //const loaded = trajectory.isWellboreTrajectoryLoaded;
   console.log(trajectory);
   useEffect(() => {
     if (ref.current) {
-      createTrajectoryChart(ref.current, trajectory.points);
+      //createTrajectoryChart(ref.current, trajectory?.points!);
     }
   }, [trajectory]);
 
-  if (loaded === false) {
-    return <div />;
+  if (!trajectory) {
+    return null;
   }
 
   return (
@@ -28,4 +33,6 @@ export function WellboreTrajectory() {
       </div>
     </div>
   );
-}
+};
+
+export default WellboreTrajectory;
