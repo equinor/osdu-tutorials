@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Wellbore as WellboreModel } from "../../store/well/reducer";
 import "./styles.css";
 import Col from "react-bootstrap/Col";
-import { Button } from "@mui/material";
+import { Button, Snackbar } from "@mui/material";
 import WellboreTrajectory from "../wellboreTrajectory/WellboreTrajectory";
 import { useTrajectories } from "../../hooks/useTrajectories";
 
@@ -21,10 +21,12 @@ export function Wellbore({ wellbore }: WellboreProps) {
   }, [wellbore.id]);
 
   useEffect(() => {
-    if (wellboreType) {
+    if (wellboreType?.results[0]?.id) {
       fetchTrajectories(wellboreType.results[0].id);
     }
   }, [wellboreType]);
+
+  console.log(trajectories);
 
   return (
     <>
@@ -47,7 +49,7 @@ export function Wellbore({ wellbore }: WellboreProps) {
           </Button>
         )}
       </Col>
-      {trajectories && displayTrajectory ? (
+      {trajectories.length !== 0 && displayTrajectory ? (
         <WellboreTrajectory trajectoryPoints={trajectories} />
       ) : null}
     </>
