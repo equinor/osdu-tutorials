@@ -11,13 +11,19 @@ type WellboreParams = {
 
 const TrajectoryPage: FC = () => {
   const { wellboreId } = useParams<WellboreParams>();
-  const { fetchWellBoreId, wellboreType } = useTrajectories();
+  const { fetchWellBoreId, wellboreType, fetchTrajectories, trajectories } = useTrajectories();
 
   useEffect(() => {
     fetchWellBoreId(wellboreId);
   }, [wellboreId]);
 
-  console.log(wellboreType);
+  useEffect(() => {
+    if (wellboreType) {
+      fetchTrajectories(wellboreType.results[0].id)
+    }
+  }, [wellboreType])
+
+  console.log(wellboreType, trajectories);
 
   return (
     <Box>
