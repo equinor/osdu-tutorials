@@ -2,11 +2,13 @@ import { useState } from "react";
 import { getAccessToken } from "../api/getAccessToken";
 import { WellboreType } from "./types/wellbores";
 import { API_BASE_URL } from "../constants/baseUrl";
-import { Trajectory } from "./types/trajectory";
+import { Trajectory, WellboreTrajectoryPoint } from "./types/trajectory";
 
 export const useTrajectories = () => {
   const [wellboreType, setWellboreType] = useState<WellboreType>();
-  const [trajectories, setTrajectories] = useState<Trajectory>();
+  const [trajectories, setTrajectories] = useState<WellboreTrajectoryPoint[]>(
+    []
+  );
 
   const fetchWellBoreId = async (wellBoreId: string): Promise<void> => {
     const accessToken = await getAccessToken();
@@ -63,12 +65,12 @@ export const useTrajectories = () => {
         return response;
       });
       const data = (await response.json()) as Trajectory;
-      setTrajectories(data);
+      setTrajectories(data?.data?.ExtensionProperties?.trajectory);
     } catch (e) {
       console.error(`Error while fetching wells: ${e}`);
     }
   };
-  console.log(trajectories, "trajectories");
+
   return {
     wellboreType,
     trajectories,

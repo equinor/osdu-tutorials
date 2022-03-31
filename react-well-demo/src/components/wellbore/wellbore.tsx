@@ -1,12 +1,10 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { Wellbore as WellboreModel } from "../../store/well/reducer";
 import "./styles.css";
-import { useDispatch } from "react-redux";
-import { loadWellboreTrajectoryAction } from "../../store/wellbore_trajectory/actions";
-import { loadWellLogDataAction } from "../../store/welllog/actions";
 import Col from "react-bootstrap/Col";
 import { Button } from "@mui/material";
+import WellboreTrajectory from "../wellboreTrajectory/WellboreTrajectory";
+import { useTrajectories } from "../../hooks/useTrajectories";
 
 export interface WellboreProps {
   /** a wellbore_trajectory model to be represented by the component */
@@ -14,14 +12,20 @@ export interface WellboreProps {
 }
 
 export function Wellbore({ wellbore }: WellboreProps) {
-  const dispatch = useDispatch();
-  const history = useHistory();
+  const [displayTrajectory, setDisplayTrajectory] = useState<boolean>(false);
+  const { fetchWellBoreId, wellboreType, fetchTrajectories, trajectories } =
+    useTrajectories();
 
-  function handleClick() {
-    // dispatch(loadWellboreTrajectoryAction(wellbore.id));
-    // dispatch(loadWellLogDataAction(wellbore.id));
-    history.push(`/trajectory/${wellbore.id}`);
-  }
+  useEffect(() => {
+    fetchWellBoreId(wellbore.id);
+  }, [wellbore.id]);
+
+  useEffect(() => {
+    if (wellboreType) {
+      fetchTrajectories(wellboreType.results[0].id);
+    }
+  }, [wellboreType]);
+
   return (
     <>
       {/* <span onClick={handleClick}>{wellbore.id}</span> */}
@@ -33,8 +37,19 @@ export function Wellbore({ wellbore }: WellboreProps) {
         {wellbore.id}
       </Col>
       <Col>
-        <Button onClick={handleClick}>View trajectories</Button>
+        {displayTrajectory ? (
+          <Button onClick={() => setDisplayTrajectory(false)}>
+            Hide trajectories
+          </Button>
+        ) : (
+          <Button onClick={() => setDisplayTrajectory(true)}>
+            View trajectories
+          </Button>
+        )}
       </Col>
+      {trajectories && displayTrajectory ? (
+        <WellboreTrajectory trajectoryPoints={trajectories} />
+      ) : null}
     </>
   );
 }

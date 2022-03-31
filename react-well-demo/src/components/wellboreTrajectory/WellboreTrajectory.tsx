@@ -1,26 +1,22 @@
 import React, { FC, useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { createTrajectoryChart } from "./createTrajectoryChart";
 import "./style.css";
-import { AppState } from "../../store";
-import { Trajectory } from "../../hooks/types/trajectory";
+import { WellboreTrajectoryPoint } from "../../hooks/types/trajectory";
 
 type WellboreTrajectoryProps = {
-  trajectory: Trajectory;
+  trajectoryPoints: WellboreTrajectoryPoint[];
 };
 
-const WellboreTrajectory: FC<WellboreTrajectoryProps> = ({ trajectory }) => {
+const WellboreTrajectory: FC<WellboreTrajectoryProps> = ({
+  trajectoryPoints,
+}) => {
   const ref = useRef<HTMLDivElement>(null);
 
-  //const trajectory = useSelector((state: AppState) => state.wellboreTrajectory);
-  //const loaded = trajectory.isWellboreTrajectoryLoaded;
-  console.log("trajectory:");
-  console.log(trajectory);
   useEffect(() => {
     if (ref.current) {
-      createTrajectoryChart(ref.current, trajectory?.points);
+      createTrajectoryChart(ref.current, trajectoryPoints);
     }
-  }, [trajectory]);
+  }, [trajectoryPoints]);
 
   return (
     <div className="intersection-container">

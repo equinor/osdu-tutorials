@@ -1,9 +1,10 @@
 import React, { FC, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box } from "@mui/material";
+import { Map, Marker } from "pigeon-maps";
 import Intersection from "../../components/intersection/intersection";
-import WellboreTrajectory from "../../components/wellboreTrajectory/WellboreTrajectory";
 import { useTrajectories } from "../../hooks/useTrajectories";
+import WellboreTrajectory from "../../components/wellboreTrajectory/WellboreTrajectory";
 
 type WellboreParams = {
   wellboreId: string;
@@ -24,12 +25,14 @@ const TrajectoryPage: FC = () => {
     }
   }, [wellboreType]);
 
-  console.log(wellboreType, trajectories);
-
   return (
     <Box>
-      <Intersection />
-      {trajectories ? <WellboreTrajectory trajectory={trajectories} /> : null}
+      {/* {trajectories.length !== 0 ? (
+        <Intersection trajectory={trajectories} />
+      ) : null} */}
+      {trajectories ? (
+        <WellboreTrajectory trajectoryPoints={trajectories} />
+      ) : null}
     </Box>
   );
 };

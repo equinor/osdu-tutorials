@@ -12,13 +12,15 @@ import { getPicks, getPositionLog, getStratColumns } from "./data";
 import "./intersection.css";
 import { getPicksData, transformFormationData } from "./utils";
 
-class Intersection extends React.Component {
+class MyComponent extends React.Component {
   constructor(props) {
     super(props);
     this.myRef = React.createRef();
   }
 
   componentDidMount() {
+    const points = this.props.trajectory;
+    console.log(points);
     if (this.myRef != null) {
       const wellboreId = "Wellborepath";
       const xBounds = [0, 1000];
@@ -90,4 +92,4 @@ class Intersection extends React.Component {
   }
 }
 
-export default Intersection;
+export default MyComponent;

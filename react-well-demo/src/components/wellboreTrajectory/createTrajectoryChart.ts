@@ -11,13 +11,11 @@ export function createTrajectoryChart(
   points: WellboreTrajectoryPoint[]
 ) {
   const wellboreId = "Wellborepath";
-  console.log(points, "points");
   if (points?.length > 1) {
     const referenceSystem = new IntersectionReferenceSystem(
       points.map((p) => [p.azimuth, p.inclination, p.tvd])
     );
 
-    console.log(points, "points");
     const gridLayer = new GridLayer("grid", {
       majorColor: "black",
       minorColor: "gray",

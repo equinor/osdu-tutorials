@@ -4,6 +4,10 @@ export type Trajectory = {
 };
 
 type WellboreTrajectoryData = {
+  ExtensionProperties: ExtensionProperties;
+};
+
+type ExtensionProperties = {
   trajectory: WellboreTrajectoryPoint[];
 };
 
