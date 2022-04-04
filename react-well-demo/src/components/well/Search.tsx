@@ -1,70 +1,30 @@
-import React, { FC, ChangeEvent, useState, FormEvent, useEffect } from "react";
-import { Spin, Alert } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import React, { FC, useState, FormEvent } from "react";
 import "./styles.css";
-import { FoundWell } from "./FoundWell";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { AppState } from "../../store";
-import { findWellsByNameAction } from "../../store/well/actions";
-import SearchIcon from "@mui/icons-material/Search";
-import Button from "@mui/material/Button";
 import { TextField, Autocomplete } from "@mui/material";
-
-const noSearchHint = "Results will be displayed here";
-const noDataHint = "No wells found";
 
 type SearchProps = {
   setSearchNameCallback: (searchName: string) => void;
 };
 
 const Search: FC<SearchProps> = ({ setSearchNameCallback }) => {
-  const dispatch = useDispatch();
-
-  const storedSearchName = useSelector(
-    (state: AppState) => state.wellSearch.searchName
-  );
-  const areWellsSearching = useSelector(
-    (state: AppState) => state.wellSearch.areWellsSearching
-  );
-  const areWellsSearched = useSelector(
-    (state: AppState) => state.wellSearch.areWellsSearched
-  );
   const foundWells = useSelector(
     (state: AppState) => state.wellSearch.foundWells
-  );
-  const searchError = useSelector(
-    (state: AppState) => state.wellSearch.searchError
   );
 
   const wellNames = foundWells.map((well) => well.FacilityName);
 
   const [searchName, setSearchName] = useState<string>("");
-  const loadingIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
   const handleSubmit = (event: FormEvent | MouseEvent) => {
     event.preventDefault();
     setSearchNameCallback(searchName);
   };
 
-  // useEffect(() => {
-  //   // without this update, value from the store used only once.
-  //   // and never realy watched, creating an illusion of a coherent behavior
-  //   setSearchName(storedSearchName);
-  // }, [storedSearchName]);
   return (
     <div className="search">
-      {/* a search form at the top */}
       <form className="search__area" onSubmit={handleSubmit}>
-        {/* <TextField value={searchName} onChange={handleSearchChange} /> */}
-        {/* <input
-          type="text"
-          className="search__text"
-          placeholder="Enter well name"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearchName(e.target.value)
-          }
-          value={searchName}
-        /> */}
         <Autocomplete
           sx={{ width: 300 }}
           options={wellNames}
@@ -82,8 +42,7 @@ const Search: FC<SearchProps> = ({ setSearchNameCallback }) => {
             />
           )}
         />
-        {/* <Button type="submit" onClick={handleSubmit} className="search__submit">{SearchIcon}</Button> */}
-        {/* <Button type="submit" value={SearchIcon}></Button> */}
+
         <input
           className="search__submit"
           type="submit"
@@ -91,35 +50,6 @@ const Search: FC<SearchProps> = ({ setSearchNameCallback }) => {
           onClick={handleSubmit}
         />
       </form>
-      {/* a result representing area right under it */}
-      {/* <div className="search__well-area">
-        {areWellsSearching ? (
-          // a progress, an anticipation
-          <Spin indicator={loadingIcon} />
-        ) : searchError ? (
-          // an error will be drawn here
-          <Alert
-            message="Cannot load well"
-            showIcon
-            description={String(searchError)}
-            type="error"
-          />
-        ) : areWellsSearched ? (
-          // Successful search, two options now:
-          foundWells.length === 0 ? (
-            // nothing really found
-            // an honest descriptive message is much better that a blank space
-            <Alert message={noDataHint} type="warning" />
-          ) : // success, wells will be drawn
-          searchName ? (
-            foundWells.map((well) => (
-              <FoundWell key={well.resourceId} well={well} />
-            ))
-          ) : null
-        ) : (
-          <Alert message={noSearchHint} type="success" />
-        )}
-      </div> */}
     </div>
   );
 };

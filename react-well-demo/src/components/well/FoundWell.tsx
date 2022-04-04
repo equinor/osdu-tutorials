@@ -67,13 +67,6 @@ export function FoundWell({ well }: FoundWellProps) {
         <Row className="welldetails">
           <Col>&nbsp;</Col>
         </Row>
-
-        {/* <Row className="welldetails">
-          <Col md={2} className="fs-4">
-            {wellbores && wellbores?.length > 1 ? "Wellbores" : "Wellbore"}
-            
-          </Col>
-        </Row> */}
         {wellbores?.length === 0 ? (
           <CircularProgress className="loader" />
         ) : (
@@ -91,13 +84,6 @@ export function FoundWell({ well }: FoundWellProps) {
           ))
         )}
       </div>
-      {/* a list of a well's wellbores, with a drop-down behavior */}
-      {/* <ul className="well__trajectories-list">
-        {wellbores?.map((wb) => (
-          <Wellbore key={wb.id} wellbore={wb} />
-        ))}
-      </ul> */}
-
       {well.wellboresError && (
         <Alert
           message="Cannot load wellbore"
