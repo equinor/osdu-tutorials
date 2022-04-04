@@ -1,5 +1,6 @@
 import { handleErrors } from "./handleErrors";
 import { getAccessToken } from "./getAccessToken";
+import { API_BASE_URL } from "../constants/baseUrl";
 
 export interface FindWellsResponse {
   results: Well[];
@@ -50,7 +51,7 @@ export async function findWellsByName(
     }),
   };
 
-  return fetch("/api/search/v2/query", requestOptions)
+  return fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions)
     .then(handleErrors)
     .then((response) => response.json());
 }
@@ -92,7 +93,7 @@ export async function findWellbores(
       returnedFields: ["id", "data.FacilityName"],
     }),
   };
-  return fetch("/api/search/v2/query", requestOptions)
+  return fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions)
     .then(handleErrors)
     .then((response) => response.json());
 }

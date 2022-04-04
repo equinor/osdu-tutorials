@@ -2,6 +2,7 @@ import { handleErrors } from "./handleErrors";
 import { getAccessToken } from "./getAccessToken";
 import { parseString } from "@fast-csv/parse";
 import { DatasetResponse, getDownloadUrl } from "./api.utils";
+import { API_BASE_URL } from "../constants/baseUrl";
 
 export interface WellboreTrajectoryPoint {
   md: number;
@@ -36,7 +37,7 @@ async function getDatasetsFromWellboreTrajectory(
       returnedFields: ["id", "data.WellboreID"],
     }),
   };
-  return fetch("/api/search/v2/query", requestOptions)
+  return fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions)
     .catch(handleErrors)
     .then((response) => response.json());
 }
