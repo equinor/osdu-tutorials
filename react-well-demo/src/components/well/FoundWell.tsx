@@ -78,7 +78,7 @@ export function FoundWell({ well }: FoundWellProps) {
           <CircularProgress className="loader" />
         ) : (
           wellbores?.map((wb, index) => (
-            <Row className="welldetails">
+            <Row className="welldetails" key={wb.id}>
               <Col md={2} className="fs-4">
                 {index === 0
                   ? wellbores && wellbores?.length > 1

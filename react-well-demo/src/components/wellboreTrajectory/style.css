@@ -1,36 +1,33 @@
 .intersection-container {
-    display: inline-block;
-    text-align: initial;
-    box-sizing: border-box;
-    position: fixed;
-    left: 370px;
-    top: 500px;
-    flex-direction: column;
+  position: absolute;
+  left: 0px;
+  top: 116px;
 }
 
 .intersection-container > * {
-    box-sizing: border-box;
-    flex-direction: column;
+  box-sizing: border-box;
+  flex-direction: column;
 }
 
 .intersection-header {
-    height: 22px;
-    width: 700px;
-    padding: 2.5px;
-    background: #ccc;
-    font-size: 14px;
-    text-align: right;
-    border: solid 1px #000;
-    border-bottom: none;
+  height: 22px;
+  padding: 2.5px;
+  background: #ccc;
+  font-size: 14px;
+  text-align: right;
+  border-bottom: none;
 }
 
 .intersection-root {
-    background: #fff;
-    border: solid 1px #000;
+  background: #fff;
 }
 
 .header {
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+div#overlay {
+  background-color: #bddde7ba;
 }

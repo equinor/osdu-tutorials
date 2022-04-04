@@ -1,31 +1,30 @@
-import React, {useRef, useEffect, useState} from "react";
-import {useSelector} from "react-redux";
-import {createTrajectoryChart} from "./createTrajectoryChart";
+import React, { FC, useRef, useEffect } from "react";
+import { createTrajectoryChart } from "./createTrajectoryChart";
 import "./style.css";
-import {AppState} from "../../store";
+import { WellboreTrajectoryPoint } from "../../hooks/types/trajectory";
 
-export function WellboreTrajectory() {
-    const ref = useRef<HTMLDivElement>(null);
+type WellboreTrajectoryProps = {
+  trajectoryPoints: WellboreTrajectoryPoint[];
+};
 
-    const trajectory = useSelector((state: AppState) => state.wellboreTrajectory)
-    const loaded = trajectory.isWellboreTrajectoryLoaded;
+const WellboreTrajectory: FC<WellboreTrajectoryProps> = ({
+  trajectoryPoints,
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        if (ref.current) {
-            createTrajectoryChart(ref.current, trajectory.points);
-        }
-    }, [trajectory]);
-
-    if (loaded === false) {
-        return <div/>
+  useEffect(() => {
+    if (ref.current) {
+      createTrajectoryChart(ref.current, trajectoryPoints);
     }
+  }, [trajectoryPoints]);
 
-    return (
-        <div className="intersection-container">
-            <div className="intersection-header">Intersection</div>
-            <div className="intersection-root">
-                <div ref={ref} className="intersection-layers"/>
-            </div>
-        </div>
-    );
-}
+  return (
+    <div className="intersection-container">
+      <div className="intersection-root">
+        <div ref={ref} className="intersection-layers" />
+      </div>
+    </div>
+  );
+};
+
+export default WellboreTrajectory;

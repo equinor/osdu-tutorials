@@ -60,7 +60,11 @@ const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
     <div className="canvas">
       <Row className="h-80">
         <Col>
-          <Map center={[xcenter, ycenter]} zoom={wellZoom ? 11 : 6}>
+          <Map
+            center={[xcenter, ycenter]}
+            zoom={wellZoom ? 11 : undefined}
+            defaultZoom={6}
+          >
             {foundWells.map((well) => (
               <Marker
                 onClick={() => setSelectedWell(well)}
