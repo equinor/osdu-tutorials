@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./styles.css";
-import WellLog from "../../components/welllog/welllog";
+import WellLog from "../../components/welllog";
 import WellCanvas from "../../components/well/WellCanvas";
 import Search from "../../components/well/Search";
 import Account from "../../components/account";

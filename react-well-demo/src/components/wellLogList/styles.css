@@ -1,0 +1,8 @@
+.wellLogList {
+  padding: 16px;
+  height: 100%;
+  width: 300px;
+  background-color: rgb(174, 174, 176);
+  position: absolute;
+  right: 0px;
+}

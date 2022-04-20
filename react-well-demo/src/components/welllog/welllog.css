@@ -1,7 +1,8 @@
-.chart{
-    float: left;
-    text-align:justify;
-    position: fixed;
-    left: 1100px;
-    height: 1500px;
+.chart {
+  float: left;
+  text-align: justify;
+  position: fixed;
+  left: 1100px;
+  height: 1500px;
+  background-color: hotpink;
 }

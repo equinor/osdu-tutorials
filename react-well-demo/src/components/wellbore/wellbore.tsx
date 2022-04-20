@@ -5,6 +5,9 @@ import Col from "react-bootstrap/Col";
 import { Alert, Button, Snackbar, SnackbarOrigin } from "@mui/material";
 import WellboreTrajectory from "../wellboreTrajectory/WellboreTrajectory";
 import { useTrajectories } from "../../hooks/useTrajectories";
+import WellLog from "../welllog";
+import { useWellLog } from "../../hooks/useWelLog";
+import WellLogList from "../wellLogList";
 
 export interface WellboreProps {
   /** a wellbore_trajectory model to be represented by the component */
@@ -17,6 +20,7 @@ export interface AlertState extends SnackbarOrigin {
 
 export function Wellbore({ wellbore }: WellboreProps) {
   const [displayTrajectory, setDisplayTrajectory] = useState<boolean>(false);
+  const [displayWelllogs, setDisplayWelllogs] = useState<boolean>(false);
   const [openAlert, setOpenAlert] = useState<AlertState>({
     open: false,
     vertical: "bottom",
@@ -25,6 +29,8 @@ export function Wellbore({ wellbore }: WellboreProps) {
   const { open, vertical, horizontal } = openAlert;
   const { fetchWellBoreId, wellboreType, fetchTrajectories, trajectories } =
     useTrajectories();
+
+  const { fetchWellLogs, wellLogs } = useWellLog();
 
   useEffect(() => {
     fetchWellBoreId(wellbore.id);
@@ -35,6 +41,11 @@ export function Wellbore({ wellbore }: WellboreProps) {
       fetchTrajectories(wellboreType.results[0].id);
     }
   }, [wellboreType]);
+
+  useEffect(() => {
+    fetchWellLogs(wellbore.id);
+    console.log("logs", wellLogs);
+  }, [wellbore.id]);
 
   const handleCloseAlert = () => {
     setOpenAlert({ open: false, vertical, horizontal });
@@ -59,8 +70,22 @@ export function Wellbore({ wellbore }: WellboreProps) {
           </Button>
         )}
       </Col>
+      <Col>
+        {displayWelllogs ? (
+          <Button onClick={() => setDisplayWelllogs(false)}>
+            Hide well logs
+          </Button>
+        ) : (
+          <Button onClick={() => setDisplayWelllogs(true)}>
+            View well logs
+          </Button>
+        )}
+      </Col>
       {trajectories.length !== 0 && displayTrajectory && (
-        <WellboreTrajectory trajectoryPoints={trajectories} />
+        <>
+          <WellboreTrajectory trajectoryPoints={trajectories} />
+          <WellLog />
+        </>
       )}
       {trajectories.length === 0 && displayTrajectory && (
         <Snackbar
