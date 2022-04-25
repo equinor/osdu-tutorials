@@ -30,7 +30,6 @@ export function FoundWell({ well }: FoundWellProps) {
   const wellbores = updatedWells.find(
     (i) => i.resourceId === well.resourceId
   )?.wellbores;
-  console.log(wellbores);
 
   const loadingIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 

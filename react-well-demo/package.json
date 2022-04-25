@@ -27,6 +27,7 @@
     "las-js": "^3.2.4",
     "leaflet": "^1.7.1",
     "msal": "^1.4.14",
+    "parquetjs-lite": "^0.8.7",
     "pigeon-maps": "^0.19.7",
     "react": "^17.0.2",
     "react-aad-msal": "^2.3.5",

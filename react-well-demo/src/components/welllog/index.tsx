@@ -9,9 +9,9 @@ const WellLog: FC = () => {
   const readout = useRef(null);
 
   const wellLogState = useSelector((state: AppState) => state.wellLogState);
-  console.log("rendered");
 
   useEffect(() => {
+    console.log("yo", wellLogRef.current, readout.current);
     if (wellLogRef.current && readout.current) {
       createWellLogChart(
         wellLogRef.current,
@@ -20,8 +20,6 @@ const WellLog: FC = () => {
       );
     }
   }, [wellLogState]);
-
-  console.log(wellLogState);
 
   if (wellLogState.isWellLogLoaded === false) return <div />;
 

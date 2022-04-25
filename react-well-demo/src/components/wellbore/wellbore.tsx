@@ -44,11 +44,16 @@ export function Wellbore({ wellbore }: WellboreProps) {
 
   useEffect(() => {
     fetchWellLogs(wellbore.id);
-    console.log("logs", wellLogs);
   }, [wellbore.id]);
 
   const handleCloseAlert = () => {
     setOpenAlert({ open: false, vertical, horizontal });
+  };
+
+  const handleViewWellLogs = () => {
+    setDisplayWelllogs(true);
+    fetchWellLogs(wellbore.id);
+    console.log(wellbore.id);
   };
 
   return (
@@ -76,9 +81,7 @@ export function Wellbore({ wellbore }: WellboreProps) {
             Hide well logs
           </Button>
         ) : (
-          <Button onClick={() => setDisplayWelllogs(true)}>
-            View well logs
-          </Button>
+          <Button onClick={handleViewWellLogs}>View well logs</Button>
         )}
       </Col>
       {trajectories.length !== 0 && displayTrajectory && (

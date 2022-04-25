@@ -1,8 +1,18 @@
-.wellLogList {
+.wellLog__list {
   padding: 16px;
   height: 100%;
   width: 300px;
-  background-color: rgb(174, 174, 176);
+  background-color: #fafafa;
   position: absolute;
   right: 0px;
+  overflow: auto;
+}
+
+.list__header {
+  margin-bottom: 32px;
+}
+
+.wellLogItem {
+  background-color: rgb(39, 77, 83);
+  margin-bottom: 8px;
 }

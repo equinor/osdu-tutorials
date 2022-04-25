@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { getAccessToken } from "../api/getAccessToken";
 import { WellLog } from "../hooks/types/wellLog";
 import { API_BASE_URL } from "../constants/baseUrl";
 
 export const useWellLog = () => {
+  var parquet = require("parquetjs-lite");
   const [wellLogs, setWellLogs] = useState<WellLog[]>([]);
 
   const fetchWellLogs = async (wellboreId: string): Promise<void> => {
@@ -34,12 +35,13 @@ export const useWellLog = () => {
       });
       const data = (await response.json()) as WellLog[];
       setWellLogs(data);
+      fetchSignedUri(data[0].id);
     } catch (e) {
       console.error(`Error when fetching wellLogId: ${e}`);
     }
   };
 
-  const fetchCurves = async (wellLogId: string): Promise<void> => {
+  const fetchSignedUri = async (wellLogId: string): Promise<void> => {
     const accessToken = getAccessToken();
     const ddmsUrl = `${API_BASE_URL}/api/os-wellbore-ddms/ddms/v3/welllogs/${wellLogId}/data?curves=DEPTH,GR`;
     const requestOptions = {
@@ -57,7 +59,32 @@ export const useWellLog = () => {
         }
         return response;
       });
-      const data = await response.json();
+      const signedUri = (await response.json()) as string;
+      fetchCurves(signedUri);
+    } catch (e) {
+      console.error(`Error when fetching signedUri: ${e}`);
+    }
+  };
+
+  const fetchCurves = async (signedURI: string): Promise<void> => {
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+      },
+    };
+    try {
+      const response = await parquet.ParquetReader.openUrl(
+        fetch,
+        signedURI,
+        requestOptions
+      ).then((response: Response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        return response;
+      });
+      console.log(response);
     } catch (e) {
       console.error(`Error when fetching curves: ${e}`);
     }
