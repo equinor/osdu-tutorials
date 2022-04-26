@@ -1,7 +1,9 @@
 import { createContext } from "react";
 
 export type WellLogContextType = {
-  wellLog: string;
+  selectedWellLog: string;
+  setSelectedWellLog: (wellLog: string) => void;
+  setSelectedWellboreId: (id: string) => void;
 };
 
 const WellLogContext = createContext<WellLogContextType>(

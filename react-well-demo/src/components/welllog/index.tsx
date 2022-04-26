@@ -3,15 +3,16 @@ import "./welllog.css";
 import { createWellLogChart } from "./createWellLogChart";
 import { useSelector } from "react-redux";
 import { AppState } from "../../store";
+import { useWellLogContext } from "../../contexts/wellLogContext/useWellLogContext";
 
 const WellLog: FC = () => {
+  const { selectedWellLog } = useWellLogContext();
   const wellLogRef = useRef(null);
   const readout = useRef(null);
 
   const wellLogState = useSelector((state: AppState) => state.wellLogState);
 
   useEffect(() => {
-    console.log("yo", wellLogRef.current, readout.current);
     if (wellLogRef.current && readout.current) {
       createWellLogChart(
         wellLogRef.current,
@@ -19,7 +20,7 @@ const WellLog: FC = () => {
         wellLogState?.data
       );
     }
-  }, [wellLogState]);
+  }, [selectedWellLog]);
 
   if (wellLogState.isWellLogLoaded === false) return <div />;
 

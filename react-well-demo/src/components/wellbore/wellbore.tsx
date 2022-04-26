@@ -7,7 +7,7 @@ import WellboreTrajectory from "../wellboreTrajectory/WellboreTrajectory";
 import { useTrajectories } from "../../hooks/useTrajectories";
 import WellLog from "../welllog";
 import { useWellLog } from "../../hooks/useWelLog";
-import WellLogList from "../wellLogList";
+import { useWellLogContext } from "../../contexts/wellLogContext/useWellLogContext";
 
 export interface WellboreProps {
   /** a wellbore_trajectory model to be represented by the component */
@@ -19,6 +19,7 @@ export interface AlertState extends SnackbarOrigin {
 }
 
 export function Wellbore({ wellbore }: WellboreProps) {
+  const { setSelectedWellboreId } = useWellLogContext();
   const [displayTrajectory, setDisplayTrajectory] = useState<boolean>(false);
   const [displayWelllogs, setDisplayWelllogs] = useState<boolean>(false);
   const [openAlert, setOpenAlert] = useState<AlertState>({
@@ -50,10 +51,9 @@ export function Wellbore({ wellbore }: WellboreProps) {
     setOpenAlert({ open: false, vertical, horizontal });
   };
 
-  const handleViewWellLogs = () => {
+  const handleViewWellLogs = (wellboreId: string) => {
     setDisplayWelllogs(true);
-    fetchWellLogs(wellbore.id);
-    console.log(wellbore.id);
+    setSelectedWellboreId(wellboreId);
   };
 
   return (
@@ -81,7 +81,7 @@ export function Wellbore({ wellbore }: WellboreProps) {
             Hide well logs
           </Button>
         ) : (
-          <Button onClick={handleViewWellLogs}>View well logs</Button>
+          <Button onClick={() => handleViewWellLogs(wellbore.id)}>View well logs</Button>
         )}
       </Col>
       {trajectories.length !== 0 && displayTrajectory && (
