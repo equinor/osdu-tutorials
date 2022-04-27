@@ -1,8 +1,9 @@
 export type WellLog = {
-  id: string;
-  data: WellLogData;
+  results: WellLogResult[];
 };
 
-type WellLogData = {
-  DataSets: string[];
+type WellLogResult = {
+  data: {
+    Datasets: string[];
+  };
 };

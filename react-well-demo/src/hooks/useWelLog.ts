@@ -5,9 +5,11 @@ import { API_BASE_URL } from "../constants/baseUrl";
 
 export const useWellLog = () => {
   var parquet = require("parquetjs-lite");
-  const [wellLogs, setWellLogs] = useState<WellLog[]>([]);
+  const [fileGenericIds, setFileGenericIds] = useState<string[]>([]);
+  const [fileGenericIdsLoading, setFileGenericIdsLoading] =
+    useState<boolean>(false);
 
-  const fetchWellLogs = async (wellboreId: string): Promise<void> => {
+  const fetchFileGenericIds = async (wellboreId: string): Promise<void> => {
     const accessToken = await getAccessToken();
     const requestOptions = {
       method: "POST",
@@ -17,24 +19,32 @@ export const useWellLog = () => {
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
-        kind: "osdu:wks:work-product-component--Welllog:1.0.0",
+        kind: "osdu:wks:work-product-component--WellLog:1.1.0",
         query: `data.WellboreID:(\"${wellboreId}\")`,
-        returnedFields: ["data.Datasets"]
+        returnedFields: ["data.Datasets"],
       }),
     };
     try {
+      setFileGenericIdsLoading(true);
       const response = await fetch(
         `${API_BASE_URL}/api/search/v2/query`,
         requestOptions
       ).then((response) => {
         if (!response.ok) {
           throw new Error(response.statusText);
-        } 
+        }
         return response;
       });
-      const data = (await response.json() as WellLog[]);
-      setWellLogs(data);
-      // fetchSignedUri(data[0].id);
+      setFileGenericIdsLoading(false);
+      const data = (await response.json()) as WellLog;
+
+      // Map out FileGenericIds and trim off colon at the end of Id
+      const mappedIds = data.results.map((fileGenericId) => {
+        let id = fileGenericId.data.Datasets[0];
+        const trimmedFileGenericId = id.substring(0, id.length - 1);
+        return trimmedFileGenericId;
+      });
+      setFileGenericIds(mappedIds);
     } catch (e) {
       console.error(`Error when fetching wellLogId: ${e}`);
     }
@@ -83,14 +93,16 @@ export const useWellLog = () => {
         }
         return response;
       });
-      console.log(response);
+      console.log("PARQUET", response);
     } catch (e) {
       console.error(`Error when fetching curves: ${e}`);
     }
   };
 
   return {
-    wellLogs,
-    fetchWellLogs,
+    fileGenericIds,
+    fetchFileGenericIds,
+    fetchSignedUri,
+    fileGenericIdsLoading,
   };
 };
