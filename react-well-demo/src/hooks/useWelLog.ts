@@ -27,7 +27,7 @@ export const useWellLog = () => {
     try {
       setFileGenericIdsLoading(true);
       const response = await fetch(
-        `${API_BASE_URL}/api/search/v2/query`,
+        "/api/search/v2/query",
         requestOptions
       ).then((response) => {
         if (!response.ok) {
@@ -52,15 +52,13 @@ export const useWellLog = () => {
 
   const fetchSignedUri = async (fileGenericId: string): Promise<void> => {
     const accessToken = await getAccessToken();
-    const redirect: RequestRedirect = "follow";
-    const url = `${API_BASE_URL}/api/file/v2/files/${fileGenericId}/downloadURL`;
+    const url = `/api/file/v2/files/${fileGenericId}/downloadURL`;
     const requestOptions = {
       method: "GET",
       headers: {
         "data-partition-id": "oaktree-acorn",
         Authorization: `Bearer ${accessToken}`,
       },
-      redirect: redirect,
     };
     try {
       const response = await fetch(url, requestOptions).then((response) => {
