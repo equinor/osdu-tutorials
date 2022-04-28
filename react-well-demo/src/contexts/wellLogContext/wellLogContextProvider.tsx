@@ -15,7 +15,9 @@ const WellLogContextProvider: FC<WellLogContextProviderType> = ({
   const [displayWellLogList, setDisplayWellLogList] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchSignedUri(selectedWellLog);
+    if (selectedWellLog !== "") {
+      fetchSignedUri(selectedWellLog);
+    }
   }, [selectedWellLog]);
 
   return (

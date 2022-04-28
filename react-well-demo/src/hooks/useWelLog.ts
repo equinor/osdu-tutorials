@@ -50,25 +50,28 @@ export const useWellLog = () => {
     }
   };
 
-  const fetchSignedUri = async (wellLogId: string): Promise<void> => {
+  const fetchSignedUri = async (fileGenericId: string): Promise<void> => {
     const accessToken = await getAccessToken();
-    const ddmsUrl = `${API_BASE_URL}/api/os-wellbore-ddms/ddms/v3/welllogs/${wellLogId}/data?curves=DEPTH,GR`;
+    const redirect: RequestRedirect = "follow";
+    const url = `${API_BASE_URL}/api/file/v2/files/${fileGenericId}/downloadURL`;
     const requestOptions = {
       method: "GET",
       headers: {
         "data-partition-id": "oaktree-acorn",
         Authorization: `Bearer ${accessToken}`,
-        accept: "application/json",
       },
+      redirect: redirect,
     };
     try {
-      const response = await fetch(ddmsUrl, requestOptions).then((response) => {
+      const response = await fetch(url, requestOptions).then((response) => {
         if (!response.ok) {
+          console.log(response.statusText);
           throw new Error(response.statusText);
         }
         return response;
       });
       const signedUri = (await response.json()) as string;
+      console.log(signedUri);
       fetchCurves(signedUri);
     } catch (e) {
       console.error(`Error when fetching signedUri: ${e}`);
