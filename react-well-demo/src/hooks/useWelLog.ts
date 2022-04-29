@@ -26,15 +26,14 @@ export const useWellLog = () => {
     };
     try {
       setFileGenericIdsLoading(true);
-      const response = await fetch(
-        "/api/search/v2/query",
-        requestOptions
-      ).then((response) => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
+      const response = await fetch("/api/search/v2/query", requestOptions).then(
+        (response) => {
+          if (!response.ok) {
+            throw new Error(response.statusText);
+          }
+          return response;
         }
-        return response;
-      });
+      );
       setFileGenericIdsLoading(false);
       const data = (await response.json()) as WellLog;
 
@@ -70,7 +69,7 @@ export const useWellLog = () => {
       });
       const signedUrl = (await response.json()).SignedUrl as string;
       const trimmedUrl = signedUrl.slice(47);
-      console.log(trimmedUrl)
+      console.log(trimmedUrl);
       fetchCurves(trimmedUrl);
     } catch (e) {
       console.error(`Error when fetching signedUri: ${e}`);
@@ -90,12 +89,14 @@ export const useWellLog = () => {
       //   signedURI,
       //   requestOptions
       // ).then((response: Response) => {
-        const response = await fetch(signedUrl, requestOptions).then((response) => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
+      const response = await fetch(signedUrl, requestOptions).then(
+        (response) => {
+          if (!response.ok) {
+            throw new Error(response.statusText);
+          }
+          return response;
         }
-        return response;
-      });
+      );
       console.log("PARQUET", response);
     } catch (e) {
       console.error(`Error when fetching curves: ${e}`);
