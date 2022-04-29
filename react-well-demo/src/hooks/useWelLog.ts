@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getAccessToken } from "../api/getAccessToken";
-import { SignedUrl, WellLog } from "../hooks/types/wellLog";
+import { WellLog } from "../hooks/types/wellLog";
 import { API_BASE_URL } from "../constants/baseUrl";
 
 export const useWellLog = () => {
