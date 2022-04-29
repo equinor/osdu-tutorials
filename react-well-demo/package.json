@@ -2,7 +2,14 @@
   "name": "react-well-demo",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://oaktree.energy.azure.com",
+  "proxy": {
+    "/api/file": {
+      "target": "https://oaktree.energy.azure.com"
+    },
+    "/file-persistent-area/": {
+      "target": "https://dataxv54m5x5e7yvi.blob.core.windows.net"
+    }
+  },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@emotion/react": "^11.8.2",

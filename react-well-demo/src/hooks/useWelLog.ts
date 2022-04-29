@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getAccessToken } from "../api/getAccessToken";
-import { WellLog } from "../hooks/types/wellLog";
+import { SignedUrl, WellLog } from "../hooks/types/wellLog";
 import { API_BASE_URL } from "../constants/baseUrl";
 
 export const useWellLog = () => {
@@ -68,15 +68,16 @@ export const useWellLog = () => {
         }
         return response;
       });
-      const signedUri = (await response.json()) as string;
-      console.log(signedUri);
-      fetchCurves(signedUri);
+      const signedUrl = (await response.json()).SignedUrl as string;
+      const trimmedUrl = signedUrl.slice(47);
+      console.log(trimmedUrl)
+      fetchCurves(trimmedUrl);
     } catch (e) {
       console.error(`Error when fetching signedUri: ${e}`);
     }
   };
 
-  const fetchCurves = async (signedURI: string): Promise<void> => {
+  const fetchCurves = async (signedUrl: string): Promise<void> => {
     const requestOptions = {
       method: "GET",
       headers: {
@@ -84,11 +85,12 @@ export const useWellLog = () => {
       },
     };
     try {
-      const response = await parquet.ParquetReader.openUrl(
-        fetch,
-        signedURI,
-        requestOptions
-      ).then((response: Response) => {
+      // const response = await parquet.ParquetReader.openUrl(
+      //   fetch,
+      //   signedURI,
+      //   requestOptions
+      // ).then((response: Response) => {
+        const response = await fetch(signedUrl, requestOptions).then((response) => {
         if (!response.ok) {
           throw new Error(response.statusText);
         }
