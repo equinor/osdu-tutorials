@@ -86,6 +86,7 @@ const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
               />
             ))}
             <WellLogList />
+            <WellLog />
           </Map>
         </Col>
       </Row>

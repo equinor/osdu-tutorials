@@ -1,34 +1,27 @@
 import React, { FC, useEffect, useRef } from "react";
 import "./welllog.css";
 import { createWellLogChart } from "./createWellLogChart";
-import { useSelector } from "react-redux";
-import { AppState } from "../../store";
 import { useWellLogContext } from "../../contexts/wellLogContext/useWellLogContext";
 
 const WellLog: FC = () => {
-  const { selectedWellLog } = useWellLogContext();
-  const wellLogRef = useRef(null);
-  const readout = useRef(null);
+  const { wellLogCurves } = useWellLogContext();
+  const wellLogRef = useRef<HTMLDivElement>(null);
+  const readout = useRef<HTMLDivElement>(null);
 
-  const wellLogState = useSelector((state: AppState) => state.wellLogState);
+  console.log(wellLogCurves, wellLogRef);
 
   useEffect(() => {
     if (wellLogRef.current && readout.current) {
-      createWellLogChart(
-        wellLogRef.current,
-        readout.current,
-        wellLogState?.data
-      );
+      createWellLogChart(wellLogRef.current, readout.current, wellLogCurves);
     }
-  }, [selectedWellLog]);
+  }, [wellLogCurves]);
 
-  if (wellLogState.isWellLogLoaded === false) return <div />;
+  if (wellLogCurves.length === 0) return null;
 
   return (
     <div className="chart">
-      {/* <wellx-welllog ref={wellLogRef}></wellx-welllog> */}
-      <div ref={wellLogRef}></div>
-      <div className="readout" ref={readout}></div>
+      <div ref={wellLogRef} />
+      <div ref={readout} />
     </div>
   );
 };

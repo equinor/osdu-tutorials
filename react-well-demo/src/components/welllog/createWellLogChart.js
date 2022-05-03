@@ -1,19 +1,10 @@
-import { Readout, WellborePath, WellxTypes } from "@equinor/wellx-wellog";
+import { Readout, WellborePath } from "@equinor/wellx-wellog";
 
-export function createWellLogChart(wellLogRoot, readoutRoot, wellLogData) {
+export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
   wellLogRoot.width = 400;
   wellLogRoot.height = 800;
 
-  console.log(wellLogData);
-
   if (wellLogData !== undefined) {
-    /*
-        let grPlotData = [];
-        for (let i=0; i<100; ++i) {
-            grPlotData.push([wellLogData.data[tvdIdx]])
-        }
-        */
-
     const config = {
       activeScale: 0,
       tracks: [
@@ -40,7 +31,27 @@ export function createWellLogChart(wellLogRoot, readoutRoot, wellLogData) {
                   kind: "linear",
                   domain: [0, 100],
                 },
-                plotData: wellLogData,
+                plotData: [
+                  [0, 15],
+                  [10, 50],
+                  [25, 100],
+                ],
+              },
+              {
+                kind: "line",
+                lineType: 0,
+                name: "DEPTH",
+                color: "#CD5C5C",
+                unit: "",
+                scale: {
+                  kind: "linear",
+                  domain: [0, 100],
+                },
+                plotData: [
+                  [0, 70],
+                  [35, 150],
+                  [60, 10],
+                ],
               },
             ],
           },
@@ -59,7 +70,7 @@ export function createWellLogChart(wellLogRoot, readoutRoot, wellLogData) {
         showHeaders: true,
         columns: 1,
       });
-    renderReadout({ md: null });
+    renderReadout({ md: 1 });
 
     wellLogRoot.activeScale = config.activeScale;
     wellLogRoot.wellborePath = config.wellborePath;
@@ -68,4 +79,4 @@ export function createWellLogChart(wellLogRoot, readoutRoot, wellLogData) {
       renderReadout(event.detail.depth)
     );
   }
-}
+};

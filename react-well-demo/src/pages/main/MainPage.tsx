@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./styles.css";
-import WellLog from "../../components/welllog";
 import WellCanvas from "../../components/well/WellCanvas";
 import Search from "../../components/well/Search";
 import Account from "../../components/account";
@@ -18,12 +17,11 @@ export function MainPage() {
     <div className="main">
       <div className="main__page">
         <WellLogContextProvider>
-        <Box className="navbar">
-          <Search setSearchNameCallback={setSearchName} />
-          <Account />
-        </Box>
-        <WellCanvas searchName={searchName} />
-        {/* <WellLog /> */}
+          <Box className="navbar">
+            <Search setSearchNameCallback={setSearchName} />
+            <Account />
+          </Box>
+          <WellCanvas searchName={searchName} />
         </WellLogContextProvider>
       </div>
     </div>

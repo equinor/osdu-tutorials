@@ -7,3 +7,8 @@ type WellLogResult = {
     Datasets: string[];
   };
 };
+
+export type WellLogCurve = {
+  DEPTH: number;
+  GR: number;
+};

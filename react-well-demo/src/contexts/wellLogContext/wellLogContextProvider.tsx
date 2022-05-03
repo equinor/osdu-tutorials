@@ -9,7 +9,7 @@ type WellLogContextProviderType = {
 const WellLogContextProvider: FC<WellLogContextProviderType> = ({
   children,
 }) => {
-  const { fetchSignedUri } = useWellLog();
+  const { fetchSignedUri, wellLogCurves } = useWellLog();
   const [selectedWellLog, setSelectedWellLog] = useState<string>("");
   const [selectedWellboreId, setSelectedWellboreId] = useState<string>("");
   const [displayWellLogList, setDisplayWellLogList] = useState<boolean>(false);
@@ -29,6 +29,7 @@ const WellLogContextProvider: FC<WellLogContextProviderType> = ({
         setSelectedWellLog,
         displayWellLogList,
         setDisplayWellLogList,
+        wellLogCurves,
       }}
     >
       {children}

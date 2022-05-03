@@ -1,4 +1,5 @@
 import { createContext } from "react";
+import { WellLogCurve } from "../../hooks/types/wellLog";
 
 export type WellLogContextType = {
   selectedWellLog: string;
@@ -7,6 +8,7 @@ export type WellLogContextType = {
   selectedWellboreId: string;
   displayWellLogList: boolean;
   setDisplayWellLogList: (display: boolean) => void;
+  wellLogCurves: WellLogCurve[];
 };
 
 const WellLogContext = createContext<WellLogContextType>(

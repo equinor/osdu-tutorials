@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { getAccessToken } from "../api/getAccessToken";
-import { WellLog } from "../hooks/types/wellLog";
+import { WellLog, WellLogCurve } from "../hooks/types/wellLog";
 import { API_BASE_URL } from "../constants/baseUrl";
 
 export const useWellLog = () => {
-  var parquet = require("parquetjs-lite");
+  // const wellio = require("wellio");
+  // const fs = require("browserify-fs");
+
   const [fileGenericIds, setFileGenericIds] = useState<string[]>([]);
   const [fileGenericIdsLoading, setFileGenericIdsLoading] =
     useState<boolean>(false);
+  const [wellLogCurves, setWellLogCurves] = useState<WellLogCurve[]>([]);
 
   const fetchFileGenericIds = async (wellboreId: string): Promise<void> => {
     const accessToken = await getAccessToken();
@@ -69,8 +72,8 @@ export const useWellLog = () => {
       });
       const signedUrl = (await response.json()).SignedUrl as string;
       const trimmedUrl = signedUrl.slice(47);
-      console.log(trimmedUrl);
-      fetchCurves(trimmedUrl);
+      // fetchCurves(trimmedUrl);
+      fetchWellLogCurves();
     } catch (e) {
       console.error(`Error when fetching signedUri: ${e}`);
     }
@@ -83,24 +86,41 @@ export const useWellLog = () => {
         accept: "application/json",
       },
     };
-    try {
-      // const response = await parquet.ParquetReader.openUrl(
-      //   fetch,
-      //   signedURI,
-      //   requestOptions
-      // ).then((response: Response) => {
-      const response = await fetch(signedUrl, requestOptions).then(
-        (response) => {
-          if (!response.ok) {
-            throw new Error(response.statusText);
-          }
-          return response;
-        }
-      );
-      console.log("PARQUET", response);
-    } catch (e) {
-      console.error(`Error when fetching curves: ${e}`);
-    }
+
+    // try {
+    //   const response = await fetch(signedUrl, requestOptions).then(
+    //     (response) => {
+    //       if (!response.ok) {
+    //         throw new Error(response.statusText);
+    //       }
+    //       return response;
+    //     }
+    //   );
+    // fs.writeFile("wellLog.las", "text", (err: Error) => {
+    //   if (err) {
+    //     console.log(err);
+    //   }
+    // });
+
+    // const las = wellio.loadLAS("./wellLog.las");
+    // console.log(las);
+    // const parsedLas = wellio.las2json(las);
+    // } catch (e) {
+    //   console.error(`Error when fetching curves: ${e}`);
+    // }
+  };
+
+  const fetchWellLogCurves = () => {
+    const array = [
+      { DEPTH: 100, GR: 1.9 },
+      { DEPTH: 100, GR: 1.9 },
+      { DEPTH: 100, GR: 1.9 },
+      { DEPTH: 100, GR: 1.9 },
+      { DEPTH: 100, GR: 1.9 },
+      { DEPTH: 100, GR: 1.9 },
+    ];
+
+    setWellLogCurves(array);
   };
 
   return {
@@ -108,5 +128,7 @@ export const useWellLog = () => {
     fetchFileGenericIds,
     fetchSignedUri,
     fileGenericIdsLoading,
+    fetchWellLogCurves,
+    wellLogCurves,
   };
 };
