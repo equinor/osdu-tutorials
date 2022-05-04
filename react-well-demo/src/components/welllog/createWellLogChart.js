@@ -4,7 +4,15 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
   wellLogRoot.width = 400;
   wellLogRoot.height = 800;
 
+  const wellbore = (wellLogRoot.wellborePath = new WellborePath(0, [
+    { md: 0, tvd: 0 },
+    { md: 1500, tvd: 1500 },
+    { md: 3000, tvd: 3000 },
+    { md: 4500, tvd: 4500 },
+  ]));
+
   if (wellLogData !== undefined) {
+    console.log("wellLogData", wellLogData);
     const config = {
       activeScale: 0,
       tracks: [
@@ -23,6 +31,7 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
             plots: [
               {
                 kind: "line",
+                opacity: 0.5,
                 lineType: 0,
                 name: "GR",
                 color: "#22aa99",
@@ -39,6 +48,7 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
               },
               {
                 kind: "line",
+                opacity: 0.5,
                 lineType: 0,
                 name: "DEPTH",
                 color: "#CD5C5C",
@@ -57,12 +67,7 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
           },
         },
       ],
-      wellborePath: new WellborePath(0, [
-        { md: 0, tvd: 0 },
-        { md: 1500, tvd: 1500 },
-        { md: 3000, tvd: 2500 },
-        { md: 4500, tvd: 3200 },
-      ]),
+      wellbore,
     };
 
     const renderReadout = (depth) =>
@@ -71,7 +76,6 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
         columns: 1,
       });
     renderReadout({ md: 1 });
-
     wellLogRoot.activeScale = config.activeScale;
     wellLogRoot.wellborePath = config.wellborePath;
     wellLogRoot.tracks = config.tracks;

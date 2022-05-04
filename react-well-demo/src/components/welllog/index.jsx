@@ -3,10 +3,10 @@ import "./welllog.css";
 import { createWellLogChart } from "./createWellLogChart";
 import { useWellLogContext } from "../../contexts/wellLogContext/useWellLogContext";
 
-const WellLog: FC = () => {
+const WellLog = () => {
   const { wellLogCurves } = useWellLogContext();
-  const wellLogRef = useRef<HTMLDivElement>(null);
-  const readout = useRef<HTMLDivElement>(null);
+  const wellLogRef = useRef(null);
+  const readout = useRef(null);
 
   console.log(wellLogCurves, wellLogRef);
 
@@ -20,7 +20,8 @@ const WellLog: FC = () => {
 
   return (
     <div className="chart">
-      <div ref={wellLogRef} />
+      <wellx-welllog ref={wellLogRef} />
+      {/* <div ref={wellLogRef} /> */}
       <div ref={readout} />
     </div>
   );

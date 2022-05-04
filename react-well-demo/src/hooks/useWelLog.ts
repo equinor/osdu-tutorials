@@ -1,12 +1,8 @@
 import { useState } from "react";
 import { getAccessToken } from "../api/getAccessToken";
 import { WellLog, WellLogCurve } from "../hooks/types/wellLog";
-import { API_BASE_URL } from "../constants/baseUrl";
 
 export const useWellLog = () => {
-  // const wellio = require("wellio");
-  // const fs = require("browserify-fs");
-
   const [fileGenericIds, setFileGenericIds] = useState<string[]>([]);
   const [fileGenericIdsLoading, setFileGenericIdsLoading] =
     useState<boolean>(false);

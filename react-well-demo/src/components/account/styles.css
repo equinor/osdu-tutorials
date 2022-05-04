@@ -1,5 +1,7 @@
 .main__auth-buttons {
   padding: 16px;
+  position: absolute;
+  right: 0px;
 }
 
 .auth-button {

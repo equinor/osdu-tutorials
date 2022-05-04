@@ -36,10 +36,10 @@
 }
 
 .search__hierarchy-area {
-    padding: 16px;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
+  padding: 16px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .search__text {
