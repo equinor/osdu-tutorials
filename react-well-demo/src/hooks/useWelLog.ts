@@ -7,6 +7,9 @@ export const useWellLog = () => {
   const [fileGenericIdsLoading, setFileGenericIdsLoading] =
     useState<boolean>(false);
   const [wellLogCurves, setWellLogCurves] = useState<WellLogCurve[]>([]);
+  var parquet = require("parquetjs-lite");
+  var fs = require("fs");
+  var request = require("request");
 
   const fetchFileGenericIds = async (wellboreId: string): Promise<void> => {
     const accessToken = await getAccessToken();
@@ -69,7 +72,7 @@ export const useWellLog = () => {
       const signedUrl = (await response.json()).SignedUrl as string;
       const trimmedUrl = signedUrl.slice(47);
       // fetchCurves(trimmedUrl);
-      fetchWellLogCurves();
+      fetchCurves(trimmedUrl);
     } catch (e) {
       console.error(`Error when fetching signedUri: ${e}`);
     }
@@ -82,28 +85,31 @@ export const useWellLog = () => {
         accept: "application/json",
       },
     };
+    try {
+      // const response = await fetch(signedUrl, requestOptions).then(
+      //   (response) => {
+      //     if (!response.ok) {
+      //       throw new Error(response.statusText);
+      //     }
+      //     return response;
+      //   }
+      // );
+      // let cursor = reader.getCursor();
+      // let record = null;
+      // var file = fs.readFileSync("buffer.parquet");
+      // var writer = await parquet.ParquetWriter.openFile("buffer.parquet")
+      var reader = await parquet.ParquetReader.openUrl(request, signedUrl);
+      var record = null;
+      var cursor = reader.getCursor();
 
-    // try {
-    //   const response = await fetch(signedUrl, requestOptions).then(
-    //     (response) => {
-    //       if (!response.ok) {
-    //         throw new Error(response.statusText);
-    //       }
-    //       return response;
-    //     }
-    //   );
-    // fs.writeFile("wellLog.las", "text", (err: Error) => {
-    //   if (err) {
-    //     console.log(err);
-    //   }
-    // });
+      while (record = await cursor.next()) {
+        console.log(record);
+      }
 
-    // const las = wellio.loadLAS("./wellLog.las");
-    // console.log(las);
-    // const parsedLas = wellio.las2json(las);
-    // } catch (e) {
-    //   console.error(`Error when fetching curves: ${e}`);
-    // }
+      reader.close();
+    } catch (e) {
+      console.error(`Error when fetching curves: ${e}`);
+    }
   };
 
   const fetchWellLogCurves = () => {

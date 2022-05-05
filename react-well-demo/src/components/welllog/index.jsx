@@ -8,7 +8,6 @@ const WellLog = () => {
   const wellLogRef = useRef(null);
   const readout = useRef(null);
 
-  console.log(wellLogCurves, wellLogRef);
 
   useEffect(() => {
     if (wellLogRef.current && readout.current) {
@@ -20,7 +19,7 @@ const WellLog = () => {
 
   return (
     <div className="chart">
-      <wellx-welllog ref={wellLogRef} />
+      {/* <wellx-welllog ref={wellLogRef} /> */}
       {/* <div ref={wellLogRef} /> */}
       <div ref={readout} />
     </div>
