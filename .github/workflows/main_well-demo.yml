@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'well-demo'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_43E99CAB2CB54D3D9AEC703DEE5938A3 }}
+          publish-profile: ${{ secrets.AZURE_APPSERVICE_PUBLISHPROFILE_WELL_DEMO }}
           package: .
