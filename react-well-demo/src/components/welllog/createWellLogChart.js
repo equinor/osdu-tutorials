@@ -1,7 +1,7 @@
 import { Readout, WellborePath } from "@equinor/wellx-wellog";
 
 export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
-  wellLogRoot.width = 400;
+  wellLogRoot.width = 600;
   wellLogRoot.height = 800;
 
   const wellbore = (wellLogRoot.wellborePath = new WellborePath(0, [
@@ -28,23 +28,19 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
           plot: {
             kind: "graph",
             plots: [
-              {
-                kind: "line",
-                opacity: 0.5,
-                lineType: 0,
-                name: "GR",
-                color: "#22aa99",
-                unit: "",
-                scale: {
-                  kind: "linear",
-                  domain: [0, 100],
-                },
-                plotData: [
-                  [0, 15],
-                  [10, 50],
-                  [25, 100],
-                ],
-              },
+              // {
+              //   kind: "line",
+              //   opacity: 0.5,
+              //   lineType: 0,
+              //   name: "GR",
+              //   color: "#22aa99",
+              //   unit: "",
+              //   scale: {
+              //     kind: "linear",
+              //     domain: [0, 100],
+              //   },
+              //   plotData: [wellLogData.map((d) => d.GR)],
+              // },
               {
                 kind: "line",
                 opacity: 0.5,
@@ -54,13 +50,9 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
                 unit: "",
                 scale: {
                   kind: "linear",
-                  domain: [0, 100],
+                  domain: [0, 4000],
                 },
-                plotData: [
-                  [0, 70],
-                  [35, 150],
-                  [60, 10],
-                ],
+                plotData: [wellLogData.map((d) => d.DEPTH)],
               },
             ],
           },
@@ -72,7 +64,7 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
     const renderReadout = (depth) =>
       Readout(readoutRoot, config, depth.md, {
         showHeaders: true,
-        columns: 1,
+        columns: 2,
       });
     renderReadout({ md: 1 });
     wellLogRoot.activeScale = config.activeScale;
