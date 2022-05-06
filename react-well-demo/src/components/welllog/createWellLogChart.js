@@ -77,7 +77,6 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
       });
     renderReadout({ md: 1 });
     wellLogRoot.activeScale = config.activeScale;
-    wellLogRoot.wellborePath = config.wellborePath;
     wellLogRoot.tracks = config.tracks;
     wellLogRoot.addEventListener("wellxWellLogRubberBand", (event) =>
       renderReadout(event.detail.depth)
