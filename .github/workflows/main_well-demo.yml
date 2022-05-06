@@ -23,10 +23,15 @@ jobs:
         with:
           node-version: '16.x'
 
+      - name: set up npmrc
+        run: echo //npm.pkg.github.com/:_authToken={{ secrets.NPM_AUTH_TOKEN }} > .npmrc
       - name: npm install, build, and test
         run: |
           cd ./react-well-demo
           npm install
+          npm install @equinor/wellx-wellog --registry https://npm.pkg.github.com/equinor
+          npm ci
+          npm i
           npm run build --if-present
           npm run test --if-present
 
