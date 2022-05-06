@@ -7,6 +7,8 @@ export const useWellLog = () => {
   const [fileGenericIdsLoading, setFileGenericIdsLoading] =
     useState<boolean>(false);
   const [wellLogCurves, setWellLogCurves] = useState<WellLogCurve[]>([]);
+  var parquet = require("parquetjs-lite");
+  var request = require("request");
 
   const fetchFileGenericIds = async (wellboreId: string): Promise<void> => {
     const accessToken = await getAccessToken();
@@ -67,56 +69,28 @@ export const useWellLog = () => {
         return response;
       });
       const signedUrl = (await response.json()).SignedUrl as string;
-      const trimmedUrl = signedUrl.slice(47);
-      // fetchCurves(trimmedUrl);
-      fetchWellLogCurves();
+
+      fetchCurves(signedUrl);
     } catch (e) {
       console.error(`Error when fetching signedUri: ${e}`);
     }
   };
 
   const fetchCurves = async (signedUrl: string): Promise<void> => {
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-      },
-    };
+    try {
+      var reader = await parquet.ParquetReader.openUrl(request, signedUrl);
+      var record = null;
+      var cursor = reader.getCursor();
+      const curveArray: WellLogCurve[] = [];
+      while ((record = await cursor.next())) {
+        curveArray.push(record);
+      }
 
-    // try {
-    //   const response = await fetch(signedUrl, requestOptions).then(
-    //     (response) => {
-    //       if (!response.ok) {
-    //         throw new Error(response.statusText);
-    //       }
-    //       return response;
-    //     }
-    //   );
-    // fs.writeFile("wellLog.las", "text", (err: Error) => {
-    //   if (err) {
-    //     console.log(err);
-    //   }
-    // });
-
-    // const las = wellio.loadLAS("./wellLog.las");
-    // console.log(las);
-    // const parsedLas = wellio.las2json(las);
-    // } catch (e) {
-    //   console.error(`Error when fetching curves: ${e}`);
-    // }
-  };
-
-  const fetchWellLogCurves = () => {
-    const array = [
-      { DEPTH: 100, GR: 1.9 },
-      { DEPTH: 100, GR: 1.9 },
-      { DEPTH: 100, GR: 1.9 },
-      { DEPTH: 100, GR: 1.9 },
-      { DEPTH: 100, GR: 1.9 },
-      { DEPTH: 100, GR: 1.9 },
-    ];
-
-    setWellLogCurves(array);
+      reader.close();
+      setWellLogCurves(curveArray);
+    } catch (e) {
+      console.error(`Error when fetching curves: ${e}`);
+    }
   };
 
   return {
@@ -124,7 +98,6 @@ export const useWellLog = () => {
     fetchFileGenericIds,
     fetchSignedUri,
     fileGenericIdsLoading,
-    fetchWellLogCurves,
     wellLogCurves,
   };
 };

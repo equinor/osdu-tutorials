@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import "./welllog.css";
 import { createWellLogChart } from "./createWellLogChart";
 import { useWellLogContext } from "../../contexts/wellLogContext/useWellLogContext";
@@ -7,8 +7,6 @@ const WellLog = () => {
   const { wellLogCurves } = useWellLogContext();
   const wellLogRef = useRef(null);
   const readout = useRef(null);
-
-  console.log(wellLogCurves, wellLogRef);
 
   useEffect(() => {
     if (wellLogRef.current && readout.current) {
@@ -21,7 +19,6 @@ const WellLog = () => {
   return (
     <div className="chart">
       <wellx-welllog ref={wellLogRef} />
-      {/* <div ref={wellLogRef} /> */}
       <div ref={readout} />
     </div>
   );

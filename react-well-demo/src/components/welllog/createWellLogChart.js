@@ -12,7 +12,6 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
   ]));
 
   if (wellLogData !== undefined) {
-    console.log("wellLogData", wellLogData);
     const config = {
       activeScale: 0,
       tracks: [
