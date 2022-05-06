@@ -18,9 +18,8 @@ const WellLog = () => {
 
   return (
     <div className="chart">
-      {/* <wellx-welllog ref={wellLogRef} />
-      <div ref={wellLogRef} />
-      <div ref={readout} /> */}
+      <wellx-welllog ref={wellLogRef} />
+      <div ref={readout} />
     </div>
   );
 };
