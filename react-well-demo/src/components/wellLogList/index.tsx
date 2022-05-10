@@ -3,12 +3,12 @@ import { Box, Button, CircularProgress } from "@mui/material";
 import "./styles.css";
 import { useWellLog } from "../../hooks/useWelLog";
 import { useWellLogContext } from "../../contexts/wellLogContext/useWellLogContext";
+import { Link } from "react-router-dom";
 
 const WellLogList: FC = () => {
   const { fileGenericIds, fetchFileGenericIds, fileGenericIdsLoading } =
     useWellLog();
-  const { setSelectedWellLog, selectedWellboreId, displayWellLogList } =
-    useWellLogContext();
+  const { selectedWellboreId, displayWellLogList } = useWellLogContext();
 
   useEffect(() => {
     fetchFileGenericIds(selectedWellboreId);
@@ -30,9 +30,10 @@ const WellLogList: FC = () => {
             key={`wellLog__item__${id}`}
             variant="contained"
             style={{ backgroundColor: "rgb(39, 77, 83)", marginBottom: "8px" }}
-            onClick={() => setSelectedWellLog(id)}
           >
-            {id}
+            <Link to={`/wellog/${id}`} target="_blank" className="link">
+              {id}
+            </Link>
           </Button>
         ))
       )}

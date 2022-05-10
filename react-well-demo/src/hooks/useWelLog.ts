@@ -98,6 +98,7 @@ export const useWellLog = () => {
     fetchFileGenericIds,
     fetchSignedUri,
     fileGenericIdsLoading,
+    fetchCurves,
     wellLogCurves,
   };
 };

@@ -3,6 +3,7 @@ import { authProvider } from "./authProvider";
 import store from "./store";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { MainPage } from "./pages/main/MainPage";
+import WellLogPage from "./pages/wellLog";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Router>
         <Switch>
           <Route path="/" component={MainPage} exact />
+          <Route path="/wellog/:fileGenericId" component={WellLogPage} />
         </Switch>
       </Router>
     </AzureAD>

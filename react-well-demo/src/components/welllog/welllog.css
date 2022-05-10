@@ -1,5 +1,6 @@
 .chart {
   position: fixed;
-  width: 700px;
-  height: 500px;
+  padding: 16px;
+  width: 80%;
+  height: 100%;
 }

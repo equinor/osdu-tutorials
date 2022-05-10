@@ -1,20 +1,22 @@
 import React, { useEffect, useRef } from "react";
 import "./welllog.css";
 import { createWellLogChart } from "./createWellLogChart";
-import { useWellLogContext } from "../../contexts/wellLogContext/useWellLogContext";
 
-const WellLog = () => {
-  const { wellLogCurves } = useWellLogContext();
+const WellLog = (props) => {
   const wellLogRef = useRef(null);
   const readout = useRef(null);
 
   useEffect(() => {
-    if (wellLogRef.current && readout.current) {
-      createWellLogChart(wellLogRef.current, readout.current, wellLogCurves);
+    if (wellLogRef.current && readout.current && props.wellLogCurves) {
+      createWellLogChart(
+        wellLogRef.current,
+        readout.current,
+        props.wellLogCurves
+      );
     }
-  }, [wellLogCurves]);
+  }, [props.wellLogCurves]);
 
-  if (wellLogCurves.length === 0) return null;
+  if (props.wellLogCurves && props.wellLogCurves.length === 0) return null;
 
   return (
     <div className="chart">

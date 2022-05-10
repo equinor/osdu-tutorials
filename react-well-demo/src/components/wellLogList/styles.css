@@ -16,3 +16,9 @@
   background-color: rgb(39, 77, 83);
   margin-bottom: 8px;
 }
+
+.link,
+.link:hover {
+  text-decoration: none;
+  color: inherit;
+}

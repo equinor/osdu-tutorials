@@ -20,7 +20,6 @@ const WellLogContextProvider: FC<WellLogContextProviderType> = ({
     }
   }, [selectedWellLog]);
 
-  console.log(wellLogCurves);
   return (
     <WellLogContext.Provider
       value={{
