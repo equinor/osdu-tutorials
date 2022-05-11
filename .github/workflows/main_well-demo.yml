@@ -34,8 +34,11 @@ jobs:
       - name: npm install, build, and test
         run: |
           cd ./react-well-demo
+          npm install -g npm
           npm install
           npm config set registry https://registry.npmjs.org
+          node -v
+          npm -v
           
       - name: install wellx
         run: |
