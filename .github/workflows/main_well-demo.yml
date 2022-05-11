@@ -30,6 +30,11 @@ jobs:
           echo "@equinor:registry=https://npm.pkg.github.com/equinor" >> .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> .npmrc
           cat .npmrc
+          
+          cd ~/
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" > .npmrc
+          cat .npmrc
+          cat $HOME
 
       - name: npm install, build, and test
         run: |
