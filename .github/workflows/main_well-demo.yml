@@ -26,6 +26,8 @@ jobs:
       - name: set up npmrc
         run: echo "//npm.pkg.github.com/:_authToken={{ secrets.NPM_AUTH_TOKEN }}" > .npmrc
         
+      - name: check npmrc
+        run: cat .npmrc
       - name: npm install, build, and test
         run: |
           cd ./react-well-demo
