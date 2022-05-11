@@ -27,7 +27,6 @@ jobs:
         run: |
           cd ./react-well-demo
           echo "react-well-demo/.npmrc" > .npmrc
-          echo "registry=http://registry.npmjs.org" >> .npmrc
           echo "@equinor:registry=https://npm.pkg.github.com/equinor" >> .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> .npmrc
           cat .npmrc
@@ -36,12 +35,11 @@ jobs:
         run: |
           cd ./react-well-demo
           npm install
+          npm config set registry https://registry.npmjs.org
           
       - name: install wellx
         run: |
           cd ./react-well-demo
-          npm set registry https://registry.npmjs.org/
-          npm i
           npm install @equinor/wellx-wellog --registry https://npm.pkg.github.com/equinor
           
       - name: Upload artifact for deployment job
