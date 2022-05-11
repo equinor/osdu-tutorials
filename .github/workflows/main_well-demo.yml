@@ -39,7 +39,7 @@ jobs:
       - name: install wellx
         run: |
           cd ./react-well-demo
-          npm cache clean --force
+          npm set registry https://registry.npmjs.org/
           npm install @equinor/wellx-wellog --registry https://npm.pkg.github.com/equinor
           
       - name: Upload artifact for deployment job
