@@ -26,9 +26,9 @@ jobs:
       - name: set up npmrc
         run: |
           cd ./react-well-demo
-          echo "@equinor:registry=https://npm.pkg.github.com/equinor" > .npmrc
+          echo "react-well-demo/.npmrc" > .npmrc
+          echo "@equinor:registry=https://npm.pkg.github.com/equinor" >> .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> .npmrc
-          echo "@types:registry=https://registry.npmjs.org/" >> .npmrc
           cat .npmrc
 
       - name: npm install, build, and test
@@ -40,6 +40,7 @@ jobs:
         run: |
           cd ./react-well-demo
           npm set registry https://registry.npmjs.org/
+          npm i
           npm install @equinor/wellx-wellog --registry https://npm.pkg.github.com/equinor
           
       - name: Upload artifact for deployment job
