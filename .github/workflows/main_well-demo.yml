@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
   
 env:
-  wellx: @equinor/wellx-wellog
-  registry: https://npm.pkg.github.com/equinor
+  wellx: "@equinor/wellx-wellog"
+  registry: "https://npm.pkg.github.com/equinor"
 
 jobs:
   build:
