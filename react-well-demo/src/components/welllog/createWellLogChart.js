@@ -1,6 +1,9 @@
 import { Readout, WellborePath } from "@equinor/wellx-wellog";
 
 export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
+  wellLogRoot.width = 400;
+  wellLogRoot.height = 800;
+
   var curveTypes = new Set();
   var curveTypeArray = [
     "DEPTH",
@@ -8,6 +11,11 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
     "TICKS_PRES",
     "TICK_ARC_GR",
     "TICK_ARC_RES",
+    "DEPT",
+    "LSPD",
+    "CCL",
+    "LTEN",
+    "GR",
   ];
 
   const wellbore = (wellLogRoot.wellborePath = new WellborePath(0, [
@@ -18,38 +26,50 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
   ]));
 
   curveTypeArray.forEach((t) => {
-    if (wellLogData[0].hasOwnProperty(t)) {
-      curveTypes.add(t.toString());
+    if (wellLogData[5].hasOwnProperty(t)) {
+      curveTypes.add(t);
     }
   });
 
-  // wellLogData.map((type) =>
-  //   curveTypes.map((t) => {
-  //     if (type.hasOwnProperty(t)) {
-  //       typeArray.push(t.toString());
-  //     }
-  //   })
-  // );
-
-  console.log(curveTypes);
-
-  // console.log([
-  //   wellLogData.map((d, i) => {
-  //     if (i === 0) {
-  //       return [wellLogData[0].TDEP, d.TDEP];
-  //     }
-  //     return [wellLogData[i - 1].TDEP, d.TDEP];
-  //   }),
-  // ]);
+  console.log(curveTypes, wellLogData);
 
   const config = {
     activeScale: 0,
     tracks: [
-      {
-        id: 19,
+      // curveTypes.has("DEPTH") && {
+      //   id: 19,
+      //   kind: "graph",
+      //   header: {
+      //     label: "DEPTH",
+      //   },
+      //   legend: {
+      //     kind: "graph",
+      //   },
+      //   widthMultiplier: 2.5,
+      //   plot: {
+      //     kind: "graph",
+      //     plots: [
+      //       {
+      //         kind: "line",
+      //         opacity: 0.5,
+      //         lineType: 0,
+      //         name: "DEPTH",
+      //         color: blue,
+      //         unit: "",
+      //         scale: {
+      //           kind: "linear",
+      //           domain: [0, 100],
+      //         },
+      //         plotData: [wellLogData.map((d) => [d.TICKS_PRES, d.TDEP])],
+      //       },
+      //     ],
+      //   },
+      // },
+      curveTypes.has("TDEP") && {
+        id: 1,
         kind: "graph",
         header: {
-          label: "Stability curves",
+          label: "TDEP",
         },
         legend: {
           kind: "graph",
@@ -58,38 +78,18 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
         plot: {
           kind: "graph",
           plots: [
-            // {
-            //   kind: "line",
-            //   opacity: 0.5,
-            //   lineType: 0,
-            //   name: "GR",
-            //   color: "#22aa99",
-            //   unit: "",
-            //   scale: {
-            //     kind: "linear",
-            //     domain: [0, 100],
-            //   },
-            //   plotData: [wellLogData.map((d) => d.GR)],
-            // },
             {
               kind: "line",
               opacity: 0.5,
               lineType: 0,
-              name: "DEPTH",
-              color: "#CD5C5C",
+              name: "TDEP",
+              color: "#0d47a1",
               unit: "",
               scale: {
                 kind: "linear",
-                domain: [0, 5000],
+                domain: [0, 7000],
               },
-              plotData: [
-                wellLogData.map((d, i) => {
-                  if (i === 0) {
-                    return [wellLogData[0].TDEP, d.TDEP];
-                  }
-                  return [wellLogData[i - 1].TDEP, d.TDEP];
-                }),
-              ],
+              plotData: [wellLogData.map((d) => [d.TDEP, d.GR_ARC])],
             },
           ],
         },

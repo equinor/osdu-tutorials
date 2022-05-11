@@ -7,6 +7,8 @@ export const useWellLog = () => {
   const [fileGenericIdsLoading, setFileGenericIdsLoading] =
     useState<boolean>(false);
   const [wellLogCurves, setWellLogCurves] = useState<WellLogCurve[]>([]);
+  const [error, setError] = useState<Error>();
+
   var parquet = require("parquetjs-lite");
   var request = require("request");
 
@@ -90,6 +92,7 @@ export const useWellLog = () => {
       setWellLogCurves(curveArray);
     } catch (e) {
       console.error(`Error when fetching curves: ${e}`);
+      setError(e as Error);
     }
   };
 
@@ -100,5 +103,6 @@ export const useWellLog = () => {
     fileGenericIdsLoading,
     fetchCurves,
     wellLogCurves,
+    error,
   };
 };

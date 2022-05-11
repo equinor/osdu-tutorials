@@ -20,8 +20,8 @@ const WellLog = (props) => {
 
   return (
     <div className="chart">
-      <wellx-welllog ref={wellLogRef} />
-      <div ref={readout} />
+      <wellx-welllog ref={wellLogRef} className="wellx" />
+      <div ref={readout} className="readout" />
     </div>
   );
 };
