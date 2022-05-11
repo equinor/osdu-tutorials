@@ -27,6 +27,7 @@ jobs:
         run: |
           cd ./react-well-demo
           echo "react-well-demo/.npmrc" > .npmrc
+          echo "registry=http://registry.npmjs.org" >> .npmrc
           echo "@equinor:registry=https://npm.pkg.github.com/equinor" >> .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> .npmrc
           cat .npmrc
