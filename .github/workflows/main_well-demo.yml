@@ -34,7 +34,9 @@ jobs:
           npm install
           
       - name: install wellx
-        run: npm install @equinor/wellx-wellog --registry https://npm.pkg.github.com/equinor
+        run: |
+          cd ./react-well-demo
+          npm install @equinor/wellx-wellog --registry https://npm.pkg.github.com/equinor
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
