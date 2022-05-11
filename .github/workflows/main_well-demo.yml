@@ -32,12 +32,12 @@ jobs:
       - name: npm install, build, and test
         run: |
           cd ./react-well-demo
-          npm install -g npm
           npm install
           
       - name: install wellx
         run: |
           cd ./react-well-demo
+          npm cache clean --force
           npm install @equinor/wellx-wellog --registry https://npm.pkg.github.com/equinor
           
       - name: Upload artifact for deployment job
