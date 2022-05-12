@@ -32,7 +32,7 @@ jobs:
         run: |
           cd ./react-well-demo
           npm ci
-          npm run build
+          CI=false npm run build
           
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
