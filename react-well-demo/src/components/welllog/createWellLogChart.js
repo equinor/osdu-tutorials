@@ -36,35 +36,6 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
   const config = {
     activeScale: 0,
     tracks: [
-      // curveTypes.has("DEPTH") && {
-      //   id: 19,
-      //   kind: "graph",
-      //   header: {
-      //     label: "DEPTH",
-      //   },
-      //   legend: {
-      //     kind: "graph",
-      //   },
-      //   widthMultiplier: 2.5,
-      //   plot: {
-      //     kind: "graph",
-      //     plots: [
-      //       {
-      //         kind: "line",
-      //         opacity: 0.5,
-      //         lineType: 0,
-      //         name: "DEPTH",
-      //         color: blue,
-      //         unit: "",
-      //         scale: {
-      //           kind: "linear",
-      //           domain: [0, 100],
-      //         },
-      //         plotData: [wellLogData.map((d) => [d.TICKS_PRES, d.TDEP])],
-      //       },
-      //     ],
-      //   },
-      // },
       curveTypes.has("TDEP") && {
         id: 1,
         kind: "graph",
