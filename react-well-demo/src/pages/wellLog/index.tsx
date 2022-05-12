@@ -1,4 +1,4 @@
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
 import React, { FC, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import WellLog from "../../components/welllog";
@@ -30,7 +30,11 @@ const WellLogPage: FC = () => {
       </div>
     );
   }
-  return <WellLog wellLogCurves={wellLogCurves} />;
+  return (
+    <Box>
+      <WellLog wellLogCurves={wellLogCurves} />;
+    </Box>
+  );
 };
 
 export default WellLogPage;
