@@ -14,7 +14,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
       - uses: actions/checkout@v2
 
@@ -23,43 +23,22 @@ jobs:
         with:
           node-version: '16.14.0'
 
-      - name: set up npmrc
+      - name: Set up npmrc
         run: |
           cd ./react-well-demo
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" > .npmrc
 
-      - name: npm install, build, and test
+      - name: Build
         run: |
           cd ./react-well-demo
           npm ci
           CI=false npm run build
           
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
-        with:
-          name: well-demo
-          path: ./react-well-demo/build
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-      - name: check
-        run: echo "${{ steps.deploy-to-webapp.outputs.webapp-url }}"
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
-        with:
-          name: well-demo
-
-      - name: 'Deploy to Azure Web App'
+      - name: Deploy
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'well-demo'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZURE_APPSERVICE_PUBLISHPROFILE_WELL_DEMO }}
-          package: .
+          package: ./react-well-demo/build
