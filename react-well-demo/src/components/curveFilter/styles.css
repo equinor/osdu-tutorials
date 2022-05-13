@@ -1,0 +1,41 @@
+.filterContainer {
+  position: relative;
+  width: 140px;
+  left: 100px;
+}
+
+.tracksButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: inherit;
+  height: 30px;
+  background-color: white;
+  border-radius: 3px;
+  border: 1px solid #007079;
+  margin-top: 16px;
+  margin-left: 16px;
+  font-size: 14px;
+}
+
+.tracksButton:hover {
+  background-color: #deedee;
+}
+
+.alternativeContainer {
+  position: absolute;
+  z-index: 10;
+  background-color: white;
+  padding: 8px 0;
+  right: 0;
+  margin: 3px 0 0;
+  box-shadow: 0 3px 6px rgb(0 0 0 / 16%), 0 3px 6px rgb(0 0 0 / 23%);
+  list-style: none;
+  min-width: max-content;
+}
+
+.label {
+  display: block;
+  padding: 5px 12px;
+  font-size: 14px;
+}

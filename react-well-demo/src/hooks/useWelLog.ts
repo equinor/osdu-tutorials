@@ -87,7 +87,6 @@ export const useWellLog = () => {
       while ((record = await cursor.next())) {
         curveArray.push(record);
       }
-
       reader.close();
       setWellLogCurves(curveArray);
     } catch (e) {

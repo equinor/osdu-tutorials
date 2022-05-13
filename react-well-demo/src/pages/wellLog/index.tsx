@@ -1,6 +1,7 @@
 import { CircularProgress, Box } from "@mui/material";
 import React, { FC, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import CurveFilter from "../../components/curveFilter";
 import WellLog from "../../components/welllog";
 import { useWellLog } from "../../hooks/useWelLog";
 import "./styles.css";
@@ -23,6 +24,8 @@ const WellLogPage: FC = () => {
     return <CircularProgress />;
   }
 
+  const curveTypes = Object.getOwnPropertyNames(wellLogCurves[5]);
+
   if (error) {
     return (
       <div>
@@ -32,7 +35,8 @@ const WellLogPage: FC = () => {
   }
   return (
     <Box>
-      <WellLog wellLogCurves={wellLogCurves} />;
+      <CurveFilter curveTypes={curveTypes} />
+      <WellLog wellLogCurves={wellLogCurves} />
     </Box>
   );
 };

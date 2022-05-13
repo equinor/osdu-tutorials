@@ -31,8 +31,6 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
     }
   });
 
-  console.log(curveTypes, wellLogData);
-
   const config = {
     activeScale: 0,
     tracks: [
