@@ -16,7 +16,7 @@ const WellLog = (props) => {
     }
   }, [props.wellLogCurves]);
 
-  if (props.wellLogCurves && props.wellLogCurves.length === 0) return null;
+  if (!props.wellLogCurves || props.wellLogCurves.length === 0) return null;
 
   return (
     <div className="chart">

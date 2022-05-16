@@ -1,14 +1,15 @@
 import { createContext } from "react";
-import { WellLogCurve } from "../../hooks/types/wellLog";
+import { FileGenericType, WellLogCurve } from "../../hooks/types/wellLog";
 
 export type WellLogContextType = {
-  selectedWellLog: string;
-  setSelectedWellLog: (wellLog: string) => void;
+  selectedWellLog: FileGenericType;
+  setSelectedWellLog: (wellLog: FileGenericType) => void;
   setSelectedWellboreId: (id: string) => void;
   selectedWellboreId: string;
   displayWellLogList: boolean;
   setDisplayWellLogList: (display: boolean) => void;
-  wellLogCurves: WellLogCurve[];
+  parquetWellLogCurves: WellLogCurve[];
+  lasWellLogCurves: string;
 };
 
 const WellLogContext = createContext<WellLogContextType>(

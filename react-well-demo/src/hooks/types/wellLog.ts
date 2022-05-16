@@ -12,3 +12,8 @@ export type WellLogCurve = {
   DEPTH: number;
   GR: number;
 };
+
+export type FileGenericType = {
+  id: string;
+  extension?: string;
+};

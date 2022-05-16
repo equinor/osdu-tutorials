@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
+import { FileGenericType } from "../../hooks/types/wellLog";
 import { useWellLog } from "../../hooks/useWelLog";
 import WellLogContext from "./context";
 
@@ -9,14 +10,17 @@ type WellLogContextProviderType = {
 const WellLogContextProvider: FC<WellLogContextProviderType> = ({
   children,
 }) => {
-  const { fetchSignedUri, wellLogCurves } = useWellLog();
-  const [selectedWellLog, setSelectedWellLog] = useState<string>("");
+  const { fetchSignedUri, parquetWellLogCurves, lasWellLogCurves } =
+    useWellLog();
+  const [selectedWellLog, setSelectedWellLog] = useState<FileGenericType>(
+    {} as FileGenericType
+  );
   const [selectedWellboreId, setSelectedWellboreId] = useState<string>("");
   const [displayWellLogList, setDisplayWellLogList] = useState<boolean>(false);
 
   useEffect(() => {
-    if (selectedWellLog !== "") {
-      fetchSignedUri(selectedWellLog);
+    if (selectedWellLog) {
+      fetchSignedUri(selectedWellLog.id, selectedWellLog.extension);
     }
   }, [selectedWellLog]);
 
@@ -29,7 +33,8 @@ const WellLogContextProvider: FC<WellLogContextProviderType> = ({
         setSelectedWellLog,
         displayWellLogList,
         setDisplayWellLogList,
-        wellLogCurves,
+        parquetWellLogCurves,
+        lasWellLogCurves,
       }}
     >
       {children}

@@ -12,7 +12,8 @@ type WellLogParams = {
 
 const WellLogPage: FC = () => {
   const { fileGenericId } = useParams<WellLogParams>();
-  const { fetchSignedUri, wellLogCurves, error } = useWellLog();
+  const { fetchSignedUri, parquetWellLogCurves, lasWellLogCurves, error } =
+    useWellLog();
 
   useEffect(() => {
     if (fileGenericId) {
@@ -20,7 +21,7 @@ const WellLogPage: FC = () => {
     }
   }, []);
 
-  if (!wellLogCurves || (wellLogCurves.length === 0 && !error)) {
+  if (!parquetWellLogCurves || (parquetWellLogCurves.length === 0 && !error)) {
     return <CircularProgress />;
   }
 
@@ -32,12 +33,18 @@ const WellLogPage: FC = () => {
     );
   }
 
-  const curveTypes = Object.getOwnPropertyNames(wellLogCurves[5]);
+  const curveTypes = Object.getOwnPropertyNames(parquetWellLogCurves[5]);
+  console.log(lasWellLogCurves);
 
   return (
     <Box height="100%">
-      <CurveFilter curveTypes={curveTypes} />
-      <WellLog wellLogCurves={wellLogCurves} />
+      {parquetWellLogCurves && (
+        <>
+          <CurveFilter curveTypes={curveTypes} />
+          <WellLog wellLogCurves={parquetWellLogCurves} />
+        </>
+      )}
+      {lasWellLogCurves && lasWellLogCurves}
     </Box>
   );
 };

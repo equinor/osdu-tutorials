@@ -1,11 +1,20 @@
-.wellLog__list {
+.list__container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  z-index: 1;
+  right: 0px;
+  overflow: auto;
+  background-color: #fafafa;
   padding: 16px;
   height: 100%;
   width: 300px;
-  background-color: #fafafa;
-  position: absolute;
-  right: 0px;
-  overflow: auto;
+}
+
+.wellLog__list {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .list__header {
@@ -21,4 +30,9 @@
 .link:hover {
   text-decoration: none;
   color: inherit;
+}
+
+.wellog__button {
+  height: 60px;
+  min-width: 100px;
 }

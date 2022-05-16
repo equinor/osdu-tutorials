@@ -1,20 +1,34 @@
 import { useState } from "react";
 import { getAccessToken } from "../api/getAccessToken";
-import { WellLog, WellLogCurve } from "../hooks/types/wellLog";
+import { FileGenericType, WellLog, WellLogCurve } from "../hooks/types/wellLog";
 
 export const useWellLog = () => {
-  const [fileGenericIds, setFileGenericIds] = useState<string[]>([]);
+  const [fileGenerics, setFileGenerics] = useState<FileGenericType[]>([]);
   const [fileGenericIdsLoading, setFileGenericIdsLoading] =
     useState<boolean>(false);
-  const [wellLogCurves, setWellLogCurves] = useState<WellLogCurve[]>([]);
+  const [parquetWellLogCurves, setParquetWellLogCurves] = useState<
+    WellLogCurve[]
+  >([]);
+  const [lasWellLogCurves, setLasWellLogCurves] = useState<string>("");
   const [error, setError] = useState<Error>();
 
   var parquet = require("parquetjs-lite");
   var request = require("request");
 
+  type PreloadFilePath = {
+    "DatasetProperties.FileSourceInfo.PreloadFilePath": string;
+  };
+
+  enum FileExtensionEnum {
+    PARQUET = 1,
+    LIS = 2,
+    DLIS = 3,
+    LAS = 4,
+  }
+
   const fetchFileType = async (
     fileGenericId: string
-  ): Promise<string | null> => {
+  ): Promise<string | undefined> => {
     const accessToken = await getAccessToken();
     const requestOptions = {
       method: "POST",
@@ -41,14 +55,19 @@ export const useWellLog = () => {
         }
       );
       const data = await response.json();
-      console.log(data.results[0]);
-      const extension =
-        data.results[0].data.DatasetProperties.FileSourceInfo.PreloadFilePath;
-      console.log(extension);
+
+      // Take file extension from preloadFilePath and return to caller
+      const filePath = data.results[0].data as PreloadFilePath;
+      const extension = filePath[
+        "DatasetProperties.FileSourceInfo.PreloadFilePath"
+      ]
+        .split(".")
+        .pop();
+      return extension?.toUpperCase();
     } catch (e) {
-      console.error(`Error when fetching wellLogId: ${e}`);
+      console.error(`Error when fetching preloadFileType: ${e}`);
     }
-    return null;
+    return undefined;
   };
 
   const fetchFileGenericIds = async (wellboreId: string): Promise<void> => {
@@ -77,7 +96,6 @@ export const useWellLog = () => {
         }
       );
 
-      setFileGenericIdsLoading(false);
       const data = (await response.json()) as WellLog;
 
       // Map out FileGenericIds and trim off colon at the end of Id
@@ -86,17 +104,25 @@ export const useWellLog = () => {
         const trimmedFileGenericId = id.substring(0, id.length - 1);
         return trimmedFileGenericId;
       });
-      setFileGenericIds(mappedIds);
-      mappedIds.forEach((id) => {
-        const type = fetchFileType(id);
-        console.log(type);
-      });
+
+      // Fetch file extensions from preloadFilePath and append to composite object
+      const compositeFileGenerics = await Promise.all(
+        mappedIds.map(async (id) => {
+          const type = await fetchFileType(id);
+          return { id: id, extension: type } as FileGenericType;
+        })
+      );
+      setFileGenerics(compositeFileGenerics);
+      setFileGenericIdsLoading(false);
     } catch (e) {
       console.error(`Error when fetching wellLogId: ${e}`);
     }
   };
 
-  const fetchSignedUri = async (fileGenericId: string): Promise<void> => {
+  const fetchSignedUri = async (
+    fileGenericId: string,
+    extension?: string
+  ): Promise<void> => {
     const accessToken = await getAccessToken();
     const url = `/api/file/v2/files/${fileGenericId}/downloadURL`;
     const requestOptions = {
@@ -116,13 +142,19 @@ export const useWellLog = () => {
       });
       const signedUrl = (await response.json()).SignedUrl as string;
 
-      fetchCurves(signedUrl);
+      if (extension === FileExtensionEnum.PARQUET.toString()) {
+        fetchParquetCurves(signedUrl);
+      } else if (extension === FileExtensionEnum.DLIS.toString()) {
+        fetchCurves(signedUrl);
+      } else {
+        fetchCurves(signedUrl);
+      }
     } catch (e) {
       console.error(`Error when fetching signedUri: ${e}`);
     }
   };
 
-  const fetchCurves = async (signedUrl: string): Promise<void> => {
+  const fetchParquetCurves = async (signedUrl: string): Promise<void> => {
     try {
       var reader = await parquet.ParquetReader.openUrl(request, signedUrl);
       var record = null;
@@ -131,9 +163,26 @@ export const useWellLog = () => {
       while ((record = await cursor.next())) {
         curveArray.push(record);
       }
-      console.log(curveArray);
       reader.close();
-      setWellLogCurves(curveArray);
+      setParquetWellLogCurves(curveArray);
+    } catch (e) {
+      console.error(`Error when fetching parquet curves: ${e}`);
+      setError(e as Error);
+    }
+  };
+
+  const fetchCurves = async (signedUrl: string): Promise<void> => {
+    try {
+      const response = await fetch(signedUrl).then((response) => {
+        if (!response.ok) {
+          console.log(response.statusText);
+          throw new Error(response.statusText);
+        }
+        return response;
+      });
+      const data = (await response.json()) as string;
+      console.log(data);
+      setLasWellLogCurves(data);
     } catch (e) {
       console.error(`Error when fetching curves: ${e}`);
       setError(e as Error);
@@ -141,12 +190,13 @@ export const useWellLog = () => {
   };
 
   return {
-    fileGenericIds,
+    fileGenerics,
     fetchFileGenericIds,
     fetchSignedUri,
     fileGenericIdsLoading,
-    fetchCurves,
-    wellLogCurves,
+    fetchParquetCurves,
+    parquetWellLogCurves,
+    lasWellLogCurves,
     error,
   };
 };

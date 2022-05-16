@@ -6,7 +6,7 @@ import { useWellLogContext } from "../../contexts/wellLogContext/useWellLogConte
 import { Link } from "react-router-dom";
 
 const WellLogList: FC = () => {
-  const { fileGenericIds, fetchFileGenericIds, fileGenericIdsLoading } =
+  const { fileGenerics, fetchFileGenericIds, fileGenericIdsLoading } =
     useWellLog();
   const { selectedWellboreId, displayWellLogList } = useWellLogContext();
 
@@ -19,24 +19,34 @@ const WellLogList: FC = () => {
   }
 
   return (
-    <Box className="wellLog__list">
+    <Box className="list__container">
       <h4 className="list__header">Well Logs</h4>
-      {fileGenericIds.length === 0 && <p>No well logs available</p>}
-      {fileGenericIdsLoading ? (
-        <CircularProgress />
-      ) : (
-        fileGenericIds.map((id) => (
-          <Button
-            key={`wellLog__item__${id}`}
-            variant="contained"
-            style={{ backgroundColor: "rgb(39, 77, 83)", marginBottom: "8px" }}
-          >
-            <Link to={`/wellog/${id}`} target="_blank" className="link">
-              {id}
-            </Link>
-          </Button>
-        ))
-      )}
+      {fileGenerics.length === 0 && <p>No well logs available</p>}
+      <Box className="wellLog__list">
+        {fileGenericIdsLoading ? (
+          <CircularProgress />
+        ) : (
+          fileGenerics.map((fileGeneric) => (
+            <Button
+              key={`wellLog__item__${fileGeneric.id}`}
+              variant="contained"
+              style={{
+                backgroundColor: "rgb(39, 77, 83)",
+                marginBottom: "8px",
+              }}
+              className="wellog__button"
+            >
+              <Link
+                to={`/wellog/${fileGeneric.id}`}
+                target="_blank"
+                className="link"
+              >
+                Wellog - {fileGeneric.extension}
+              </Link>
+            </Button>
+          ))
+        )}
+      </Box>
     </Box>
   );
 };

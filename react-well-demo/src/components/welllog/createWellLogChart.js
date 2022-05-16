@@ -5,18 +5,6 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
   wellLogRoot.height = 800;
 
   var curveTypes = new Set();
-  var curveTypeArray = [
-    "DEPTH",
-    "TDEP",
-    "TICKS_PRES",
-    "TICK_ARC_GR",
-    "TICK_ARC_RES",
-    "DEPT",
-    "LSPD",
-    "CCL",
-    "LTEN",
-    "GR",
-  ];
 
   const wellbore = (wellLogRoot.wellborePath = new WellborePath(0, [
     { md: 0, tvd: 0 },
@@ -24,12 +12,6 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
     { md: 3000, tvd: 3000 },
     { md: 4500, tvd: 4500 },
   ]));
-
-  curveTypeArray.forEach((t) => {
-    if (wellLogData[5].hasOwnProperty(t)) {
-      curveTypes.add(t);
-    }
-  });
 
   const config = {
     activeScale: 0,
