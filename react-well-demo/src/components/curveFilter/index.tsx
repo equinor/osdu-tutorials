@@ -40,6 +40,7 @@ const CurveFilter: FC<CurveFilterProps> = ({ curveTypes }) => {
           {curveTypes.map((typeName) => (
             <label className="label" key={`curve__label__${typeName}`}>
               <input
+                className="checkbox"
                 type="checkbox"
                 defaultChecked={tracksToDisplay.includes(typeName)}
                 onClick={() => handleFilterChange(typeName)}

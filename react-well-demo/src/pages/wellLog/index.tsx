@@ -24,8 +24,6 @@ const WellLogPage: FC = () => {
     return <CircularProgress />;
   }
 
-  const curveTypes = Object.getOwnPropertyNames(wellLogCurves[5]);
-
   if (error) {
     return (
       <div>
@@ -33,8 +31,11 @@ const WellLogPage: FC = () => {
       </div>
     );
   }
+
+  const curveTypes = Object.getOwnPropertyNames(wellLogCurves[5]);
+
   return (
-    <Box>
+    <Box height="100%">
       <CurveFilter curveTypes={curveTypes} />
       <WellLog wellLogCurves={wellLogCurves} />
     </Box>

@@ -1,10 +1,10 @@
 .chart {
   display: flex;
-  flex-direction: row;
-  position: fixed;
   padding: 16px;
   width: 100%;
   height: 100%;
+  padding: 16px;
+  position: relative;
 }
 
 .wellx {
@@ -13,6 +13,9 @@
 }
 
 .readout {
-  height: 100px;
-  width: 400px;
+  height: 100%;
+  width: 250px;
+  position: absolute;
+  right: 0;
+  margin-left: 32px;
 }

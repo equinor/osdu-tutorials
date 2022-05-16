@@ -12,6 +12,45 @@ export const useWellLog = () => {
   var parquet = require("parquetjs-lite");
   var request = require("request");
 
+  const fetchFileType = async (
+    fileGenericId: string
+  ): Promise<string | null> => {
+    const accessToken = await getAccessToken();
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "data-partition-id": "oaktree-acorn",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        kind: "osdu:wks:dataset--File.Generic:1.0.0",
+        query: `id:(\"${fileGenericId}\")`,
+        returnedFields: [
+          "data.DatasetProperties.FileSourceInfo.PreloadFilePath",
+        ],
+      }),
+    };
+    try {
+      const response = await fetch("/api/search/v2/query", requestOptions).then(
+        (response) => {
+          if (!response.ok) {
+            throw new Error(response.statusText);
+          }
+          return response;
+        }
+      );
+      const data = await response.json();
+      console.log(data.results[0]);
+      const extension =
+        data.results[0].data.DatasetProperties.FileSourceInfo.PreloadFilePath;
+      console.log(extension);
+    } catch (e) {
+      console.error(`Error when fetching wellLogId: ${e}`);
+    }
+    return null;
+  };
+
   const fetchFileGenericIds = async (wellboreId: string): Promise<void> => {
     const accessToken = await getAccessToken();
     const requestOptions = {
@@ -37,6 +76,7 @@ export const useWellLog = () => {
           return response;
         }
       );
+
       setFileGenericIdsLoading(false);
       const data = (await response.json()) as WellLog;
 
@@ -47,6 +87,10 @@ export const useWellLog = () => {
         return trimmedFileGenericId;
       });
       setFileGenericIds(mappedIds);
+      mappedIds.forEach((id) => {
+        const type = fetchFileType(id);
+        console.log(type);
+      });
     } catch (e) {
       console.error(`Error when fetching wellLogId: ${e}`);
     }
@@ -87,6 +131,7 @@ export const useWellLog = () => {
       while ((record = await cursor.next())) {
         curveArray.push(record);
       }
+      console.log(curveArray);
       reader.close();
       setWellLogCurves(curveArray);
     } catch (e) {
