@@ -20,10 +20,10 @@ export const useWellLog = () => {
   };
 
   enum FileExtensionEnum {
-    PARQUET = 1,
-    LIS = 2,
-    DLIS = 3,
-    LAS = 4,
+    PARQUET = "PARQUET",
+    LIS = "LIS",
+    DLIS = "DLIS",
+    LAS = "LAS",
   }
 
   const fetchFileType = async (
@@ -121,7 +121,7 @@ export const useWellLog = () => {
 
   const fetchSignedUri = async (
     fileGenericId: string,
-    extension?: string
+    extension: string
   ): Promise<void> => {
     const accessToken = await getAccessToken();
     const url = `/api/file/v2/files/${fileGenericId}/downloadURL`;
@@ -142,10 +142,8 @@ export const useWellLog = () => {
       });
       const signedUrl = (await response.json()).SignedUrl as string;
 
-      if (extension === FileExtensionEnum.PARQUET.toString()) {
+      if (extension === FileExtensionEnum.PARQUET) {
         fetchParquetCurves(signedUrl);
-      } else if (extension === FileExtensionEnum.DLIS.toString()) {
-        fetchCurves(signedUrl);
       } else {
         fetchCurves(signedUrl);
       }
@@ -180,8 +178,7 @@ export const useWellLog = () => {
         }
         return response;
       });
-      const data = (await response.json()) as string;
-      console.log(data);
+      const data = (await response.text()) as string;
       setLasWellLogCurves(data);
     } catch (e) {
       console.error(`Error when fetching curves: ${e}`);

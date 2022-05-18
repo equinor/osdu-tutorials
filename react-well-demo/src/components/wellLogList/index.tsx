@@ -37,7 +37,9 @@ const WellLogList: FC = () => {
               className="wellog__button"
             >
               <Link
-                to={`/wellog/${fileGeneric.id}`}
+                to={`/wellog/${fileGeneric.extension?.toLowerCase()}/${
+                  fileGeneric.id
+                }`}
                 target="_blank"
                 className="link"
               >

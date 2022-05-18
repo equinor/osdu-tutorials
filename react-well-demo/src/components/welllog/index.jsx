@@ -11,7 +11,8 @@ const WellLog = (props) => {
       createWellLogChart(
         wellLogRef.current,
         readout.current,
-        props.wellLogCurves
+        props.wellLogCurves,
+        props.curveTypes
       );
     }
   }, [props.wellLogCurves]);

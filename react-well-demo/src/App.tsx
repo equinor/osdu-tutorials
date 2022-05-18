@@ -11,7 +11,10 @@ function App() {
       <Router>
         <Switch>
           <Route path="/" component={MainPage} exact />
-          <Route path="/wellog/:fileGenericId" component={WellLogPage} />
+          <Route
+            path="/wellog/:fileExtension/:fileGenericId"
+            component={WellLogPage}
+          />
         </Switch>
       </Router>
     </AzureAD>

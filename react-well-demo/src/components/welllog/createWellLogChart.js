@@ -1,10 +1,13 @@
 import { Readout, WellborePath } from "@equinor/wellx-wellog";
 
-export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
+export const createWellLogChart = (
+  wellLogRoot,
+  readoutRoot,
+  wellLogData,
+  curveTypes
+) => {
   wellLogRoot.width = 400;
   wellLogRoot.height = 800;
-
-  var curveTypes = new Set();
 
   const wellbore = (wellLogRoot.wellborePath = new WellborePath(0, [
     { md: 0, tvd: 0 },
@@ -13,39 +16,67 @@ export const createWellLogChart = (wellLogRoot, readoutRoot, wellLogData) => {
     { md: 4500, tvd: 4500 },
   ]));
 
+  let depthType = null;
+
+  if (curveTypes.includes("DEPTH")) {
+    depthType = "DEPTH";
+    const index = curveTypes.indexOf("DEPTH");
+    if (index > -1) {
+      curveTypes.splice(index, 1);
+    }
+  } else if (curveTypes.includes("TDEP")) {
+    depthType = "TDEP";
+    const index = curveTypes.indexOf("TDEP");
+    if (index > -1) {
+      curveTypes.splice(index, 1);
+    }
+  } else if (curveTypes.length <= 1) {
+    return null;
+  } else {
+    return null;
+  }
+
   const config = {
     activeScale: 0,
-    tracks: [
-      curveTypes.has("TDEP") && {
-        id: 1,
-        kind: "graph",
-        header: {
-          label: "TDEP",
-        },
-        legend: {
+    tracks: curveTypes.forEach((type, i) => {
+      return [
+        {
+          id: i,
           kind: "graph",
-        },
-        widthMultiplier: 2.5,
-        plot: {
-          kind: "graph",
-          plots: [
-            {
-              kind: "line",
-              opacity: 0.5,
-              lineType: 0,
-              name: "TDEP",
-              color: "#0d47a1",
-              unit: "",
-              scale: {
-                kind: "linear",
-                domain: [0, 7000],
+          header: {
+            label: `${type}`,
+          },
+          legend: {
+            kind: "graph",
+          },
+          widthMultiplier: 2.5,
+          plot: {
+            kind: "graph",
+            plots: [
+              {
+                kind: "line",
+                opacity: 0.5,
+                lineType: 0,
+                name: `${type}`,
+                color: "#0d47a1",
+                unit: "",
+                scale: {
+                  kind: "linear",
+                  domain: [
+                    wellLogData[0][`${type}`],
+                    wellLogData.slice(-1)[`${type}`],
+                  ],
+                },
+                plotData: [
+                  wellLogData.map((y) => y[`${depthType}`]),
+                  wellLogData.map((x) => x[`${type}`]),
+                ],
               },
-              plotData: [wellLogData.map((d) => [d.TDEP, d.GR_ARC])],
-            },
-          ],
+            ],
+          },
         },
-      },
-    ],
+      ];
+    }),
     wellbore,
   };
 

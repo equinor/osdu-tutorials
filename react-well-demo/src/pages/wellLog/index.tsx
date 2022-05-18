@@ -8,20 +8,24 @@ import "./styles.css";
 
 type WellLogParams = {
   fileGenericId: string;
+  fileExtension: string;
 };
 
 const WellLogPage: FC = () => {
-  const { fileGenericId } = useParams<WellLogParams>();
+  const { fileGenericId, fileExtension } = useParams<WellLogParams>();
   const { fetchSignedUri, parquetWellLogCurves, lasWellLogCurves, error } =
     useWellLog();
 
   useEffect(() => {
     if (fileGenericId) {
-      fetchSignedUri(fileGenericId);
+      fetchSignedUri(fileGenericId, fileExtension.toUpperCase());
     }
-  }, []);
+  }, [fileGenericId]);
 
-  if (!parquetWellLogCurves || (parquetWellLogCurves.length === 0 && !error)) {
+  if (
+    (!parquetWellLogCurves && !lasWellLogCurves) ||
+    (parquetWellLogCurves.length === 0 && !lasWellLogCurves)
+  ) {
     return <CircularProgress />;
   }
 
@@ -33,18 +37,22 @@ const WellLogPage: FC = () => {
     );
   }
 
-  const curveTypes = Object.getOwnPropertyNames(parquetWellLogCurves[5]);
-  console.log(lasWellLogCurves);
-
   return (
     <Box height="100%">
-      {parquetWellLogCurves && (
+      {parquetWellLogCurves[5] && (
         <>
-          <CurveFilter curveTypes={curveTypes} />
-          <WellLog wellLogCurves={parquetWellLogCurves} />
+          <CurveFilter
+            curveTypes={Object.getOwnPropertyNames(parquetWellLogCurves[5])}
+          />
+          <WellLog
+            wellLogCurves={parquetWellLogCurves}
+            curveTypes={Object.getOwnPropertyNames(parquetWellLogCurves[5])}
+          />
         </>
       )}
-      {lasWellLogCurves && lasWellLogCurves}
+      {lasWellLogCurves && (
+        <p className="lasWellLogCurve">{lasWellLogCurves}</p>
+      )}
     </Box>
   );
 };
