@@ -4,7 +4,8 @@ export const createWellLogChart = (
   wellLogRoot,
   readoutRoot,
   wellLogData,
-  curveTypes
+  curveTypes,
+  depthType
 ) => {
   wellLogRoot.width = 1000;
   wellLogRoot.height = 1300;
@@ -30,30 +31,6 @@ export const createWellLogChart = (
     "#8b58ff",
     "#75ff61",
   ];
-
-  var depthType = "";
-
-  if (curveTypes.includes("DEPTH")) {
-    depthType = "DEPTH";
-    const index = curveTypes.indexOf("DEPTH");
-    if (index > -1) {
-      curveTypes.splice(index, 1);
-    }
-  } else if (curveTypes.includes("TDEP")) {
-    depthType = "TDEP";
-    const index = curveTypes.indexOf("TDEP");
-    if (index > -1) {
-      curveTypes.splice(index, 1);
-    }
-  } else if (curveTypes.includes("DEPT")) {
-    depthType = "DEPT";
-    const index = curveTypes.indexOf("DEPT");
-    if (index > -1) {
-      curveTypes.splice(index, 1);
-    }
-  } else if (curveTypes.length <= 1) {
-    return null;
-  }
 
   curveTypes.forEach((type, i) => {
     console.log([
@@ -83,7 +60,7 @@ export const createWellLogChart = (
               opacity: 0.5,
               lineType: 0,
               name: `${type}`,
-              color: colorArray[Math.floor(Math.random() * colorArray.length)],
+              color: colorArray[i],
               unit: "",
               scale: {
                 kind: "linear",

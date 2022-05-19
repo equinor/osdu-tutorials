@@ -1,5 +1,5 @@
 import { CircularProgress, Box } from "@mui/material";
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import CurveFilter from "../../components/curveFilter";
 import WellLog from "../../components/welllog";
@@ -15,6 +15,30 @@ const WellLogPage: FC = () => {
   const { fileGenericId, fileExtension } = useParams<WellLogParams>();
   const { fetchSignedUri, parquetWellLogCurves, lasWellLogCurves, error } =
     useWellLog();
+
+  const [tracksToDisplay, setTracksToDisplay] = useState<string[]>([]);
+  const [depthType, setDepthType] = useState<string | null>("");
+
+  const handleFilterChange = (curveType: string) => {
+    if (tracksToDisplay.includes(curveType)) {
+      setTracksToDisplay((prev) => {
+        let updatedTypes = prev.filter((type) => type !== curveType);
+        return [...updatedTypes];
+      });
+    } else {
+      setTracksToDisplay((prev) => {
+        return [...prev, curveType];
+      });
+    }
+  };
+
+  const handleSetTracksToDisplay = (tracks: string[]) => {
+    setTracksToDisplay(tracks);
+  };
+
+  const handleSetDepthType = (depthType: string | null) => {
+    setDepthType(depthType);
+  };
 
   useEffect(() => {
     if (fileGenericId) {
@@ -43,11 +67,18 @@ const WellLogPage: FC = () => {
         <>
           <CurveFilter
             curveTypes={Object.getOwnPropertyNames(parquetWellLogCurves[5])}
+            tracksToDisplay={tracksToDisplay}
+            handleFilterChange={handleFilterChange}
+            handleSetTracksToDisplay={handleSetTracksToDisplay}
+            handleSetDepthType={handleSetDepthType}
           />
-          <WellLog
-            wellLogCurves={parquetWellLogCurves}
-            curveTypes={Object.getOwnPropertyNames(parquetWellLogCurves[5])}
-          />
+          {depthType && (
+            <WellLog
+              wellLogCurves={parquetWellLogCurves}
+              curveTypes={tracksToDisplay}
+              depthType={depthType}
+            />
+          )}
         </>
       )}
       {lasWellLogCurves && (

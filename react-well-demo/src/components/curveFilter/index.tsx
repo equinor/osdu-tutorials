@@ -1,30 +1,43 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import "./styles.css";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 type CurveFilterProps = {
   curveTypes: string[];
+  tracksToDisplay: string[];
+  handleFilterChange: (track: string) => void;
+  handleSetTracksToDisplay: (tracks: string[]) => void;
+  handleSetDepthType: (depthType: string | null) => void;
 };
 
-const CurveFilter: FC<CurveFilterProps> = ({ curveTypes }) => {
+const CurveFilter: FC<CurveFilterProps> = ({
+  curveTypes,
+  handleFilterChange,
+  tracksToDisplay,
+  handleSetTracksToDisplay,
+  handleSetDepthType,
+}) => {
   const [displayAlternatives, setDisplayAlternatives] =
     useState<boolean>(false);
-  const [tracksToDisplay, setTracksToDisplay] = useState<string[]>(
-    curveTypes ?? []
+
+  const filteredCurveTypes = curveTypes.filter(
+    (type) => type !== "DEPTH" && type !== "TDEP" && type !== "DEPT"
   );
 
-  const handleFilterChange = (curveType: string) => {
-    if (tracksToDisplay.includes(curveType)) {
-      setTracksToDisplay((prev) => {
-        let updatedTypes = prev.filter((type) => type !== curveType);
-        return [...updatedTypes];
-      });
-    } else {
-      setTracksToDisplay((prev) => {
-        return [...prev, curveType];
-      });
+  useEffect(() => {
+    if (tracksToDisplay.length === 0) {
+      handleSetTracksToDisplay(filteredCurveTypes);
+      if (curveTypes.includes("DEPTH")) {
+        handleSetDepthType("DEPTH");
+      } else if (curveTypes.includes("TDEP")) {
+        handleSetDepthType("TDEP");
+      } else if (curveTypes.includes("DEPT")) {
+        handleSetDepthType("DEPT");
+      } else if (curveTypes.length <= 1) {
+        handleSetDepthType(null);
+      }
     }
-  };
+  }, []);
 
   return (
     <div className="filterContainer">
@@ -37,12 +50,16 @@ const CurveFilter: FC<CurveFilterProps> = ({ curveTypes }) => {
       </button>
       {displayAlternatives && (
         <ul className="alternativeContainer">
-          {curveTypes.map((typeName) => (
+          {filteredCurveTypes.map((typeName) => (
             <label className="label" key={`curve__label__${typeName}`}>
               <input
                 className="checkbox"
                 type="checkbox"
-                defaultChecked={tracksToDisplay.includes(typeName)}
+                defaultChecked={
+                  tracksToDisplay.length === 0
+                    ? filteredCurveTypes.includes(typeName)
+                    : tracksToDisplay.includes(typeName)
+                }
                 onClick={() => handleFilterChange(typeName)}
               />
               {typeName}

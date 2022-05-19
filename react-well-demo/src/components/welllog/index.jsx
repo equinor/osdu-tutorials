@@ -7,12 +7,18 @@ const WellLog = (props) => {
   const readout = useRef(null);
 
   useEffect(() => {
-    if (wellLogRef.current && readout.current && props.wellLogCurves) {
+    if (
+      wellLogRef.current &&
+      readout.current &&
+      props.wellLogCurves &&
+      props.depthType
+    ) {
       createWellLogChart(
         wellLogRef.current,
         readout.current,
         props.wellLogCurves,
-        props.curveTypes
+        props.curveTypes,
+        props.depthType
       );
     }
   }, [props.wellLogCurves, props.curveTypes]);
