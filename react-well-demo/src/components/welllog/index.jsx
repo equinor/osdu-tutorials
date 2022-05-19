@@ -15,7 +15,7 @@ const WellLog = (props) => {
         props.curveTypes
       );
     }
-  }, [props.wellLogCurves]);
+  }, [props.wellLogCurves, props.curveTypes]);
 
   if (!props.wellLogCurves || props.wellLogCurves.length === 0) return null;
 
