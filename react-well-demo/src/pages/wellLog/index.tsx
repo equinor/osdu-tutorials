@@ -50,7 +50,11 @@ const WellLogPage: FC = () => {
     (!parquetWellLogCurves && !lasWellLogCurves) ||
     (parquetWellLogCurves.length === 0 && !lasWellLogCurves)
   ) {
-    return <CircularProgress />;
+    return (
+      <CircularProgress
+        style={{ position: "absolute", right: "50%", top: "40%" }}
+      />
+    );
   }
 
   if (error) {

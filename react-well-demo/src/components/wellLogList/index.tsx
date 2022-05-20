@@ -21,10 +21,14 @@ const WellLogList: FC = () => {
   return (
     <Box className="list__container">
       <h4 className="list__header">Well Logs</h4>
-      {fileGenerics.length === 0 && <p>No well logs available</p>}
+      {!fileGenericIdsLoading && fileGenerics.length === 0 && (
+        <p>No well logs available</p>
+      )}
       <Box className="wellLog__list">
         {fileGenericIdsLoading ? (
-          <CircularProgress />
+          <CircularProgress
+            style={{ position: "absolute", right: "50%", top: "15%" }}
+          />
         ) : (
           fileGenerics.map((fileGeneric) => (
             <Button
