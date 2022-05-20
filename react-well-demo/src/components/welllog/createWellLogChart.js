@@ -32,13 +32,6 @@ export const createWellLogChart = (
     "#75ff61",
   ];
 
-  curveTypes.forEach((type, i) => {
-    console.log([
-      wellLogData.map((y) => +y[`${depthType}`]),
-      wellLogData.map((x) => +x[`${type}`]),
-    ]);
-  });
-
   const config = {
     activeScale: 0,
     tracks: curveTypes.map((type, i) => {
@@ -66,12 +59,14 @@ export const createWellLogChart = (
                 kind: "linear",
                 domain: [
                   +wellLogData[0][`${type}`],
-                  +wellLogData.slice(-1)[`${type}`],
+                  +wellLogData[wellLogData.length - 1][`${type}`],
                 ],
               },
               plotData: [
-                wellLogData.map((y) => +y[`${depthType}`]),
-                wellLogData.map((x) => +x[`${type}`]),
+                wellLogData.map((wellog) => [
+                  +wellog[`${depthType}`],
+                  +wellog[`${type}`],
+                ]),
               ],
             },
           ],
