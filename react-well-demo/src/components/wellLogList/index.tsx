@@ -30,27 +30,49 @@ const WellLogList: FC = () => {
             style={{ position: "absolute", right: "50%", top: "15%" }}
           />
         ) : (
-          fileGenerics.map((fileGeneric) => (
-            <Button
-              key={`wellLog__item__${fileGeneric.id}`}
-              variant="contained"
-              style={{
-                backgroundColor: "rgb(39, 77, 83)",
-                marginBottom: "8px",
-              }}
-              className="wellog__button"
-            >
-              <Link
-                to={`/wellog/${fileGeneric.extension?.toLowerCase()}/${
-                  fileGeneric.id
-                }`}
-                target="_blank"
-                className="link"
+          fileGenerics.map((fileGeneric) =>
+            fileGeneric.extension === "DLIS" ? (
+              <Button
+                key={`wellLog__item__${fileGeneric.id}`}
+                variant="contained"
+                style={{
+                  backgroundColor: "rgb(192,192,192)",
+                  marginBottom: "8px",
+                }}
+                className="wellog__button"
               >
-                Wellog - {fileGeneric.extension}
-              </Link>
-            </Button>
-          ))
+                <Link
+                  to={`/wellog/${fileGeneric.extension?.toLowerCase()}/${
+                    fileGeneric.id
+                  }`}
+                  target="_blank"
+                  className="link"
+                >
+                  Wellog - {fileGeneric.extension}
+                </Link>
+              </Button>
+            ) : (
+              <Button
+                key={`wellLog__item__${fileGeneric.id}`}
+                variant="contained"
+                style={{
+                  backgroundColor: "rgb(39, 77, 83)",
+                  marginBottom: "8px",
+                }}
+                className="wellog__button"
+              >
+                <Link
+                  to={`/wellog/${fileGeneric.extension?.toLowerCase()}/${
+                    fileGeneric.id
+                  }`}
+                  target="_blank"
+                  className="link"
+                >
+                  Wellog - {fileGeneric.extension}
+                </Link>
+              </Button>
+            )
+          )
         )}
       </Box>
     </Box>
