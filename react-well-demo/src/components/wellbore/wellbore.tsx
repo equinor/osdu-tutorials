@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import { Alert, Button, Snackbar, SnackbarOrigin } from "@mui/material";
 import WellboreTrajectory from "../wellboreTrajectory/WellboreTrajectory";
 import { useTrajectories } from "../../hooks/useTrajectories";
+import { useWellLogContext } from "../../contexts/wellLogContext/useWellLogContext";
 
 export interface WellboreProps {
   /** a wellbore_trajectory model to be represented by the component */
@@ -16,7 +17,10 @@ export interface AlertState extends SnackbarOrigin {
 }
 
 export function Wellbore({ wellbore }: WellboreProps) {
+  const { setSelectedWellboreId, setDisplayWellLogList, selectedWellboreId } =
+    useWellLogContext();
   const [displayTrajectory, setDisplayTrajectory] = useState<boolean>(false);
+  const [wellLogDisplay, setWellLogDisplay] = useState<boolean>(false);
   const [openAlert, setOpenAlert] = useState<AlertState>({
     open: false,
     vertical: "bottom",
@@ -40,6 +44,12 @@ export function Wellbore({ wellbore }: WellboreProps) {
     setOpenAlert({ open: false, vertical, horizontal });
   };
 
+  useEffect(() => {
+    if (selectedWellboreId !== wellbore.id) {
+      setWellLogDisplay(false);
+    }
+  }, [selectedWellboreId]);
+
   return (
     <>
       <Col md={2} className="fs-4">
@@ -62,6 +72,28 @@ export function Wellbore({ wellbore }: WellboreProps) {
       {trajectories.length !== 0 && displayTrajectory && (
         <WellboreTrajectory trajectoryPoints={trajectories} />
       )}
+      <Col>
+        {wellLogDisplay ? (
+          <Button
+            onClick={() => {
+              setDisplayWellLogList(false);
+              setWellLogDisplay(false);
+            }}
+          >
+            Hide well logs
+          </Button>
+        ) : (
+          <Button
+            onClick={() => {
+              setDisplayWellLogList(true);
+              setWellLogDisplay(true);
+              setSelectedWellboreId(wellbore.id);
+            }}
+          >
+            View well logs
+          </Button>
+        )}
+      </Col>
       {trajectories.length === 0 && displayTrajectory && (
         <Snackbar
           open={true}

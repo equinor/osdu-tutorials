@@ -9,6 +9,8 @@ import { CircularProgress } from "@mui/material";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Container } from "react-bootstrap";
+import WellLogList from "../wellLogList";
+import WellLog from "../welllog";
 
 type WellCanvasProps = {
   searchName: string;
@@ -83,6 +85,7 @@ const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
                 }
               />
             ))}
+            <WellLogList />
           </Map>
         </Col>
       </Row>

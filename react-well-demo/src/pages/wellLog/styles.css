@@ -1,0 +1,9 @@
+.progress {
+  left: 500px;
+  top: 100px;
+}
+
+.lasWellLogCurve {
+  white-space: pre;
+  padding: 32px;
+}
