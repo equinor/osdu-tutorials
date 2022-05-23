@@ -10,18 +10,18 @@ on:
     paths:
       - react-well-demo/**
   workflow_dispatch:
-  
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v2
 
       - name: Set up Node.js version
         uses: actions/setup-node@v1
         with:
-          node-version: 'latest'
+          node-version: "latest/current/node"
 
       - name: Set up npmrc
         run: |
@@ -33,12 +33,12 @@ jobs:
           cd ./react-well-demo
           npm ci
           CI=false npm run build
-          
+
       - name: Deploy
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'well-demo'
-          slot-name: 'Production'
+          app-name: "well-demo"
+          slot-name: "Production"
           publish-profile: ${{ secrets.AZURE_APPSERVICE_PUBLISHPROFILE_WELL_DEMO }}
           package: ./react-well-demo/build
