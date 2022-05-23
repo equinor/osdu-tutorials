@@ -21,7 +21,7 @@ const WellLog = (props) => {
         props.depthType
       );
     }
-  }, [props.wellLogCurves, props.curveTypes]);
+  }, [props.wellLogCurves, props.curveTypes, props.depthType]);
 
   if (!props.wellLogCurves || props.wellLogCurves.length === 0) return null;
 
