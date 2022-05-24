@@ -58,16 +58,13 @@ export const createWellLogChart = (
               scale: {
                 kind: "linear",
                 domain: [
-                  +wellLogData[0][`${depthType}`],
-                  +wellLogData[wellLogData.length - 1][`${depthType}`],
+                  +wellLogData[0][`${type}`],
+                  +wellLogData[wellLogData.length - 1][`${type}`],
                 ],
               },
-              plotData: [
-                wellLogData.map((wellog) => [
-                  +wellog[`${depthType}`],
-                  +wellog[`${type}`],
-                ]),
-              ],
+              plotData: wellLogData.map((obj) => {
+                return [obj[`${depthType}`], obj[`${type}`]];
+              }),
             },
           ],
         },

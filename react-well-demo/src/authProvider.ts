@@ -6,8 +6,9 @@ import { MsalAuthProvider, LoginType } from "react-aad-msal";
 export const authProvider = new MsalAuthProvider(
   {
     auth: {
-      authority: "https://login.microsoftonline.com/",
-      clientId: "d91a40ba-e6ee-47ab-8836-cdd3c68b87d4",
+      authority:
+        "https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0",
+      clientId: "6a47658e-b1b7-45d0-adf0-50d81647c161",
       postLogoutRedirectUri: window.location.origin,
       redirectUri: window.location.origin,
       validateAuthority: true,
@@ -23,7 +24,7 @@ export const authProvider = new MsalAuthProvider(
     },
   },
   {
-    scopes: ["openid", "d91a40ba-e6ee-47ab-8836-cdd3c68b87d4/.default"],
+    scopes: ["openid", "6a47658e-b1b7-45d0-adf0-50d81647c161/.default"],
   },
   {
     loginType: LoginType.Popup,
