@@ -2,7 +2,12 @@ import { handleErrors } from "./handleErrors";
 import { getAccessToken } from "./getAccessToken";
 import { parseString } from "@fast-csv/parse";
 import { DatasetResponse, getDownloadUrl } from "./api.utils";
-import { API_BASE_URL } from "../constants/baseUrl";
+import {
+  NPEQUINOR_BASE_URL,
+  NPEQUINOR_DATA_PARTITION,
+  OAKTREE_BASE_URL,
+  OAKTREE_DATA_PARTITION,
+} from "../constants/baseUrl";
 
 export interface WellboreTrajectoryPoint {
   md: number;
@@ -29,7 +34,7 @@ async function getDatasetsFromWellboreTrajectory(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "data-partition-id": "oaktree-acorn",
+      "data-partition-id": `${NPEQUINOR_DATA_PARTITION}`,
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
@@ -37,7 +42,7 @@ async function getDatasetsFromWellboreTrajectory(
       returnedFields: ["id", "data.WellboreID"],
     }),
   };
-  return fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions)
+  return fetch(`${NPEQUINOR_BASE_URL}/api/search/v2/query`, requestOptions)
     .catch(handleErrors)
     .then((response) => response.json());
 }

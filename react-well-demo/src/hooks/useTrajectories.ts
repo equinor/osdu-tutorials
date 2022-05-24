@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { getAccessToken } from "../api/getAccessToken";
 import { WellboreType } from "./types/wellbores";
-import { API_BASE_URL } from "../constants/baseUrl";
+import {
+  NPEQUINOR_BASE_URL,
+  NPEQUINOR_DATA_PARTITION,
+  OAKTREE_BASE_URL,
+  OAKTREE_DATA_PARTITION,
+} from "../constants/baseUrl";
 import { Trajectory, WellboreTrajectoryPoint } from "./types/trajectory";
 
 export const useTrajectories = () => {
@@ -16,7 +21,7 @@ export const useTrajectories = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "data-partition-id": "oaktree-acorn",
+        "data-partition-id": `${NPEQUINOR_DATA_PARTITION}`,
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
@@ -28,7 +33,7 @@ export const useTrajectories = () => {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/search/v2/query`,
+        `${NPEQUINOR_BASE_URL}/api/search/v2/query`,
         requestOptions
       ).then((response) => {
         if (!response.ok) {
@@ -49,14 +54,14 @@ export const useTrajectories = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "data-partition-id": "oaktree-acorn",
+        "data-partition-id": `${NPEQUINOR_DATA_PARTITION}`,
         Authorization: `Bearer ${accessToken}`,
       },
     };
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/storage/v2/records/${trajectoryId}`,
+        `${NPEQUINOR_BASE_URL}/api/storage/v2/records/${trajectoryId}`,
         requestOptions
       ).then((response) => {
         if (!response.ok) {

@@ -1,6 +1,11 @@
 import { handleErrors } from "./handleErrors";
 import { getAccessToken } from "./getAccessToken";
-import { API_BASE_URL } from "../constants/baseUrl";
+import {
+  NPEQUINOR_BASE_URL,
+  NPEQUINOR_DATA_PARTITION,
+  OAKTREE_BASE_URL,
+  OAKTREE_DATA_PARTITION,
+} from "../constants/baseUrl";
 
 export interface FindWellsResponse {
   results: Well[];
@@ -35,7 +40,7 @@ export async function findWellsByName(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "data-partition-id": "oaktree-acorn",
+      "data-partition-id": `${NPEQUINOR_DATA_PARTITION}`,
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
@@ -51,7 +56,7 @@ export async function findWellsByName(
     }),
   };
 
-  return fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions)
+  return fetch(`${NPEQUINOR_BASE_URL}/api/search/v2/query`, requestOptions)
     .then(handleErrors)
     .then((response) => response.json());
 }
@@ -83,7 +88,7 @@ export async function findWellbores(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "data-partition-id": "oaktree-acorn",
+      "data-partition-id": `${NPEQUINOR_DATA_PARTITION}`,
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
@@ -93,7 +98,7 @@ export async function findWellbores(
       returnedFields: ["id", "data.FacilityName"],
     }),
   };
-  return fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions)
+  return fetch(`${NPEQUINOR_BASE_URL}/api/search/v2/query`, requestOptions)
     .then(handleErrors)
     .then((response) => response.json());
 }

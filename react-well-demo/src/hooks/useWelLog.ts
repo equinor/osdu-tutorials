@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { getAccessToken } from "../api/getAccessToken";
 import { FileGenericType, WellLog, WellLogCurve } from "../hooks/types/wellLog";
+import {
+  NPEQUINOR_BASE_URL,
+  NPEQUINOR_DATA_PARTITION,
+} from "../constants/baseUrl";
 
 export const useWellLog = () => {
   const [fileGenerics, setFileGenerics] = useState<FileGenericType[]>([]);
@@ -34,7 +38,7 @@ export const useWellLog = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "data-partition-id": "oaktree-acorn",
+        "data-partition-id": `${NPEQUINOR_DATA_PARTITION}`,
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
@@ -46,14 +50,15 @@ export const useWellLog = () => {
       }),
     };
     try {
-      const response = await fetch("/api/search/v2/query", requestOptions).then(
-        (response) => {
-          if (!response.ok) {
-            throw new Error(response.statusText);
-          }
-          return response;
+      const response = await fetch(
+        `${NPEQUINOR_BASE_URL}/api/search/v2/query`,
+        requestOptions
+      ).then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
         }
-      );
+        return response;
+      });
       const data = await response.json();
 
       // Take file extension from preloadFilePath and return to caller
@@ -76,7 +81,7 @@ export const useWellLog = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "data-partition-id": "oaktree-acorn",
+        "data-partition-id": `${NPEQUINOR_DATA_PARTITION}`,
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
@@ -87,14 +92,15 @@ export const useWellLog = () => {
     };
     try {
       setFileGenericIdsLoading(true);
-      const response = await fetch("/api/search/v2/query", requestOptions).then(
-        (response) => {
-          if (!response.ok) {
-            throw new Error(response.statusText);
-          }
-          return response;
+      const response = await fetch(
+        `${NPEQUINOR_BASE_URL}/api/search/v2/query`,
+        requestOptions
+      ).then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
         }
-      );
+        return response;
+      });
 
       const data = (await response.json()) as WellLog;
 
@@ -128,7 +134,7 @@ export const useWellLog = () => {
     const requestOptions = {
       method: "GET",
       headers: {
-        "data-partition-id": "oaktree-acorn",
+        "data-partition-id": `${NPEQUINOR_DATA_PARTITION}`,
         Authorization: `Bearer ${accessToken}`,
       },
     };

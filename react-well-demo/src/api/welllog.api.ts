@@ -1,6 +1,10 @@
 import { handleErrors } from "./handleErrors";
 import { getAccessToken } from "./getAccessToken";
-import { API_BASE_URL } from "../constants/baseUrl";
+import {
+  NPEQUINOR_BASE_URL,
+  NPEQUINOR_DATA_PARTITION,
+  OAKTREE_BASE_URL,
+} from "../constants/baseUrl";
 
 interface WellLog {
   id: string;
@@ -18,7 +22,7 @@ async function getWellLogs(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "data-partition-id": "oaktree-acorn",
+      "data-partition-id": `${NPEQUINOR_DATA_PARTITION}`,
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
@@ -27,7 +31,7 @@ async function getWellLogs(
       returnedFields: ["id"],
     }),
   };
-  return fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions)
+  return fetch(`${NPEQUINOR_BASE_URL}/api/search/v2/query`, requestOptions)
     .catch(handleErrors)
     .then((response) => response.json());
 }
@@ -43,11 +47,11 @@ export async function loadWellLogData(wellboreId: string): Promise<any> {
   //const searchParams = new URLSearchParams(params);
   //console.log("search", searchParams.toString())
 
-  const ddmsUrl = `${API_BASE_URL}/api/os-wellbore-ddms/ddms/v3/welllogs/${wellLogs.results[0].id}/data?curves=DEPTH,GR`;
+  const ddmsUrl = `${NPEQUINOR_BASE_URL}/api/os-wellbore-ddms/ddms/v3/welllogs/${wellLogs.results[0].id}/data?curves=DEPTH,GR`;
   const requestOptions = {
     method: "GET",
     headers: {
-      "data-partition-id": "oaktree-acorn",
+      "data-partition-id": `${NPEQUINOR_DATA_PARTITION}`,
       Authorization: `Bearer ${accessToken}`,
       accept: "application/json",
     },
