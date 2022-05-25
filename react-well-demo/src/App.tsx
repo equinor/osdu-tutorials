@@ -7,7 +7,7 @@ import WellLogPage from "./pages/wellLog";
 
 function App() {
   return (
-    <AzureAD provider={authProvider} reduxStore={store}>
+    <AzureAD provider={authProvider} forceLogin={true} reduxStore={store}>
       <Router>
         <Switch>
           <Route path="/" component={MainPage} exact />
