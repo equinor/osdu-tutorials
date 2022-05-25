@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { getAccessToken } from "../api/getAccessToken";
 import { FileGenericType, WellLog, WellLogCurve } from "../hooks/types/wellLog";
+import { API_BASE_URL } from "../constants/baseUrl";
 
 export const useWellLog = () => {
   const [fileGenerics, setFileGenerics] = useState<FileGenericType[]>([]);
@@ -87,14 +88,15 @@ export const useWellLog = () => {
     };
     try {
       setFileGenericIdsLoading(true);
-      const response = await fetch("/api/search/v2/query", requestOptions).then(
-        (response) => {
-          if (!response.ok) {
-            throw new Error(response.statusText);
-          }
-          return response;
+      const response = await fetch(
+        `${API_BASE_URL}/api/search/v2/query`,
+        requestOptions
+      ).then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
         }
-      );
+        return response;
+      });
 
       const data = (await response.json()) as WellLog;
 
@@ -124,7 +126,7 @@ export const useWellLog = () => {
     extension: string
   ): Promise<void> => {
     const accessToken = await getAccessToken();
-    const url = `/api/file/v2/files/${fileGenericId}/downloadURL`;
+    const url = `${API_BASE_URL}/api/file/v2/files/${fileGenericId}/downloadURL`;
     const requestOptions = {
       method: "GET",
       headers: {
