@@ -106,3 +106,9 @@
 .welldetails .col-md-2:first-child {
   color: #212529a8;
 }
+
+.loader {
+  position: absolute;
+  right: 50%;
+  top: 30%;
+}

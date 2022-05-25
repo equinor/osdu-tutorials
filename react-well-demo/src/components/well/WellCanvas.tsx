@@ -47,7 +47,7 @@ const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
   }, [searchName]);
 
   if (foundWells.length === 0) {
-    return <CircularProgress />;
+    return <CircularProgress className="loader" />;
   }
 
   const locations = foundWells.map((well) => well.location);
