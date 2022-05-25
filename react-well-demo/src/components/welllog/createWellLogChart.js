@@ -58,8 +58,8 @@ export const createWellLogChart = (
               scale: {
                 kind: "linear",
                 domain: [
-                  +wellLogData[0][`${type}`],
-                  +wellLogData[wellLogData.length - 1][`${type}`],
+                  Math.min(...wellLogData.map((obj) => obj[`${type}`])),
+                  Math.max(...wellLogData.map((obj) => obj[`${type}`])),
                 ],
               },
               plotData: wellLogData.map((obj) => {
