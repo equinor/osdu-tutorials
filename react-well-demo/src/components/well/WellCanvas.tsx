@@ -10,7 +10,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Container } from "react-bootstrap";
 import WellLogList from "../wellLogList";
-import WellLog from "../welllog";
 
 type WellCanvasProps = {
   searchName: string;
