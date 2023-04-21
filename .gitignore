@@ -6,3 +6,4 @@ react-well-demo/.vscode/launch.json
 venv
 osdu_notebooks/.env
 osdu_notebooks/token_cache.txt
+osdu_notebooks/8. Seismic Data Bank (SDB) metadata Ingestion/token_cache.txt
