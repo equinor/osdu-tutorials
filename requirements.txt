@@ -1,0 +1,7 @@
+xmltodict==0.13.0
+osdu-sdk==0.0.13
+python-dotenv
+msal
+numpy
+pandas
+httpx
