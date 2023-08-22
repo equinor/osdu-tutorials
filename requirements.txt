@@ -1,5 +1,6 @@
 xmltodict==0.13.0
 osdu-sdk==0.0.13
+ipykernel
 python-dotenv
 msal
 numpy
