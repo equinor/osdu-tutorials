@@ -47,15 +47,14 @@ export const useWellLog = () => {
       }),
     };
     try {
-      const response = await fetch(
-        `/api/search/v2/query`,
-        requestOptions
-      ).then((response) => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
+      const response = await fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions).then(
+        (response) => {
+          if (!response.ok) {
+            throw new Error(response.statusText);
+          }
+          return response;
         }
-        return response;
-      });
+      );
       const data = await response.json();
 
       // Take file extension from preloadFilePath and return to caller
@@ -89,15 +88,14 @@ export const useWellLog = () => {
     };
     try {
       setFileGenericIdsLoading(true);
-      const response = await fetch(
-        `${API_BASE_URL}/api/search/v2/query`,
-        requestOptions
-      ).then((response) => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
+      const response = await fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions).then(
+        (response) => {
+          if (!response.ok) {
+            throw new Error(response.statusText);
+          }
+          return response;
         }
-        return response;
-      });
+      );
 
       const data = (await response.json()) as WellLog;
 
@@ -127,7 +125,7 @@ export const useWellLog = () => {
     extension: string
   ): Promise<void> => {
     const accessToken = await getAccessToken();
-    const url = `/api/file/v2/files/${fileGenericId}/downloadURL`;
+    const url = `${API_BASE_URL}/api/file/v2/files/${fileGenericId}/downloadURL`;
     const requestOptions = {
       method: "GET",
       headers: {
@@ -138,7 +136,6 @@ export const useWellLog = () => {
     try {
       const response = await fetch(url, requestOptions).then((response) => {
         if (!response.ok) {
-          console.log(response.statusText);
           throw new Error(response.statusText);
         }
         return response;
@@ -176,7 +173,6 @@ export const useWellLog = () => {
     try {
       const response = await fetch(signedUrl).then((response) => {
         if (!response.ok) {
-          console.log(response.statusText);
           throw new Error(response.statusText);
         }
         return response;

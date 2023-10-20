@@ -9,6 +9,21 @@ export default defineConfig({
   plugins: [react(), commonjs()],
   server: {
     port: 4200,
+    proxy: {
+      '/api/': {
+        target: 'https://npequinor.energy.azure.com',
+        changeOrigin: true,
+        secure: false,      
+        ws: true,
+    },
+    '/file-persistent-area/*': {
+      target: 'https://dataxv54m5x5e7yvi.blob.core.windows.net',
+      changeOrigin: true,
+      secure: false,
+      ws: true
+    }
+    },
+    
   },
   test: {
     globals: true,

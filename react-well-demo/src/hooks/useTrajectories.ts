@@ -44,7 +44,6 @@ export const useTrajectories = () => {
   };
 
   const fetchTrajectories = async (trajectoryId: string) => {
-    console.log(trajectoryId)
     const accessToken = await getAccessToken();
     const requestOptions = {
       method: "GET",

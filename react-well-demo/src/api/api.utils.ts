@@ -19,7 +19,6 @@ interface FetchFileDownloadUrl {
 export async function getDownloadUrl(accessToken: string, dataset: string): Promise<FetchFileDownloadUrl> {
     const url = `/api/file/v2/files/${dataset}/downloadURL`;
 
-    console.log(accessToken)
     const requestOptions = {
         method: 'GET',
         headers: {

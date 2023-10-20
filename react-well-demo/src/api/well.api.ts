@@ -39,6 +39,7 @@ export async function findWells(): Promise<FindWellsResponse> {
     body: JSON.stringify({
       kind: "osdu:wks:master-data--Well:1.1.0",
       limit: 100,
+      query: "data.FacilityName: \"NO*\"",
       returnedFields: [
         "id",
         "data.SpatialLocation.Wgs84Coordinates.geometries",
@@ -47,8 +48,7 @@ export async function findWells(): Promise<FindWellsResponse> {
       sort: {"field": ["modifyTime"], "order": ["DESC"]}
     }),
   };
-  // query:
-  // wellName !== "" ? `id: "osdu:wks:master-data--Well:${wellName}"` : " ",
+
   return fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions)
     .then(handleErrors)
     .then((response) => response.json());
@@ -76,7 +76,6 @@ export async function findWellbores(
   wellId: string
 ): Promise<FindWellboresResponse> {
   const accessToken = await getAccessToken();
-  console.log(wellId)
   const requestOptions = {
     method: "POST",
     headers: {

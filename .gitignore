@@ -3,3 +3,11 @@ python-api-call/token_cache.bin
 react-well-demo/.vscode/launch.json
 .deployment
 .vscode
+venv
+.venv
+.env
+.token_cache
+osdu_notebooks/.env
+osdu_notebooks/token_cache.txt
+osdu_notebooks/8. Seismic Data Bank (SDB) metadata Ingestion/token_cache.txt
+__pycache__
