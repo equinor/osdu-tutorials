@@ -1,0 +1,35 @@
+name: Deploy workflow-status-dashboard
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - workflow-status-dashboard/**
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16"
+
+      - name: Build
+        run: |
+          cd ./workflow-status-dashboard
+          npm ci
+          CI=false npm run build
+      - name: Deploy
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "workflow-status-dashboard"
+          slot-name: "Production"
+          publish-profile: ${{ secrets.AZURE_APPSERVICE_PUBLISHPROFILE_WORKFLOW_STATUS_DASHBOARD }}
+          package: ./workflow-status-dashboard/build

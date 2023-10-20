@@ -1,4 +1,5 @@
 import {handleErrors} from "./handleErrors";
+import { API_DATA_PARTITION } from "../constants/baseUrl"
 
 interface Dataset {
     data: {
@@ -18,11 +19,12 @@ interface FetchFileDownloadUrl {
 export async function getDownloadUrl(accessToken: string, dataset: string): Promise<FetchFileDownloadUrl> {
     const url = `/api/file/v2/files/${dataset}/downloadURL`;
 
+    console.log(accessToken)
     const requestOptions = {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'data-partition-id': 'oaktree-acorn',
+            'data-partition-id': API_DATA_PARTITION,
             'Authorization': `Bearer ${accessToken}`
         }
     };

@@ -1,5 +1,5 @@
 import { MsalAuthProvider, LoginType } from "react-aad-msal";
-import 'regenerator-runtime/runtime'
+
 // The auth provider should be a singleton. Best practice is to only have it ever instantiated once.
 // Avoid creating an instance inside the component it will be recreated on each render.
 // If two providers are created on the same page it will cause authentication errors.
@@ -8,7 +8,7 @@ export const authProvider = new MsalAuthProvider(
     auth: {
       authority:
         "https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0",
-      clientId: "fde3ffb1-a11f-4e92-900f-bc7181f98c0d",
+      clientId: "6a47658e-b1b7-45d0-adf0-50d81647c161",
       postLogoutRedirectUri: window.location.origin,
       redirectUri: window.location.origin,
       validateAuthority: true,
@@ -24,7 +24,7 @@ export const authProvider = new MsalAuthProvider(
     },
   },
   {
-    scopes: ["7daee810-3f78-40c4-84c2-7a199428de18/.default openid"],
+    scopes: ["openid", "6a47658e-b1b7-45d0-adf0-50d81647c161/.default"],
   },
   {
     loginType: LoginType.Popup,

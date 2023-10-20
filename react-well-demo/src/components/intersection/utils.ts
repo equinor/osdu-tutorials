@@ -224,14 +224,14 @@ export function transformFormationData(picks: any, stratColumn: any) {
     while (itemstack.length > 0) {
         const first = itemstack.pop();
         const group = [];
-        while (itemstack.length > 0 && itemstack[itemstack.length - 1].level > first.level) {
+        while (itemstack.length > 0 && itemstack[itemstack.length - 1].level > first?.level) {
             group.push(itemstack.pop());
         }
         group.reverse();
         group.push(first);
         const arr: any[] = [];
         group.forEach((itm) => {
-            const gaps = findGaps(itm.mdEntry, itm.mdExit, arr);
+            const gaps = findGaps(itm?.mdEntry, itm?.mdExit, arr);
             arr.push(...gaps.map((g) => ({ from: g[0], to: g[1], itm })));
             arr.sort((a, b) => a.from - b.from);
         });

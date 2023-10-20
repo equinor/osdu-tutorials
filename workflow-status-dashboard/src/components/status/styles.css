@@ -1,0 +1,57 @@
+.status-container {
+  overflow-y: scroll;
+  min-height: 80px;
+  max-height: 300px;
+  width: 100%;
+  background-color: #ebebeb;
+  margin: 16px 0;
+  box-shadow: 0 3px 6px rgb(0 0 0 / 16%), 0 3px 6px rgb(0 0 0 / 23%);
+  overflow-y: scroll;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td {
+  border: 1px solid #a9a4a4;
+  text-align: left;
+  padding: 8px;
+}
+
+th {
+  background: #dddddd;
+  position: sticky;
+  top: 0;
+  text-align: left;
+  padding: 8px;
+}
+
+.tableRow_finished {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+  background-color: rgb(190, 211, 190);
+}
+
+.tableRow_failed {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+  background-color: rgb(177, 151, 151);
+}
+
+.tableRow_running {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+  background-color: rgb(220, 201, 167);
+}
+
+.tableRow {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}

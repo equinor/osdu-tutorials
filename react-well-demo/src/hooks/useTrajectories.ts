@@ -16,7 +16,7 @@ export const useTrajectories = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "data-partition-id": `${API_DATA_PARTITION}`,
+        "data-partition-id": API_DATA_PARTITION,
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
@@ -44,12 +44,13 @@ export const useTrajectories = () => {
   };
 
   const fetchTrajectories = async (trajectoryId: string) => {
+    console.log(trajectoryId)
     const accessToken = await getAccessToken();
     const requestOptions = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "data-partition-id": `${API_DATA_PARTITION}`,
+        "data-partition-id": API_DATA_PARTITION,
         Authorization: `Bearer ${accessToken}`,
       },
     };
