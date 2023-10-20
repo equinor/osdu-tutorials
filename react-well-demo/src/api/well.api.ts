@@ -1,6 +1,6 @@
 import { handleErrors } from "./handleErrors";
 import { getAccessToken } from "./getAccessToken";
-import { API_BASE_URL } from "../constants/baseUrl";
+import { API_BASE_URL, API_DATA_PARTITION } from "../constants/baseUrl";
 
 export interface FindWellsResponse {
   results: Well[];
@@ -26,28 +26,26 @@ interface Well {
  * Error handler is included
  * @param {string} wellName
  */
-export async function findWellsByName(
-  wellName: string
-): Promise<FindWellsResponse> {
+export async function findWells(): Promise<FindWellsResponse> {
   const accessToken = await getAccessToken();
 
   const requestOptions = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "data-partition-id": "oaktree-acorn",
+      "data-partition-id": API_DATA_PARTITION,
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      kind: "osdu:wks:master-data--Well:1.0.0",
+      kind: "osdu:wks:master-data--Well:1.1.0",
       limit: 100,
-      query:
-        wellName !== "" ? `id: "opendes:master-data--Well:${wellName}"` : " ",
+      query: "data.FacilityName: \"NO*\"",
       returnedFields: [
         "id",
         "data.SpatialLocation.Wgs84Coordinates.geometries",
         "data.FacilityName",
       ],
+      sort: {"field": ["modifyTime"], "order": ["DESC"]}
     }),
   };
 
@@ -78,18 +76,16 @@ export async function findWellbores(
   wellId: string
 ): Promise<FindWellboresResponse> {
   const accessToken = await getAccessToken();
-
   const requestOptions = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "data-partition-id": "oaktree-acorn",
+      "data-partition-id": API_DATA_PARTITION,
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      kind: "osdu:wks:master-data--Wellbore:1.0.0",
+      kind: "osdu:wks:master-data--Wellbore:1.1.0",
       query: `data.WellID: "${wellId}"`,
-      limit: 100,
       returnedFields: ["id", "data.FacilityName"],
     }),
   };

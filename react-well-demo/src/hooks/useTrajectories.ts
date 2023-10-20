@@ -16,7 +16,7 @@ export const useTrajectories = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "data-partition-id": `${API_DATA_PARTITION}`,
+        "data-partition-id": API_DATA_PARTITION,
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
@@ -49,7 +49,7 @@ export const useTrajectories = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "data-partition-id": `${API_DATA_PARTITION}`,
+        "data-partition-id": API_DATA_PARTITION,
         Authorization: `Bearer ${accessToken}`,
       },
     };

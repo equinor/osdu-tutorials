@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { getAccessToken } from "../api/getAccessToken";
 import { FileGenericType, WellLog, WellLogCurve } from "../hooks/types/wellLog";
-import { API_DATA_PARTITION } from "../constants/baseUrl";
+import { API_BASE_URL, API_DATA_PARTITION } from "../constants/baseUrl";
+// var parquet = require("parquetjs-lite")
+// var request = require("requests")
 
 export const useWellLog = () => {
   const [fileGenerics, setFileGenerics] = useState<FileGenericType[]>([]);
@@ -13,8 +15,6 @@ export const useWellLog = () => {
   const [lasWellLogCurves, setLasWellLogCurves] = useState<string>("");
   const [error, setError] = useState<Error>();
 
-  var parquet = require("parquetjs-lite");
-  var request = require("request");
 
   type PreloadFilePath = {
     "DatasetProperties.FileSourceInfo.PreloadFilePath": string;
@@ -35,7 +35,7 @@ export const useWellLog = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "data-partition-id": `${API_DATA_PARTITION}`,
+        "data-partition-id": API_DATA_PARTITION,
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
@@ -47,7 +47,7 @@ export const useWellLog = () => {
       }),
     };
     try {
-      const response = await fetch(`/api/search/v2/query`, requestOptions).then(
+      const response = await fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions).then(
         (response) => {
           if (!response.ok) {
             throw new Error(response.statusText);
@@ -88,7 +88,7 @@ export const useWellLog = () => {
     };
     try {
       setFileGenericIdsLoading(true);
-      const response = await fetch(`/api/search/v2/query`, requestOptions).then(
+      const response = await fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions).then(
         (response) => {
           if (!response.ok) {
             throw new Error(response.statusText);
@@ -125,7 +125,7 @@ export const useWellLog = () => {
     extension: string
   ): Promise<void> => {
     const accessToken = await getAccessToken();
-    const url = `/api/file/v2/files/${fileGenericId}/downloadURL`;
+    const url = `${API_BASE_URL}/api/file/v2/files/${fileGenericId}/downloadURL`;
     const requestOptions = {
       method: "GET",
       headers: {
@@ -136,7 +136,6 @@ export const useWellLog = () => {
     try {
       const response = await fetch(url, requestOptions).then((response) => {
         if (!response.ok) {
-          console.log(response.statusText);
           throw new Error(response.statusText);
         }
         return response;
@@ -155,7 +154,7 @@ export const useWellLog = () => {
 
   const fetchParquetCurves = async (signedUrl: string): Promise<void> => {
     try {
-      var reader = await parquet.ParquetReader.openUrl(request, signedUrl);
+      var reader = await parquet.ParquetReader.openUrl(signedUrl);
       var record = null;
       var cursor = reader.getCursor();
       const curveArray: WellLogCurve[] = [];
@@ -174,7 +173,6 @@ export const useWellLog = () => {
     try {
       const response = await fetch(signedUrl).then((response) => {
         if (!response.ok) {
-          console.log(response.statusText);
           throw new Error(response.statusText);
         }
         return response;

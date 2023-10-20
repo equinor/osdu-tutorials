@@ -53,3 +53,4 @@ export function createTrajectoryChart(
     controller.zoomPanHandler.zFactor = 1;
   }
 }
+export {}

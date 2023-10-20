@@ -1,6 +1,6 @@
 import { handleErrors } from "./handleErrors";
 import { getAccessToken } from "./getAccessToken";
-import { API_BASE_URL } from "../constants/baseUrl";
+import { API_BASE_URL, API_DATA_PARTITION } from "../constants/baseUrl";
 
 interface WellLog {
   id: string;
@@ -18,13 +18,14 @@ async function getWellLogs(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "data-partition-id": "oaktree-acorn",
+      "data-partition-id": API_DATA_PARTITION,
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
       kind: "osdu:wks:work-product-component--Welllog:1.0.0",
       query: `data.WellboreID:(\"${wellboreId}\")`,
       returnedFields: ["id"],
+      limit: 100
     }),
   };
   return fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions)
@@ -47,7 +48,7 @@ export async function loadWellLogData(wellboreId: string): Promise<any> {
   const requestOptions = {
     method: "GET",
     headers: {
-      "data-partition-id": "oaktree-acorn",
+      "data-partition-id": API_DATA_PARTITION,
       Authorization: `Bearer ${accessToken}`,
       accept: "application/json",
     },

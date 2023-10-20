@@ -1,4 +1,5 @@
 import {handleErrors} from "./handleErrors";
+import { API_DATA_PARTITION } from "../constants/baseUrl"
 
 interface Dataset {
     data: {
@@ -22,7 +23,7 @@ export async function getDownloadUrl(accessToken: string, dataset: string): Prom
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'data-partition-id': 'oaktree-acorn',
+            'data-partition-id': API_DATA_PARTITION,
             'Authorization': `Bearer ${accessToken}`
         }
     };

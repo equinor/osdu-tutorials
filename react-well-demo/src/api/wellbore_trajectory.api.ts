@@ -2,7 +2,7 @@ import { handleErrors } from "./handleErrors";
 import { getAccessToken } from "./getAccessToken";
 import { parseString } from "@fast-csv/parse";
 import { DatasetResponse, getDownloadUrl } from "./api.utils";
-import { API_BASE_URL } from "../constants/baseUrl";
+import { API_BASE_URL, API_DATA_PARTITION } from "../constants/baseUrl";
 
 export interface WellboreTrajectoryPoint {
   md: number;
@@ -29,12 +29,13 @@ async function getDatasetsFromWellboreTrajectory(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "data-partition-id": "oaktree-acorn",
+      "data-partition-id": API_DATA_PARTITION,
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
       kind: "osdu:wks:work-product-component--WellboreTrajectory:1.1.0",
       returnedFields: ["id", "data.WellboreID"],
+      limit: 100
     }),
   };
   return fetch(`${API_BASE_URL}/api/search/v2/query`, requestOptions)

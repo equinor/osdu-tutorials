@@ -11,7 +11,7 @@ import {
 } from "./types";
 import {
   FindWellboresResponse,
-  findWellsByName,
+  findWells,
   FindWellsResponse,
   findWellbores,
 } from "../../api/well.api";
@@ -23,16 +23,15 @@ type AppThunk<ReturnType = void> = ThunkAction<
   WellSearchActionTypes
 >;
 
-export function findWellsByNameStartAction(
-  wellName: string
+export function findWellsStartAction(
 ): WellSearchActionTypes {
   return {
     type: FIND_WELLS_BY_NAME_START,
-    payload: wellName,
+    payload: "undefined",
   };
 }
 
-export function findWellsByNameSuccessAction(
+export function findWellsSuccessAction(
   response: FindWellsResponse
 ): WellSearchActionTypes {
   return {
@@ -41,7 +40,7 @@ export function findWellsByNameSuccessAction(
   };
 }
 
-export function findWellsByNameFailAction(err: Error): WellSearchActionTypes {
+export function findWellsFailAction(err: Error): WellSearchActionTypes {
   return {
     type: FIND_WELLS_BY_NAME_FAIL,
     payload: err,
@@ -84,14 +83,14 @@ export function findWellboresFailAction(
  * fetch from the osdu backend a list of wells, matching a querried name
  * @param wellName
  */
-export const findWellsByNameAction =
-  (wellName: string): AppThunk =>
+export const findWellsAction =
+  (): AppThunk =>
   (dispatch) => {
-    dispatch(findWellsByNameStartAction(wellName));
+    dispatch(findWellsStartAction());
 
-    return findWellsByName(wellName)
-      .then((data) => dispatch(findWellsByNameSuccessAction(data)))
-      .catch((err) => dispatch(findWellsByNameFailAction(err)));
+    return findWells()
+      .then((data) => dispatch(findWellsSuccessAction(data)))
+      .catch((err) => dispatch(findWellsFailAction(err)));
   };
 
 /**

@@ -3,13 +3,14 @@ import { Map, Marker } from "pigeon-maps";
 import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../store";
 import { WellSearchResponse } from "../../store/well/reducer";
-import { findWellsByNameAction } from "../../store/well/actions";
+import { findWellsAction } from "../../store/well/actions";
 import { FoundWell } from "./FoundWell";
 import { CircularProgress } from "@mui/material";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Container } from "react-bootstrap";
 import WellLogList from "../wellLogList";
+// import WellLog from "../welllog";
 
 type WellCanvasProps = {
   searchName: string;
@@ -27,7 +28,7 @@ const WellCanvas: FC<WellCanvasProps> = ({ searchName }) => {
   );
 
   useEffect(() => {
-    dispatch(findWellsByNameAction(""));
+    dispatch(findWellsAction());
   }, []);
 
   const foundWells = useSelector(
