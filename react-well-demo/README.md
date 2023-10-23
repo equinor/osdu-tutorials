@@ -1,46 +1,21 @@
-# Getting Started with Create React App
+# Well Demo
+This is a demo application for demonstrating how applications can consume OSDU and leverage it as a source for subsurface data.
+This is a React application displaying wells on the Norwegian coast, and their respective wellbore, trajectories and well logs, all using OSDU as its source.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![image](https://github.com/equinor/osdu-tutorials/assets/35703118/e34e6197-11a0-43db-92bd-c2dbe0adaaf8)
 
-## Available Scripts
+## Running the app locally
+Prerequisites for running the app locally is to have Node installed. Running `npm install` and `npm start` from source should be enough for loading the initial page. Some features requires the two equinor-scoped npm packages, `wellx-wellog` which is private, and `esv-intersection` which is public. In order to install the `wellx-wellog` package, you need to create an `.npmrc` file at the project root directory, with this content:
 
-In the project directory, you can run:
+```
+react-well-demo/.npmrc
 
-### `yarn start`
+@equinor:registry=https://npm.pkg.github.com/equinor
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_ACCESS_TOKEN
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Aquire Github access token - Go to https://github.com, click on your profile and go to Settings. Then go to Developer settings -> Personal access tokens -> Tokens and then Generate new token
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+After you have added the `.npmrc` file with a valid Github access token, you can run `npm install`. After running `npm install` you can delete the `.npmrc` and rerun `npm install` followed by `npm start`.
 
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Keep in mind that currently all calls to the OSDU Storage API are blocked by CORS which has to be configured on the server side. Untill then, features for reading trajectories and well logs will be redundant.
